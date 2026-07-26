@@ -3,6 +3,7 @@ import { Bodoni_Moda, Geist_Mono, Inter } from "next/font/google"
 
 import "./globals.css"
 import "./assembly-theme.css"
+import { ConvexClientProvider } from "@/components/convex-client-provider"
 import { SiteFooter } from "@/components/site/site-footer"
 import { SiteHeader } from "@/components/site/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -10,7 +11,10 @@ import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
 
 const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" })
-const displayFont = Bodoni_Moda({ subsets: ["latin"], variable: "--font-display" })
+const displayFont = Bodoni_Moda({
+  subsets: ["latin"],
+  variable: "--font-display",
+})
 const utilityFont = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
@@ -18,23 +22,32 @@ export const metadata: Metadata = {
     default: "Paris Assembly · 2026",
     template: "%s · Paris Assembly",
   },
-  description: "Global Solidarity Summit for Bangladeshi Hindus, 3–4 October 2026 in Paris, France.",
+  description:
+    "Global Solidarity Summit for Bangladeshi Hindus, 3–4 October 2026 in Paris, France.",
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(bodyFont.variable, displayFont.variable, utilityFont.variable)}
+      className={cn(
+        bodyFont.variable,
+        displayFont.variable,
+        utilityFont.variable
+      )}
     >
       <body>
-        <ThemeProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
-          <Toaster position="bottom-right" />
-        </ThemeProvider>
+        <ConvexClientProvider>
+          <ThemeProvider>
+            <SiteHeader />
+            <main>{children}</main>
+            <SiteFooter />
+            <Toaster position="bottom-right" />
+          </ThemeProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   )

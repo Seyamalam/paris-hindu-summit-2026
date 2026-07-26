@@ -14,16 +14,20 @@ The complete website includes matching **light and dark modes**. The header cont
 
 ## Pages
 
-| Route | Purpose |
-| --- | --- |
-| `/` | Summit overview, evidence, programme preview, speakers, countdown, and donation CTA |
-| `/about` | Mission, principles, outcomes, and seven-point charter |
-| `/context` | Historical, demographic, legal, and recent-incident context |
-| `/programme` | Interactive two-day summit schedule |
-| `/speakers` | Confirmed and proposed contributors |
-| `/committee` | Organising committee and responsibilities |
-| `/media` | Research, publication, documentary, press, and media resources |
+| Route          | Purpose                                                                             |
+| -------------- | ----------------------------------------------------------------------------------- |
+| `/`            | Summit overview, evidence, programme preview, speakers, countdown, and donation CTA |
+| `/about`       | Mission, principles, outcomes, and seven-point charter                              |
+| `/context`     | Historical, demographic, legal, and recent-incident context                         |
+| `/programme`   | Interactive two-day summit schedule                                                 |
+| `/speakers`    | Confirmed and proposed contributors                                                 |
+| `/committee`   | Organising committee and responsibilities                                           |
+| `/media`       | Research, publication, documentary, press, and media resources                      |
 | `/participate` | Registration, volunteering, sponsorship, media accreditation, contact, and donation |
+
+The client’s living delivery requirements, implementation state, admin-panel
+scope, dynamic-content boundary, and launch checks are maintained in
+[`docs/PRODUCT_SPEC_CHECKLIST.md`](docs/PRODUCT_SPEC_CHECKLIST.md).
 
 ## Functional prototype flows
 
@@ -36,6 +40,10 @@ The complete website includes matching **light and dark modes**. The header cont
 - Donation dialog with selectable euro amounts, email validation, and a mock success state
 - The payment flow is deliberately non-transactional; a production provider can be connected later without redesigning the entry flow
 - Generated witness-flame favicon and Apple touch icon
+- Convex-backed Beyond Bangladesh section with Pakistan, Afghanistan, Myanmar, and Nepal
+- Admin-extensible regional-country model with draft/published ordering
+- Stationary, tiered partner and sponsor wall (no carousel)
+- Convex storage-ready asset records for logos, portraits, media, and documents
 
 ## Local development
 
@@ -54,6 +62,22 @@ bun run lint
 bun run build
 ```
 
+Convex workflow:
+
+```bash
+bunx convex dev
+```
+
+Every commit must be followed by a production backend deploy:
+
+```bash
+bunx convex deploy
+```
+
+When seed content changes, run the idempotent seed in both environments and
+verify the resulting row counts. Never seed personal, donor, registration, or
+credential data.
+
 ## Source material
 
 The content architecture and factual event details were developed from the supplied summit documents in the parent folder, including `Paris Website.pdf`, the event concept note, the conference committee document, and the speaker/committee profiles.
@@ -68,3 +92,4 @@ Before publication, the organisers should approve final speaker status, programm
 - Tailwind CSS 4
 - shadcn/ui with Base UI primitives
 - Bun
+- Convex database and file storage
