@@ -9,8 +9,8 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Countdown } from "@/components/site/countdown"
+import { HeroClothBadge } from "@/components/site/hero-cloth-badge"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { event, evidence, speakers } from "@/lib/content"
 
@@ -28,7 +28,7 @@ export default function HomePage() {
         <div className="hero-shade" />
         <div className="home-hero-content">
           <p className="kicker">{event.dates} · Paris, France</p>
-          <Badge variant="outline">Global human-rights summit</Badge>
+          <HeroClothBadge />
           <h1>When testimony enters the room, silence ends.</h1>
           <p className="hero-lead">{event.theme}</p>
           <div className="hero-actions">
