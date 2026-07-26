@@ -44,6 +44,7 @@ The detailed record of delivered work is maintained in
 ## Functional prototype flows
 
 - Responsive desktop and mobile navigation
+- Admin-date-driven animated flip countdown in the landing-page hero
 - Persistent light/dark mode with a visible theme control
 - Tuned compact-phone, large-phone, tablet, small-laptop, and desktop layouts
 - Two-day programme tabs

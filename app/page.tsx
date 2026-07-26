@@ -9,6 +9,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Countdown } from "@/components/site/countdown"
+import { HeroCountdown } from "@/components/site/hero-countdown"
 import {
   EvidenceCharts,
   FeaturedSpeakers,
@@ -65,14 +66,9 @@ export default function HomePage() {
         </div>
         <div
           className="assembly-home-date"
-          aria-label="3 to 4 October 2026 in Paris"
+          aria-label="Summit countdown"
         >
-          <div>
-            <strong>03</strong>
-            <ArrowRightIcon />
-            <strong>04</strong>
-          </div>
-          <small>OCT / PARIS</small>
+          <HeroCountdown />
         </div>
       </section>
 

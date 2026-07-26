@@ -252,6 +252,9 @@ for incomplete work, approvals, and launch dependencies.
 
 ## Production, verification, and source control
 
+- ✅ Animated flip-clock countdown added to the landing-page hero.
+- ✅ Hero countdown reads its target date and timezone from editable Global Site Settings.
+- ✅ Countdown includes responsive compact-phone treatment and reduced-motion behaviour.
 - ✅ Latest Convex schema and functions deployed to production.
 - ✅ Production chart, programme, and storage-reference indexes deployed.
 - ✅ Production content seed completed.
