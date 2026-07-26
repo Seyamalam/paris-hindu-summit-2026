@@ -1,5 +1,5 @@
 export const event = {
-  name: "Dharma is Distress",
+  name: "Paris Assembly",
   descriptor: "Global Solidarity Summit for Bangladeshi Hindus",
   theme: "Justice for Bangladeshi Hindus, Solidarity Without Borders",
   dates: "3–4 October 2026",

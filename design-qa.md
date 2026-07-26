@@ -1,142 +1,93 @@
-# Design QA
+# Design QA · Design 06 Paris Assembly
 
 ## Evidence
 
-- Source visual truth: `public/reference/design-09-night-testimony.png`
-- Desktop implementation: `public/reference/implementation-home-desktop.png`
-- Mobile implementation: `public/reference/implementation-home-mobile.png`
-- Scrolled desktop navigation: `public/reference/implementation-sticky-header-desktop.png`
-- Scrolled mobile navigation: `public/reference/implementation-sticky-header-mobile.png`
-- Source pixels: 1487 × 1058
+- Source visual truth: `public/reference/design-06-source-live.png`
+- Light desktop implementation: `public/reference/design-06-implementation-light.png`
+- Dark desktop implementation: `public/reference/design-06-implementation-dark.png`
+- Light mobile implementation: `public/reference/design-06-mobile-light.png`
+- Dark mobile implementation: `public/reference/design-06-mobile-dark.png`
+- Source pixels: 1440 × 1024
 - Desktop implementation pixels: 1425 × 1013
 - Mobile implementation pixels: 345 × 639
-- CSS viewports: 1440 × 1024 desktop and 360 × 667 compact mobile
-- Density: browser and source evaluated at 1×; the desktop comparison normalized both images to 720 × 512 with an identical top-aligned cover crop
-- State: homepage, default navigation state
+- CSS viewports: 1440 × 1024 desktop and 360 × 667 mobile
+- Density: 1× browser capture
+- State: homepage, default navigation, light and dark themes
+
+## Normalization
+
+The source image includes 34px of concept-viewer chrome above the live site and a bottom design switcher below it. The full-view comparison therefore used:
+
+- Source crop: x 0, y 34, 1440 × 856
+- Implementation crop: x 0, y 0, 1425 × 846
+- Both normalized to 720 × 428 and placed in one side-by-side comparison input
+
+This removes the unrelated concept selector while preserving the full visible Design 06 header and hero. The date changed from the early concept’s 19–20 placeholder to the approved 3–4 October 2026 event dates.
 
 ## Full-view comparison
 
-The source and desktop implementation were placed together in a single side-by-side comparison. The implementation preserves the selected direction’s near-black auditorium, large left-aligned testimony, editorial serif hierarchy, wine-red actions, compact metadata, negative space, and illuminated chair/microphone composition.
+The implementation reproduces the source’s defining composition: a paper field and cobalt date panel split on a strong vertical rule, monumental uppercase Inter typography, compact institutional navigation, signal-red action, small monospaced metadata, and an immediate red Paris banner.
 
-The implementation intentionally contains more specific summit copy and the client-requested witness-flame brand mark. Its revised three-line headline now follows the reference’s proportions more closely, while the cloth summit credential adds a compact, subject-specific interaction without competing with the testimony. There are no actionable P0, P1, or P2 desktop fidelity differences.
+The supplied witness-flame logo remains in the lockup because the client separately requested it. Copy, dates, routes, donation entry, and event metadata use the approved project content rather than the concept placeholder copy. These are intentional product requirements, not fidelity drift.
 
-## Focused responsive evidence
+No actionable P0, P1, or P2 desktop fidelity differences remain.
 
-Focused review was required because the user specifically requested stronger responsiveness. Every route was checked at:
+## Focused evidence
 
-- 360 × 800
-- 412 × 915
-- 768 × 1024
-- 1024 × 768
-- 1280 × 800
-- 1440 × 1024
+Focused comparison was required for:
 
-The mobile homepage, compact committee hero, tablet About, tablet Context, tablet Programme, small-laptop homepage, mobile navigation, and mobile payment dialog were visually inspected. All eight routes were also measured for horizontal document overflow.
+- Header: persistent navigation, logo lockup, active route, red reservation action, and 44 × 44px theme control
+- Hero: headline wrapping, vertical split, 03 → 04 date lockup, CTA alignment, and first-viewport fit
+- Mobile: 360 × 667 hero, 68px fixed header, 44 × 44px controls, menu sheet, and long interior-page headings
+- Themes: identical structure and hierarchy in light and dark; only semantic tokens change
+- Payment: themed mock donation dialog at mobile width
+
+The desktop light/dark pair was also placed in one side-by-side comparison input. Both retain the same grid, typography, red action hierarchy, cobalt date panel, and content density.
 
 ## Required fidelity surfaces
 
-- **Typography:** Bodoni Moda retains the reference’s editorial voice; the desktop landing headline resolves to three balanced lines and compact page heroes reduce safely before long words clip. Display/body/utility roles remain distinct at every breakpoint.
-- **Spacing and layout:** The full desktop hero and its metadata fit inside the first 1440 × 1024 viewport. Section shells use scrollbar-safe auto sizing. Tablet grids reflow to two columns, then one column on phones. Footer, image/text splits, forms, countdowns, schedules, and CTA panels retain usable rhythm.
-- **Colors and tokens:** Near-black, parchment, wine, and amber tokens remain consistent with the reference and maintain readable contrast.
-- **Image quality:** The hero uses the generated stage photograph with controlled crops by breakpoint. Speaker portraits preserve useful aspect ratios without stretching. The generated favicon has a strong silhouette at 32px.
-- **Copy and content:** All supplied event details remain intact; compact layouts wrap headings and actions without truncating meaning.
+- **Fonts and typography:** Inter provides the source’s monumental civic headline and navigation voice. Bodoni Moda is retained only for supporting editorial headings, matching Design 06’s serif secondary layer. Utility labels use Geist Mono. Desktop and mobile headings were checked for wrapping and clipping.
+- **Spacing and layout rhythm:** The desktop hero uses the source’s approximately two-thirds/one-third split. The mobile hero reflows into one complete first-viewport content panel followed by the date panel. Rules, square controls, section padding, grids, and card edges consistently follow the institutional system.
+- **Colors and visual tokens:** Light mode uses paper `#f4f5f2`, cobalt `#173f91`, signal red `#df313b`, and white. Dark mode maps paper to ink `#08111f`, foreground to `#edf3ff`, and surfaces to navy without changing the cobalt/red hierarchy.
+- **Image quality and asset fidelity:** The supplied witness-flame logo is used at its intended compact size. Existing event and speaker photography remains sharp, uses controlled crops, and is treated consistently with the cobalt institutional palette. No placeholder or code-drawn image assets were introduced.
+- **Copy and content:** All eight routes retain the approved summit content, 3–4 October date, venue, programme, speakers, committee, evidence, participation flows, and provider-ready mock donation language.
 
 ## Interaction and accessibility
 
-- Mobile navigation opens, exposes semantic links, navigates, and closes
-- Mobile menu target is 44 × 44px
-- Programme Day 1 / Day 2 tabs work and wrap without overflow
-- Delegate registration success state works
-- Donation amount, email validation, mock payment, and success state work
-- Mobile payment dialog stays within the viewport and scrolls if necessary
-- Labels, image alt text, heading hierarchy, keyboard focus, and reduced-motion handling reviewed
-- The cloth credential is non-essential, has an accessible outer label, respects reduced motion, pauses off-screen, and retains a styled static fallback where experimental HTML-in-canvas support is unavailable
-- Browser console and Next.js issue overlay checked
+- Theme toggle works in both directions, follows system preference by default, and persists through `next-themes`
+- Keyboard shortcut `D` toggles themes outside text-entry controls
+- Fixed navigation remains visible while scrolling
+- Mobile menu opens in both themes and retains 44 × 44px controls
+- All eight routes have no horizontal overflow at 1440px or 360px
+- Programme Day 1 / Day 2 tabs retain working selected states
+- Registration and contact success states remain functional
+- Donation amount selection, email gate, mock checkout, and success state remain functional
+- Reduced-motion behavior, focus visibility, alt text, labels, and heading hierarchy retained
+- Browser console checked with no warnings or errors
 
 ## Comparison history
 
 ### Iteration 1
 
-- **P2:** Context cards, About cards, and Programme tabs exceeded tablet widths.
-- **P2:** Compact committee heading clipped the word “Responsibility.”
-- **P2:** Mobile menu button was below the recommended 44px target.
-- **P2:** Mobile Sheet navigation rendered action semantics instead of link semantics.
+- **P2:** The initial desktop 03 → 04 lockup extended slightly beyond the cobalt panel.
+- **P2:** Long mobile interior-page titles, especially “Declaration,” clipped at 360px.
+- **P2:** The imported desktop header height overrode the intended compact mobile height.
 
 Fixes:
 
-- Added scrollbar-safe section sizing and intermediate two-column grids.
-- Allowed programme tabs to wrap with zero minimum track width.
-- Added compact heading scaling and portrait aspect-ratio rules.
-- Increased the menu control to 44 × 44px.
-- Converted controlled Sheet navigation items to semantic Next.js links.
-- Reflowed footer, image/text sections, forms, donation panel, and dialog at tablet/mobile breakpoints.
+- Reduced the desktop date numerals and panel gap while retaining the source’s oversized date treatment.
+- Added a dedicated compact interior-page display scale and safe wrapping at mobile widths.
+- Restored the mobile fixed header to 68px and matched both hero offsets to that value.
 
 Post-fix evidence:
 
-- All eight routes report no horizontal overflow at all six test widths.
-- Compact committee heading is fully visible at 360 × 800.
-- Mobile menu links navigate and close the Sheet.
-- Mobile mock checkout fits inside 360 × 800.
-
-### Iteration 2
-
-- Replaced the temporary letter mark with the approved witness-flame artwork in the desktop header, mobile header, mobile navigation title, footer identity, favicon, and Apple touch icon.
-- Refreshed the desktop and mobile implementation screenshots.
-- Verified the optimized logo asset loads at its intended compact sizes without layout overflow or browser-console errors.
-
-### Iteration 3
-
-- **P2:** The mobile landing hero exceeded the first viewport because desktop-scale headline spacing, two stacked actions, and event metadata created an intrinsically taller hero.
-- **P2:** The homepage programme preview placed its description as a separate grid item, forcing body copy into the narrow Day-label column and producing word-by-word vertical text.
-
-Fixes:
-
-- Rebalanced the mobile hero’s display scale, spacing, action height, metadata layout, and viewport-based minimum height.
-- Grouped each programme title and description into one content column.
-- Reduced the mobile programme heading scale and converted Day 01/02 into compact label-plus-content rows.
-
-Post-fix evidence:
-
-- The complete headline, theme, both primary actions, and event metadata fit inside 360 × 667, 360 × 800, 390 × 844, and 430 × 932 viewports.
-- Each programme day now occupies approximately 222px at 360px width instead of more than 520px.
-- The programme preview decreased from approximately 1610px to 858px at 360px width.
-- No horizontal overflow or browser-console errors were introduced.
-
-### Iteration 4
-
-- **P2:** Adding the cloth credential initially pushed the desktop hero metadata below the 1440 × 1024 first viewport.
-- **P2:** The inherited oversized desktop headline formed five lines, diverging from the selected design’s broad three-line editorial composition.
-
-Fixes:
-
-- Rebalanced the desktop hero’s top/bottom spacing and component gaps.
-- Widened the testimony column and reduced only the desktop display scale, preserving the existing compact-mobile treatment.
-- Installed the shadcn Canvas UI cloth component as a restrained summit credential rather than placing essential hero content inside the experimental canvas effect.
-- Added a deliberate fabric-texture fallback so the credential remains visually complete in mainstream browsers.
-
-Post-fix evidence:
-
-- At 1440 × 1024, the hero ends at 900px, the headline uses three lines, and event metadata ends at approximately 785px.
-- At 360 × 667, the headline, both actions, and event metadata remain visible; the page reports no horizontal overflow.
-- Desktop and mobile checks report no browser-console errors.
-- The final source/implementation comparison used an identical 720 × 512 top-aligned cover crop; no actionable P0/P1/P2 mismatch remains.
-
-### Iteration 5
-
-- **P1:** The site header used document-level absolute positioning, so navigation disappeared after leaving the top of any page.
-
-Fix:
-
-- Changed the shared header to fixed viewport positioning while preserving its existing glass background, stacking order, desktop height, and compact-mobile height.
-
-Post-fix evidence:
-
-- At a desktop scroll position of approximately 1100px, the header remains at `top: 0` with its full 82px height.
-- At a mobile scroll position beyond 2400px, the header remains at `top: 0` with its full 68px height and 44 × 44px menu control.
-- No horizontal overflow or browser-console warnings/errors were introduced.
+- The final desktop date lockup ends at approximately x 1394 inside a 1425px page capture.
+- All eight routes report zero horizontal overflow at 360px and 1440px.
+- Every mobile page heading ends inside the 345px content viewport.
+- The mobile header measures 68px, its controls measure 44 × 44px, and the homepage content panel ends exactly at the 667px first viewport.
 
 ## Remaining findings
 
-No actionable P0, P1, or P2 findings remain. A future production pass should validate the final translated copy, approved speaker list, real payment provider, privacy wording, and final source citations.
+No actionable P0, P1, or P2 findings remain. Final production review should still confirm approved source citations, speaker status, privacy wording, translations, and the selected payment provider.
 
 final result: passed

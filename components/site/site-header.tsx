@@ -7,6 +7,7 @@ import { MenuIcon } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/site/theme-toggle"
 import {
   Sheet,
   SheetContent,
@@ -15,7 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { event, navItems } from "@/lib/content"
+import { navItems } from "@/lib/content"
 import { cn } from "@/lib/utils"
 
 function Brand() {
@@ -31,8 +32,8 @@ function Brand() {
         aria-hidden="true"
       />
       <span>
-        <b>{event.name}</b>
-        <small>Paris · 2026</small>
+        <b>Paris Assembly</b>
+        <small>For dignity &amp; rights</small>
       </span>
     </span>
   )
@@ -44,7 +45,7 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <Link href="/" aria-label="Dharma is Distress home">
+      <Link href="/" aria-label="Paris Assembly home">
         <Brand />
       </Link>
       <nav className="desktop-nav" aria-label="Main navigation">
@@ -58,8 +59,9 @@ export function SiteHeader() {
           </Link>
         ))}
       </nav>
+      <ThemeToggle />
       <Button nativeButton={false} render={<Link href="/participate" />} className="header-action">
-        Attend in Paris
+        Reserve a place
       </Button>
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger

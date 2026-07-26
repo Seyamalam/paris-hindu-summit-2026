@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import {
   ArrowRightIcon,
-  AudioLinesIcon,
   CalendarDaysIcon,
   MapPinIcon,
   PlayIcon,
@@ -10,30 +9,20 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Countdown } from "@/components/site/countdown"
-import { HeroClothBadge } from "@/components/site/hero-cloth-badge"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { event, evidence, speakers } from "@/lib/content"
 
 export default function HomePage() {
   return (
     <>
-      <section className="home-hero">
-        <Image
-          src="/images/testimony-stage.png"
-          alt="An empty wooden chair and microphone beneath a theatre spotlight"
-          fill
-          priority
-          sizes="100vw"
-        />
-        <div className="hero-shade" />
-        <div className="home-hero-content">
-          <p className="kicker">{event.dates} · Paris, France</p>
-          <HeroClothBadge />
-          <h1>When testimony enters the room, silence ends.</h1>
-          <p className="hero-lead">{event.theme}</p>
+      <section className="assembly-home-hero">
+        <div className="assembly-home-copy">
+          <p className="kicker">Global summit · October 2026</p>
+          <h1><span>We</span> assemble<br />for equality.</h1>
+          <p className="hero-lead">Leaders, researchers, rights defenders, and communities building a practical agenda for the rights and future of Hindus in Bangladesh.</p>
           <div className="hero-actions">
             <Button nativeButton={false} size="lg" render={<Link href="/participate" />}>
-              Attend in Paris <ArrowRightIcon data-icon="inline-end" />
+              Reserve a place <ArrowRightIcon data-icon="inline-end" />
             </Button>
             <Button nativeButton={false} size="lg" variant="outline" render={<Link href="/media#film" />}>
               <PlayIcon data-icon="inline-start" /> Watch the opening film
@@ -44,12 +33,16 @@ export default function HomePage() {
             <span><MapPinIcon /> {event.venue}, Drancy</span>
           </div>
         </div>
+        <div className="assembly-home-date" aria-label="3 to 4 October 2026 in Paris">
+          <div><strong>03</strong><ArrowRightIcon /><strong>04</strong></div>
+          <small>OCT / PARIS</small>
+        </div>
       </section>
 
-      <section className="opening-line">
-        <p className="kicker">A community long unheard</p>
-        <AudioLinesIcon aria-hidden="true" />
-        <p>Two days to listen, understand, organise, and act.</p>
+      <section className="assembly-banner">
+        <strong>PARIS</strong>
+        <p>One room. Many institutions. A shared commitment.</p>
+        <span>{event.dates}</span>
       </section>
 
       <section className="split-intro section-shell">

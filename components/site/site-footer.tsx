@@ -11,7 +11,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-callout">
         <p className="kicker">Paris · October 2026</p>
-        <h2>Witness must become protection.</h2>
+        <h2>One room. Many institutions. A shared commitment.</h2>
         <Button nativeButton={false} render={<Link href="/participate" />}>
           Take part <ArrowUpRightIcon data-icon="inline-end" />
         </Button>
@@ -27,7 +27,7 @@ export function SiteFooter() {
             aria-hidden="true"
           />
           <div>
-            <b>{event.name}</b>
+            <b>Paris Assembly</b>
             <p>{event.descriptor}</p>
           </div>
         </div>
@@ -40,7 +40,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="footer-legal">
-        <span>© 2026 Dharma is Distress Summit</span>
+        <span>© 2026 Paris Assembly</span>
         <span>Human rights · dignity · equal citizenship</span>
       </div>
     </footer>

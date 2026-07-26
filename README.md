@@ -1,14 +1,16 @@
-# Dharma is Distress · Paris 2026
+# Paris Assembly · 2026
 
 Production-shaped, responsive website for the **Global Solidarity Summit for Bangladeshi Hindus**, taking place on **3–4 October 2026** at Salle des Princes in Drancy, Paris.
 
-The visual system develops the client-selected **Design 09 · Night Testimony** direction: a near-black auditorium, warm stage light, restrained wine-red accents, editorial serif typography, and testimony-led storytelling.
+The visual system develops the client-selected **Design 06 · Paris Assembly** direction: paper and cobalt civic architecture, signal-red actions, monumental institutional typography, strict rules, and editorial serif support.
+
+The complete website includes matching **light and dark modes**. The header control follows the visitor across every route, defaults to their system preference, and remembers their selection.
 
 ## Preview
 
-![Desktop homepage](public/reference/implementation-home-desktop.png)
+![Design 06 light homepage](public/reference/design-06-implementation-light.png)
 
-![Compact mobile homepage](public/reference/implementation-home-mobile.png)
+![Design 06 dark homepage](public/reference/design-06-implementation-dark.png)
 
 ## Pages
 
@@ -26,6 +28,7 @@ The visual system develops the client-selected **Design 09 · Night Testimony** 
 ## Functional prototype flows
 
 - Responsive desktop and mobile navigation
+- Persistent light/dark mode with a visible theme control
 - Tuned compact-phone, large-phone, tablet, small-laptop, and desktop layouts
 - Two-day programme tabs
 - Delegate registration form with a realistic success state
