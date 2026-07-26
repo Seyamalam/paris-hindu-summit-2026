@@ -81,6 +81,24 @@ Post-fix evidence:
 - Refreshed the desktop and mobile implementation screenshots.
 - Verified the optimized logo asset loads at its intended compact sizes without layout overflow or browser-console errors.
 
+### Iteration 3
+
+- **P2:** The mobile landing hero exceeded the first viewport because desktop-scale headline spacing, two stacked actions, and event metadata created an intrinsically taller hero.
+- **P2:** The homepage programme preview placed its description as a separate grid item, forcing body copy into the narrow Day-label column and producing word-by-word vertical text.
+
+Fixes:
+
+- Rebalanced the mobile hero’s display scale, spacing, action height, metadata layout, and viewport-based minimum height.
+- Grouped each programme title and description into one content column.
+- Reduced the mobile programme heading scale and converted Day 01/02 into compact label-plus-content rows.
+
+Post-fix evidence:
+
+- The complete headline, theme, both primary actions, and event metadata fit inside 360 × 667, 360 × 800, 390 × 844, and 430 × 932 viewports.
+- Each programme day now occupies approximately 222px at 360px width instead of more than 520px.
+- The programme preview decreased from approximately 1610px to 858px at 360px width.
+- No horizontal overflow or browser-console errors were introduced.
+
 ## Remaining findings
 
 No actionable P0, P1, or P2 findings remain. A future production pass should validate the final translated copy, approved speaker list, real payment provider, privacy wording, and final source citations.

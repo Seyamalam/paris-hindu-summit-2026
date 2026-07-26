@@ -80,15 +80,27 @@ export default function HomePage() {
         <p className="source-note">Statistics reproduced from the supplied summit concept note; final publication should include approved source links and methodology.</p>
       </section>
 
-      <section className="section-shell programme-preview">
+      <section className="section-shell programme-preview" id="programme-preview">
         <div className="section-heading">
           <p className="kicker">Conference programme</p>
           <h2>Understand. Engage. Inspire.<br />Collaborate. Commit. Conclude.</h2>
           <Button nativeButton={false} variant="outline" render={<Link href="/programme" />}>Explore both days <ArrowRightIcon data-icon="inline-end" /></Button>
         </div>
         <div className="day-preview">
-          <article><span>Day 01</span><h3>Evidence enters the public record.</h3><p>Opening film, keynote, historical context, testimony, legal protection, and the seven-point charter.</p></article>
-          <article><span>Day 02</span><h3>Evidence becomes commitment.</h3><p>Policy roundtable, international cooperation, the Paris Declaration, and the Agni Sakshi pledge.</p></article>
+          <article>
+            <span>Day 01</span>
+            <div>
+              <h3>Evidence enters the public record.</h3>
+              <p>Opening film, keynote, historical context, testimony, legal protection, and the seven-point charter.</p>
+            </div>
+          </article>
+          <article>
+            <span>Day 02</span>
+            <div>
+              <h3>Evidence becomes commitment.</h3>
+              <p>Policy roundtable, international cooperation, the Paris Declaration, and the Agni Sakshi pledge.</p>
+            </div>
+          </article>
         </div>
       </section>
 
