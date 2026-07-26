@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MenuIcon } from "lucide-react"
@@ -20,7 +21,15 @@ import { cn } from "@/lib/utils"
 function Brand() {
   return (
     <span className="brand-lockup">
-      <span className="brand-mark" aria-hidden="true">D</span>
+      <Image
+        className="brand-mark"
+        src="/images/witness-flame-logo.png"
+        alt=""
+        width={44}
+        height={44}
+        priority
+        aria-hidden="true"
+      />
       <span>
         <b>{event.name}</b>
         <small>Paris · 2026</small>

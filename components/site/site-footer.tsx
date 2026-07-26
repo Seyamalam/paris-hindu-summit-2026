@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRightIcon, MailIcon, MapPinIcon } from "lucide-react"
 
@@ -17,9 +18,18 @@ export function SiteFooter() {
       </div>
       <Separator />
       <div className="footer-grid">
-        <div>
-          <b>{event.name}</b>
-          <p>{event.descriptor}</p>
+        <div className="footer-brand">
+          <Image
+            src="/images/witness-flame-logo.png"
+            alt=""
+            width={64}
+            height={64}
+            aria-hidden="true"
+          />
+          <div>
+            <b>{event.name}</b>
+            <p>{event.descriptor}</p>
+          </div>
         </div>
         <div className="footer-links">
           {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}

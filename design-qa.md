@@ -16,7 +16,7 @@
 
 The source and desktop implementation were placed together in a single side-by-side comparison. The implementation preserves the selected direction’s near-black auditorium, large left-aligned testimony, editorial serif hierarchy, wine-red actions, compact metadata, negative space, and illuminated chair/microphone composition.
 
-The implementation intentionally contains more specific summit copy and a larger display treatment, but the hierarchy and visual thesis remain faithful. There are no actionable P0, P1, or P2 desktop fidelity differences.
+The implementation intentionally contains more specific summit copy, a larger display treatment, and the client-requested witness-flame brand mark, but the hierarchy and visual thesis remain faithful. There are no actionable P0, P1, or P2 desktop fidelity differences.
 
 ## Focused responsive evidence
 
@@ -74,6 +74,12 @@ Post-fix evidence:
 - Compact committee heading is fully visible at 360 × 800.
 - Mobile menu links navigate and close the Sheet.
 - Mobile mock checkout fits inside 360 × 800.
+
+### Iteration 2
+
+- Replaced the temporary letter mark with the approved witness-flame artwork in the desktop header, mobile header, mobile navigation title, footer identity, favicon, and Apple touch icon.
+- Refreshed the desktop and mobile implementation screenshots.
+- Verified the optimized logo asset loads at its intended compact sizes without layout overflow or browser-console errors.
 
 ## Remaining findings
 
