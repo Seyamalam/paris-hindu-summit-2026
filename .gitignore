@@ -10,6 +10,8 @@
 
 # testing
 /coverage
+/tmp/
+/tmp-*.png
 
 # next.js
 /.next/
