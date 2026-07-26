@@ -1,34 +1,32 @@
 "use client"
 
+import { useQuery } from "convex/react"
 import { ArrowRightIcon } from "lucide-react"
 
+import { api } from "@/convex/_generated/api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { dayOne, dayTwo } from "@/lib/content"
-
-function Schedule({ items }: { items: string[][] }) {
-  return (
-    <div className="schedule-list">
-      {items.map(([time, title, description], index) => (
-        <article key={title}>
-          <span>{String(index + 1).padStart(2, "0")}</span>
-          <time>{time}</time>
-          <div><h3>{title}</h3><p>{description}</p></div>
-          <ArrowRightIcon aria-hidden="true" />
-        </article>
-      ))}
-    </div>
-  )
-}
 
 export function ProgrammeTabs() {
+  const days = useQuery(api.programme.listPublished)
+  if (!days?.length) return <p>Programme details are being prepared.</p>
   return (
-    <Tabs defaultValue="day-one" className="programme-tabs">
+    <Tabs defaultValue={days[0].slug} className="programme-tabs">
       <TabsList variant="line" className="programme-tab-list">
-        <TabsTrigger value="day-one"><span>Day one</span> Understand · Engage · Inspire</TabsTrigger>
-        <TabsTrigger value="day-two"><span>Day two</span> Collaborate · Commit · Conclude</TabsTrigger>
+        {days.map((day) => <TabsTrigger key={day._id} value={day.slug}><span>{day.tabLabel}</span>{day.navigationLabel} · {day.summary}</TabsTrigger>)}
       </TabsList>
-      <TabsContent value="day-one"><Schedule items={dayOne} /></TabsContent>
-      <TabsContent value="day-two"><Schedule items={dayTwo} /></TabsContent>
+      {days.map((day) => <TabsContent key={day._id} value={day.slug}>
+        <p className="programme-day-date">{day.dateLabel}</p>
+        <div className="schedule-list">
+          {day.sessions.map((item, index) => (
+            <article key={item._id}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <time>{item.startTime}<small>{item.endTime}</small></time>
+              <div><p className="kicker">{item.tag} · {item.location}</p><h3>{item.title}</h3><p>{item.description}</p><small>{item.speakers}</small></div>
+              <ArrowRightIcon aria-hidden="true" />
+            </article>
+          ))}
+        </div>
+      </TabsContent>)}
     </Tabs>
   )
 }

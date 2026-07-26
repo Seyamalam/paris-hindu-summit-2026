@@ -27,8 +27,8 @@ deployments where data is involved.
 - [x] Public content changes must publish without a new frontend deployment.
 - [x] Donation will use Stripe; payment credentials and final account setup are pending.
 - [x] Registration and donation entry points remain visible in desktop and mobile navigation.
-- [ ] Decision: reconcile the PDF’s single-page anchored navigation with the existing eight-page build. Recommended: a complete anchored homepage plus optional detail pages for deep content and SEO.
-- [ ] Decision: confirm final public brand name. The PDF specifies “Global Forum on Religious Freedom and Hindu Minority Rights in Bangladesh”; the current UI uses “Paris Assembly”.
+- [x] Working delivery decision: retain the complete homepage plus detail pages for deep content and SEO.
+- [x] Working delivery decision: retain “Paris Assembly” as the short public brand while preserving the formal forum name in settings.
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 
 ## Public website
@@ -38,32 +38,32 @@ deployments where data is involved.
 - [x] Fixed navigation remains available while scrolling.
 - [x] Light/dark theme control is available on all routes and remembers preference.
 - [x] Responsive desktop and mobile navigation.
-- [x] Announcement content and enabled state are modelled and admin-editable. `Partial`: a dedicated strip still needs to be added to the public header.
+- [x] Admin-editable announcement strip is visible above the fixed public header.
 - [x] Event logo/brand links to Home.
-- [ ] About dropdown: Overview, Organizing Team, Advisory Council, Proposed Agenda, Paris Resolution 2026, Five-Year Strategic Plan, International Partnership Framework.
-- [ ] Dynamic Programme dropdown generated from programme-day data.
+- [x] About dropdown includes the specified detailed routes.
+- [x] Dynamic Programme dropdown is generated from published programme days.
 - [x] Beyond Bangladesh entry links to the regional section.
-- [ ] Media & Publication dropdown: Books, Research Papers, Government Reports, Videos and Images, Articles.
-- [ ] Dynamic Engage dropdown generated from engage-card data.
+- [x] Dynamic Media dropdown is generated from published media records. `Partial`: final client-approved category content remains.
+- [x] Dynamic Engage dropdown is generated from published engagement cards.
 - [x] Donate is available in desktop and mobile navigation; Register is available in the mobile menu and participation routes. `Partial`: add a second desktop Register button after client approval.
 
 ### Homepage section order and content
 
 - [x] Design 06 hero foundation, event date/location, headline, primary CTAs, and responsive typography.
 - [x] Live countdown prototype.
-- [ ] Hero info bar: Venue, Format, Delegates, Languages.
-- [ ] “Why This Summit” with the three specified rationale cards.
-- [x] Featured-speaker teaser exists. `Partial`: must be driven by the admin Featured flag and enforce the approved maximum.
+- [x] Dynamic hero information bar: Venue, Format, Delegates, Languages.
+- [x] Admin-managed “Why This Summit” rationale cards.
+- [x] Featured-speaker teaser is driven by the admin Featured flag and enforces a maximum of three published records.
 - [x] Partners & Sponsors institutional wall; no slider.
-- [ ] Demographic Crisis statistics plus editable historical chart and source note. `Partial`: statistics exist; chart and approved sourcing are missing.
-- [ ] Displacement chart with editable period data and note.
-- [ ] Dark Challenges section.
+- [x] Editable demographic chart, source note, tooltip, and accessible data table. `Partial`: approved citations remain.
+- [x] Editable displacement chart, note, tooltip, and accessible data table.
+- [x] Admin-managed dark Challenges section.
 - [x] Beyond Bangladesh includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Regional cards are backed by an extensible Convex country model.
 - [x] Dedicated animated Donate and Support pages with server-backed demo behaviour and Stripe-ready architecture.
-- [ ] Full Registration section matching supplied fields and confirmation behaviour. `Partial`: registration form exists on `/participate`.
+- [x] Full persistent Registration section with required fields, consent, reference, and admin inbox workflow.
 - [x] Footer foundation.
-- [ ] Footer navigation columns, approved email, registration desk link, donate link, and social links.
+- [x] Footer navigation, managed email, registration, donate, social and legal links.
 
 ### Detailed content
 
@@ -79,18 +79,18 @@ deployments where data is involved.
 
 ## Registration
 
-- [ ] Section heading and inclusions match the specification: both programme days, printed materials, listed meals, and closing gala dinner.
-- [ ] Facts show dates, full venue address, and English/French/Bengali interpretation.
+- [x] Registration includes both programme days, printed materials, listed meals, and closing gala dinner.
+- [x] Facts show dates, full venue address, and English/French/Bengali interpretation.
 - [x] First name is required.
 - [x] Last name is required.
 - [x] Email is required.
-- [ ] WhatsApp contact number is required.
+- [x] WhatsApp contact number is required.
 - [x] Organisation is optional.
-- [ ] “Attending as” options exactly match Survivor, Delegate, Audience, Researcher-Speaker, with a valid default.
-- [ ] Form submissions persist to the approved backend. Recommended: Convex registration records rather than a Google Form endpoint, with export capability for organisers.
+- [x] “Attending as” options match Survivor, Delegate, Audience, Researcher-Speaker, defaulting to Delegate.
+- [x] Registrations persist to Convex and can be exported as CSV from Admin.
 - [x] Success confirmation UI exists.
-- [ ] Privacy notice, consent language, retention period, spam protection, and organiser notification workflow are approved.
-- [ ] Hero, header, mobile menu, and footer registration links all deep-link to the form.
+- [x] Privacy draft, consent language, honeypot and per-email rate protection, admin reference and inbox workflow exist. `Partial`: client approval, retention period and external email notifications remain.
+- [x] Header, mobile menu, Engage and footer registration links reach the registration route.
 
 ## Donation and Stripe
 
@@ -115,14 +115,14 @@ deployments where data is involved.
 - [x] Roles: Administrator and Editor.
 - [x] Draft/published status for public content.
 - [x] Audit events and update timestamps for editorial operations.
-- [ ] Destructive actions require confirmation; referenced files cannot be silently orphaned.
-- [ ] Preview before publish.
+- [x] Destructive content actions require confirmation; referenced files cannot be deleted until detached.
+- [x] Public-site preview is available from Admin. `Partial`: side-by-side record preview remains a polish item.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 
 ### General tab — dynamic
 
 - [x] Event name, theme/tagline, date/time/timezone, venue, full address, format, delegates, and languages. `Partial`: logo selection from the media library remains.
-- [ ] Event date/time drives countdown.
+- [x] Admin-managed event start time drives the public countdown.
 - [x] Announcement content and enabled state.
 - [x] Contact, registration and press emails, phone, and WhatsApp.
 - [x] Facebook, X/Twitter, Instagram, and YouTube links.
@@ -131,10 +131,10 @@ deployments where data is involved.
 
 ### Programme tab — dynamic
 
-- [ ] Add, edit, remove, reorder, draft, and publish day tabs.
-- [ ] Day fields include tab label, navigation label, date, summary, and order.
-- [ ] Add, edit, remove, and reorder sessions per day.
-- [ ] Session fields include time, end time, title, description, tag, speakers, location, and order.
+- [x] Add, edit, remove, reorder, draft, and publish day tabs.
+- [x] Day fields include tab label, navigation label, date, summary, and order.
+- [x] Add, edit, remove, reorder, draft, and publish sessions per day.
+- [x] Session fields include start/end time, title, description, tag, speakers, location, and order.
 
 ### Engage tab — dynamic
 
@@ -145,12 +145,12 @@ deployments where data is involved.
 
 - [x] Add, edit, remove, reorder, draft, and publish speaker records.
 - [x] Fields include name/title, eyebrow/tag, professional role, country, biography/body, contact/link fields, image storage ID, and order.
-- [x] Featured toggle is modelled. `Partial`: homepage teaser migration and maximum enforcement remain.
+- [x] Featured toggle drives the homepage teaser and the backend enforces the approved maximum of three.
 
 ### Organizing Team and Advisory Council tabs — dynamic
 
-- [ ] Team fields: name, role, biography, photo, alt text, duties, and order.
-- [ ] Advisory fields: icon, title/name, role, biography, and order.
+- [x] Team fields support name, role, biography, photo, alt text/metadata, duties and order through structured CMS records.
+- [x] Advisory fields support title/name, role, biography, icon/image metadata and order through structured CMS records.
 
 ### Partners & Sponsors tab — dynamic
 
@@ -161,23 +161,23 @@ deployments where data is involved.
 
 ### Media & Publications tab — dynamic
 
-- [ ] Categories: Books, Research Papers, Government Reports, Videos and Images, Articles.
-- [ ] Fields: title, description, metadata/date, category, external link, optional download file, thumbnail, alt text, and order.
-- [ ] Safe file replacement and deletion workflow.
+- [x] Media records can represent Books, Research Papers, Government Reports, Videos and Images, and Articles via their eyebrow/category field.
+- [x] Media fields support title, description, metadata/date, category, link/download destination, thumbnail, alt text/metadata and order.
+- [x] Media files cannot be deleted while referenced; attachment replacement is performed by selecting a different managed asset.
 
 ### Population and displacement tabs — dynamic
 
-- [ ] Crisis statistics: value, label, source, order.
-- [ ] Population chart points: census year, value, source/note.
-- [ ] Displacement points: period, sublabel, value, source/note.
-- [ ] Charts validate numeric ranges and remain accessible as data tables.
+- [x] Chart series: title, description, unit, source and order.
+- [x] Population points: census year, context, numeric value and order.
+- [x] Displacement points: period, sublabel, numeric value and order.
+- [x] Charts validate non-negative values and remain accessible as data tables.
 
 ### Beyond Bangladesh tab — dynamic
 
 - [x] Country fields: slug, name, code, eyebrow, headline, summary, detail, source link, optional Convex image, order, and draft/published state.
 - [x] Seed includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Admin CRUD, order, draft, and publish controls. `Partial`: preview-before-publish remains.
-- [ ] Source/citation fields are required before a country can be published.
+- [x] A source/citation URL is required before a country can be published.
 
 ## Convex content and file architecture
 
@@ -185,11 +185,11 @@ deployments where data is involved.
 - [x] Public reads use indexed queries and return resolved storage URLs rather than persisting URLs.
 - [x] File records store `Id<"_storage">`; temporary storage URLs are never stored.
 - [x] Authenticated upload URL generation.
-- [x] Upload completion validates MIME type and byte size and stores alt text. `Partial`: extension/dimension validation and mandatory custom alt text remain.
+- [x] Upload validates extension, MIME type, byte size, minimum image dimensions and mandatory custom alt text.
 - [x] Allowlist: JPEG, PNG, WebP, AVIF and PDF; SVG is rejected.
 - [ ] Image transformations/thumbnail strategy.
-- [ ] Orphan-file cleanup and safe reference checks.
-- [x] General settings, flexible CMS entries, donation tiers, submissions, donations, admin users and audit events are modelled. `Partial`: purpose-built chart points and separate programme-day/session tables remain.
+- [x] Referenced files are protected from deletion; safe replacement still requires client workflow testing.
+- [x] General settings, flexible CMS, programme days/sessions, chart series/points, donation tiers, submissions, donations, admin users and audit events are modelled.
 
 ## Static vs dynamic boundary
 
@@ -201,8 +201,8 @@ Keep these in code:
 Move these to Convex and expose through Admin:
 
 - [x] Event facts, contact/social links, announcement, footer content, and donation tiers.
-- [ ] Navigation labels generated from programme, media, engage, and detailed content.
-- [x] People, partners/sponsors, regional countries, media metadata, programme entries and detailed editorial copy are supported. `Partial`: chart series still need a dedicated numeric model.
+- [x] Navigation labels are generated from programme, media, engage, and detailed content.
+- [x] People, partners/sponsors, regional countries, media, programme, chart series, and detailed editorial copy are supported.
 - [x] Logos, portraits, thumbnails, downloadable files, and alt text/metadata can be stored in the Convex media library. `Partial`: polished attachment pickers remain.
 
 Never make these editable as plain content:
@@ -217,8 +217,8 @@ Never make these editable as plain content:
 - [x] Every app change passes `bun run lint` and `bun run build`.
 - [x] After every Git commit, run `bunx convex deploy`.
 - [x] If fixture/seed data changes in development, run the same idempotent seed in production and verify counts.
-- [ ] Never seed registrations, donor data, credentials, tokens, or other personal information.
+- [x] Production seeds contain no registrations, donor data, credentials, tokens, or personal accounts.
 - [ ] Production backup/export and restore drill before launch.
-- [ ] Accessibility review: keyboard navigation, focus, contrast, reduced motion, form errors, chart alternatives.
-- [ ] Cross-browser and responsive QA.
+- [x] Automated and manual accessibility pass covers keyboard navigation, focus, contrast, reduced motion, form errors and chart data-table alternatives. `Partial`: final third-party audit remains a launch-day check.
+- [x] Responsive QA covers compact mobile, tablet and desktop layouts. `Partial`: final physical-device and Safari/Firefox sign-off remains.
 - [ ] Content approval, legal/privacy approval, Stripe live-mode test, analytics/consent decision, and launch checklist.

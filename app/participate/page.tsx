@@ -1,22 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import { CheckIcon, HandHeartIcon, MailIcon, NewspaperIcon, UsersIcon } from "lucide-react"
-import { toast } from "sonner"
+import { HandHeartIcon, MailIcon, NewspaperIcon, UsersIcon } from "lucide-react"
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Button } from "@/components/ui/button"
-import { Field, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { PageHero } from "@/components/site/page-hero"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { RegisterForm } from "@/components/site/register-form"
+import { SupportForm } from "@/components/site/support-form"
 import { event } from "@/lib/content"
 
 export default function ParticipatePage() {
-  const [sent, setSent] = useState(false)
-
   return (
     <>
       <PageHero
@@ -30,6 +23,7 @@ export default function ParticipatePage() {
           <p className="kicker">Attend in Paris</p>
           <h2>{event.dates}<br />{event.venue}</h2>
           <p>{event.address}</p>
+          <p>English · French · Bengali interpretation</p>
         </div>
         <RegisterForm />
       </section>
@@ -57,22 +51,7 @@ export default function ParticipatePage() {
           <h2>Start the right conversation.</h2>
           <p>General enquiries · Registration · Media · Donation · Partnership</p>
         </div>
-        {sent ? (
-          <div className="contact-success" role="status"><CheckIcon /><h3>Message received</h3><p>The appropriate summit team would reply by email.</p></div>
-        ) : (
-          <form onSubmit={(event) => { event.preventDefault(); setSent(true); toast("Message received") }}>
-            <FieldSet>
-              <FieldLegend>Enquiry details</FieldLegend>
-              <FieldGroup>
-                <Field><FieldLabel htmlFor="contact-name">Name</FieldLabel><Input id="contact-name" required /></Field>
-                <Field><FieldLabel htmlFor="contact-email">Email</FieldLabel><Input id="contact-email" type="email" required /></Field>
-                <Field><FieldLabel htmlFor="contact-subject">Subject</FieldLabel><Input id="contact-subject" required placeholder="Registration, media, donation, partnership…" /></Field>
-                <Field><FieldLabel htmlFor="contact-message">Message</FieldLabel><Textarea id="contact-message" required /></Field>
-                <Button type="submit">Send message</Button>
-              </FieldGroup>
-            </FieldSet>
-          </form>
-        )}
+        <SupportForm />
       </section>
     </>
   )

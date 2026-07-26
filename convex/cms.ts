@@ -1,4 +1,4 @@
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 
 import { mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
@@ -17,7 +17,8 @@ export const categoryValidator = v.union(
   v.literal("advisory"),
   v.literal("programme"),
   v.literal("media"),
-  v.literal("faq")
+  v.literal("faq"),
+  v.literal("legal")
 )
 
 const entryFields = {
@@ -138,6 +139,26 @@ export const save = mutation({
   handler: async (ctx, args) => {
     const actor = await getAdmin(ctx)
     const { id, ...fields } = args
+    if (
+      fields.category === "speaker" &&
+      fields.status === "published" &&
+      fields.featured
+    ) {
+      const publishedSpeakers = await ctx.db
+        .query("cmsEntries")
+        .withIndex("by_category_and_status_and_order", (q) =>
+          q.eq("category", "speaker").eq("status", "published")
+        )
+        .take(100)
+      const otherFeatured = publishedSpeakers.filter(
+        (speaker) => speaker.featured && speaker._id !== id
+      )
+      if (otherFeatured.length >= 3) {
+        throw new ConvexError(
+          "Only three published speakers can be featured on the homepage."
+        )
+      }
+    }
     const value = { ...fields, updatedAt: Date.now() }
     const entityId = id
       ? (await ctx.db.patch(id, value), id)

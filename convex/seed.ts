@@ -172,6 +172,66 @@ const donationTiers = [
 
 const cmsEntries = [
   {
+    category: "why" as const,
+    slug: "why-evidence",
+    title: "Evidence",
+    eyebrow: "Why this summit",
+    summary: "Bring verified testimony, research, and historical records into one international forum.",
+    body: "The summit connects lived experience with accountable documentation.",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "why" as const,
+    slug: "why-protection",
+    title: "Protection",
+    eyebrow: "Why this summit",
+    summary: "Translate evidence into enforceable safeguards for equal citizenship, worship, property, and public life.",
+    body: "Rights become meaningful when institutions can act on them.",
+    order: 2,
+    featured: true,
+  },
+  {
+    category: "why" as const,
+    slug: "why-cooperation",
+    title: "Cooperation",
+    eyebrow: "Why this summit",
+    summary: "Build an international network that continues after the Paris Declaration.",
+    body: "The room is a beginning, not an endpoint.",
+    order: 3,
+    featured: true,
+  },
+  {
+    category: "challenge" as const,
+    slug: "challenge-dispossession",
+    title: "Dispossession",
+    eyebrow: "Document",
+    summary: "Property loss, intimidation, and displacement continue to weaken community security.",
+    body: "The forum brings legal, historical, and lived evidence into a shared record.",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "challenge" as const,
+    slug: "challenge-representation",
+    title: "Representation",
+    eyebrow: "Engage",
+    summary: "Equal citizenship requires meaningful participation in institutions and public decision-making.",
+    body: "Policy dialogue must include the people most affected.",
+    order: 2,
+    featured: true,
+  },
+  {
+    category: "challenge" as const,
+    slug: "challenge-continuity",
+    title: "Continuity",
+    eyebrow: "Protect",
+    summary: "Communities need conditions in which faith, culture, memory, and family life can continue safely.",
+    body: "Protection is measured across generations.",
+    order: 3,
+    featured: true,
+  },
+  {
     category: "engage" as const,
     slug: "attend-in-paris",
     title: "Attend in Paris",
@@ -307,6 +367,53 @@ const cmsEntries = [
     order: 2,
     featured: true,
   },
+  {
+    category: "legal" as const,
+    slug: "privacy",
+    title: "Privacy notice",
+    eyebrow: "Legal draft",
+    summary: "How registration, enquiry, and contribution information is handled.",
+    body: "The organising team uses submitted information only to respond, coordinate attendance, administer the event, and meet legal obligations. Access is limited to authorised organisers. Final retention periods and the legal entity responsible for processing must be approved before launch.",
+    linkLabel: "",
+    linkUrl: "",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "legal" as const,
+    slug: "terms",
+    title: "Website terms",
+    eyebrow: "Legal draft",
+    summary: "Conditions for using the public information and registration services.",
+    body: "Programme, speakers, and practical arrangements may change. Published research and media retain their stated ownership and citation requirements. Final organiser identity, governing law, and contact details must be approved before launch.",
+    linkLabel: "",
+    linkUrl: "",
+    order: 2,
+    featured: false,
+  },
+] as const
+
+const programmeDays = [
+  { slug: "day-one", tabLabel: "Day 01", navigationLabel: "3 October", dateLabel: "Saturday · 3 October 2026", summary: "Evidence enters the public record.", order: 1 },
+  { slug: "day-two", tabLabel: "Day 02", navigationLabel: "4 October", dateLabel: "Sunday · 4 October 2026", summary: "Evidence becomes commitment.", order: 2 },
+] as const
+const programmeSessions = [
+  { daySlug: "day-one", slug: "opening-film-keynote", startTime: "09:30", endTime: "11:00", title: "Opening film and keynote", description: "Historical context, documented evidence, and the purpose of the Paris forum.", tag: "Opening", speakers: "Opening contributors", location: "Main assembly hall", order: 1 },
+  { daySlug: "day-one", slug: "testimony-protection", startTime: "14:30", endTime: "16:00", title: "Testimony and legal protection", description: "Lived experience meets legal research and practical safeguards.", tag: "Working session", speakers: "Survivors, researchers, legal experts", location: "Main assembly hall", order: 2 },
+  { daySlug: "day-two", slug: "policy-roundtable", startTime: "12:00", endTime: "13:30", title: "International policy roundtable", description: "Human-rights standards, property rights, justice, and cooperation.", tag: "Roundtable", speakers: "Policy and institutional delegates", location: "Main assembly hall", order: 1 },
+  { daySlug: "day-two", slug: "paris-declaration", startTime: "16:00", endTime: "17:30", title: "Paris Declaration and Agni Sakshi", description: "Adoption of the shared declaration followed by the witnessed closing pledge.", tag: "Closing", speakers: "Summit delegates", location: "Main assembly hall", order: 2 },
+] as const
+const chartSeries = [
+  { slug: "population-share", title: "A shrinking share of the nation.", eyebrow: "Demographic crisis", description: "Historic census markers show a long decline in the Hindu share of the population.", sourceLabel: "Supplied summit concept note — source approval pending", sourceUrl: "", unit: "%", order: 1 },
+  { slug: "displacement", title: "Displacement accumulates across generations.", eyebrow: "Forced movement", description: "Editable period markers keep the human scale visible alongside the historical record.", sourceLabel: "Supplied summit concept note — methodology approval pending", sourceUrl: "", unit: "M", order: 2 },
+] as const
+const chartPoints = [
+  { seriesSlug: "population-share", label: "1941", sublabel: "Pre-partition census", value: 28, order: 1 },
+  { seriesSlug: "population-share", label: "1974", sublabel: "Early Bangladesh", value: 13.5, order: 2 },
+  { seriesSlug: "population-share", label: "2022", sublabel: "Recent census", value: 7.95, order: 3 },
+  { seriesSlug: "displacement", label: "1964–71", sublabel: "Conflict and upheaval", value: 4.2, order: 1 },
+  { seriesSlug: "displacement", label: "1971–2001", sublabel: "Post-independence decades", value: 5.3, order: 2 },
+  { seriesSlug: "displacement", label: "2001–25", sublabel: "Continuing movement", value: 2.1, order: 3 },
 ] as const
 
 export const seedInitialContent = internalMutation({
@@ -319,6 +426,10 @@ export const seedInitialContent = internalMutation({
     settingsUpserted: v.number(),
     tiersUpserted: v.number(),
     cmsEntriesUpserted: v.number(),
+    programmeDaysUpserted: v.number(),
+    programmeSessionsUpserted: v.number(),
+    chartSeriesUpserted: v.number(),
+    chartPointsUpserted: v.number(),
   }),
   handler: async (ctx) => {
     const now = Date.now()
@@ -329,6 +440,10 @@ export const seedInitialContent = internalMutation({
     let settingsUpserted = 0
     let tiersUpserted = 0
     let cmsEntriesUpserted = 0
+    let programmeDaysUpserted = 0
+    let programmeSessionsUpserted = 0
+    let chartSeriesUpserted = 0
+    let chartPointsUpserted = 0
 
     for (const country of regionalCountries) {
       const existing = await ctx.db
@@ -429,6 +544,37 @@ export const seedInitialContent = internalMutation({
       cmsEntriesUpserted += 1
     }
 
+    for (const item of programmeDays) {
+      const existing = await ctx.db.query("programmeDays").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
+      const value = { ...item, status: "published" as const, updatedAt: now }
+      if (existing) await ctx.db.patch(existing._id, value)
+      else await ctx.db.insert("programmeDays", value)
+      programmeDaysUpserted += 1
+    }
+    for (const item of programmeSessions) {
+      const rows = await ctx.db.query("programmeSessions").withIndex("by_day_slug_and_order", (q) => q.eq("daySlug", item.daySlug)).take(50)
+      const existing = rows.find((row) => row.slug === item.slug)
+      const value = { ...item, status: "published" as const, updatedAt: now }
+      if (existing) await ctx.db.patch(existing._id, value)
+      else await ctx.db.insert("programmeSessions", value)
+      programmeSessionsUpserted += 1
+    }
+    for (const item of chartSeries) {
+      const existing = await ctx.db.query("chartSeries").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
+      const value = { ...item, status: "published" as const, updatedAt: now }
+      if (existing) await ctx.db.patch(existing._id, value)
+      else await ctx.db.insert("chartSeries", value)
+      chartSeriesUpserted += 1
+    }
+    for (const item of chartPoints) {
+      const rows = await ctx.db.query("chartPoints").withIndex("by_series_slug_and_order", (q) => q.eq("seriesSlug", item.seriesSlug)).take(100)
+      const existing = rows.find((row) => row.label === item.label)
+      const value = { ...item, updatedAt: now }
+      if (existing) await ctx.db.patch(existing._id, value)
+      else await ctx.db.insert("chartPoints", value)
+      chartPointsUpserted += 1
+    }
+
     return {
       countriesInserted,
       countriesUpdated,
@@ -437,6 +583,10 @@ export const seedInitialContent = internalMutation({
       settingsUpserted,
       tiersUpserted,
       cmsEntriesUpserted,
+      programmeDaysUpserted,
+      programmeSessionsUpserted,
+      chartSeriesUpserted,
+      chartPointsUpserted,
     }
   },
 })

@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRightIcon, MailIcon, MapPinIcon } from "lucide-react"
+import { ArrowUpRightIcon, AtSignIcon, MailIcon, MapPinIcon, PlayIcon, UsersIcon } from "lucide-react"
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
@@ -38,15 +38,22 @@ export function SiteFooter() {
         </div>
         <div className="footer-links">
           {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+          <Link href="/participate">Register</Link>
+          <Link href="/donate">Donate</Link>
         </div>
         <div className="footer-contact">
           <span><MapPinIcon /> {settings?.venue ?? event.venue}, {settings?.cityCountry ?? "Drancy, Paris"}</span>
           <a href={`mailto:${settings?.contactEmail ?? "eng.suvra@gmail.com"}`}><MailIcon /> General enquiries</a>
+          <div className="footer-socials">
+            {settings?.facebookUrl && <a aria-label="Facebook" href={settings.facebookUrl}><UsersIcon /></a>}
+            {settings?.instagramUrl && <a aria-label="Instagram" href={settings.instagramUrl}><AtSignIcon /></a>}
+            {settings?.youtubeUrl && <a aria-label="YouTube" href={settings.youtubeUrl}><PlayIcon /></a>}
+          </div>
         </div>
       </div>
       <div className="footer-legal">
         <span>© 2026 {settings?.shortName ?? "Paris Assembly"}</span>
-        <span>Human rights · dignity · equal citizenship</span>
+        <span><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · Human rights · dignity · equal citizenship</span>
       </div>
     </footer>
   )

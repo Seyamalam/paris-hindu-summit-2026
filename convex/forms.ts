@@ -37,6 +37,14 @@ export const submit = mutation({
     if (!args.consent) return { accepted: false, reference }
 
     const now = Date.now()
+    const recent = await ctx.db
+      .query("submissions")
+      .withIndex("by_email_and_created_at", (q) => q.eq("email", email))
+      .order("desc")
+      .first()
+    if (recent && now - recent.createdAt < 60_000) {
+      return { accepted: false, reference }
+    }
     await ctx.db.insert("submissions", {
       type: args.type,
       firstName: args.firstName.trim().slice(0, 120),

@@ -4,6 +4,7 @@
 import { useMutation, useQuery } from "convex/react"
 import {
   ArchiveIcon,
+  BarChart3Icon,
   BlocksIcon,
   CheckCircle2Icon,
   CircleDollarSignIcon,
@@ -12,6 +13,7 @@ import {
   ImageIcon,
   InboxIcon,
   LayoutDashboardIcon,
+  CalendarRangeIcon,
   Loader2Icon,
   LogOutIcon,
   SaveIcon,
@@ -24,6 +26,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { api } from "@/convex/_generated/api"
+import type { Id } from "@/convex/_generated/dataModel"
 import { authClient } from "@/lib/auth-client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -32,11 +35,14 @@ import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 const panels = [
   ["dashboard", "Overview", LayoutDashboardIcon],
   ["settings", "Site settings", Settings2Icon],
   ["content", "Page content", FileTextIcon],
+  ["programme", "Programme", CalendarRangeIcon],
+  ["charts", "Charts", BarChart3Icon],
   ["regional", "Regional", Globe2Icon],
   ["partners", "Partners", Users2Icon],
   ["inbox", "Forms inbox", InboxIcon],
@@ -215,6 +221,8 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
         {panel === "dashboard" && <Dashboard />}
         {panel === "settings" && <SettingsPanel />}
         {panel === "content" && <ContentPanel />}
+        {panel === "programme" && <ProgrammeAdmin />}
+        {panel === "charts" && <ChartsAdmin />}
         {panel === "regional" && <RegionalPanel />}
         {panel === "partners" && <PartnersPanel />}
         {panel === "inbox" && <InboxPanel />}
@@ -301,15 +309,18 @@ function ContentPanel() {
   const entries = useQuery(api.cms.listForAdmin, { category })
   const save = useMutation(api.cms.save)
   const remove = useMutation(api.cms.remove)
+  const assets = useQuery(api.assets.list)
   const [selected, setSelected] = useState<string>("new")
+  const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | undefined>()
   const existing = entries?.find((item) => item._id === selected)
   const [draft, setDraft] = useState<ContentDraft>({ ...blankContent })
   useEffect(() => {
     if (existing) {
       const { _id, category: _category, imageStorageId: _image, imageUrl: _url, ...fields } = existing
-      void _id; void _category; void _image; void _url
+      setImageStorageId(_image)
+      void _id; void _category; void _url
       setDraft(fields)
-    } else setDraft({ ...blankContent })
+    } else { setDraft({ ...blankContent }); setImageStorageId(undefined) }
   }, [existing, category, selected])
   return (
     <section className="admin-panel">
@@ -330,13 +341,14 @@ function ContentPanel() {
             <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => setDraft({ ...draft, order: Number(value) })} />
             <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as "draft" | "published" })}><option value="draft">Draft</option><option value="published">Published</option></select></label>
             <label className="admin-check"><Checkbox checked={draft.featured} onCheckedChange={(value) => setDraft({ ...draft, featured: Boolean(value) })} /> Featured record</label>
+            <label className="admin-field"><span>Attached image or document</span><select value={imageStorageId ?? ""} onChange={(event) => setImageStorageId((event.target.value || undefined) as Id<"_storage"> | undefined)}><option value="">No attachment</option>{assets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
           </div>
           <div className="admin-editor-actions">
             <Button onClick={async () => {
-              await save({ ...(existing ? { id: existing._id } : {}), category, ...draft })
+              await save({ ...(existing ? { id: existing._id } : {}), category, ...draft, imageStorageId })
               toast.success("Content saved."); setSelected("new")
             }}><SaveIcon /> Save record</Button>
-            {existing && <Button variant="destructive" onClick={async () => { await remove({ id: existing._id }); setSelected("new"); toast.success("Record removed.") }}>Delete</Button>}
+            {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await remove({ id: existing._id }); setSelected("new"); toast.success("Record removed.") }} />}
           </div>
         </div>
       </div>
@@ -374,11 +386,11 @@ function RecordCards({ title, copy, rows, fields, blank, onSave, onRemove }: { t
           ? <label className="admin-field" key={key}><span>{humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
               {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{value}</option>)}
             </select></label>
-          : <Field key={key} label={humanize(key)} type={key === "order" ? "number" : "text"} multiline={["summary","detail","description"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: key === "order" ? Number(value) : value })} />)}
+          : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
       </div>
       <div className="admin-editor-actions">
-        <Button onClick={async () => { const { _id, ...value } = draft; await onSave({ ...(selected === "new" ? {} : { id:_id }), ...value }); setSelected("new"); toast.success(`${title} updated.`) }}><SaveIcon /> Save</Button>
-        {selected !== "new" && <Button variant="destructive" onClick={async () => { await onRemove({ id:selected }); setSelected("new") }}>Delete</Button>}
+        <Button onClick={async () => { const { _id, ...value } = draft; if (!fields.includes("name")) delete value.name; await onSave({ ...(selected === "new" ? {} : { id:_id }), ...value }); setSelected("new"); toast.success(`${title} updated.`) }}><SaveIcon /> Save</Button>
+        {selected !== "new" && <ConfirmDelete label={String(draft.name ?? draft.title ?? "record")} onConfirm={async () => { await onRemove({ id:selected }); setSelected("new") }} />}
       </div>
     </section>
   )
@@ -390,6 +402,12 @@ function InboxPanel() {
   return (
     <section className="admin-panel">
       <PanelTitle eyebrow="Human contact" title="Support, registration and enquiries." copy="Every public form arrives here with a reference, status and private editorial note." />
+      <Button variant="outline" onClick={() => {
+        if (!rows) return
+        const header = ["type","firstName","lastName","email","phone","organization","subject","status","createdAt"]
+        const csv = [header.join(","), ...rows.map((row) => header.map((key) => JSON.stringify(String(row[key as keyof typeof row] ?? ""))).join(","))].join("\n")
+        const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type:"text/csv" })); link.download = `paris-summit-submissions-${new Date().toISOString().slice(0,10)}.csv`; link.click(); URL.revokeObjectURL(link.href)
+      }}>Export CSV</Button>
       <div className="admin-inbox">
         {rows?.length === 0 && <EmptyCopy text="The inbox is quiet. Public forms are live and ready." />}
         {rows?.map((row) => <article key={row._id}>
@@ -401,6 +419,32 @@ function InboxPanel() {
       </div>
     </section>
   )
+}
+
+function ProgrammeAdmin() {
+  const data = useQuery(api.programme.listForAdmin)
+  const saveDay = useMutation(api.programme.saveDay)
+  const saveSession = useMutation(api.programme.saveSession)
+  const removeDay = useMutation(api.programme.removeDay)
+  const removeSession = useMutation(api.programme.removeSession)
+  return <section className="admin-panel">
+    <PanelTitle eyebrow="Purpose-built schedule" title="Days, sessions and public navigation." copy="Changes update the programme tabs and navigation menu without a frontend deployment." />
+    <RecordCards title="Programme days" copy="Control day labels, dates, summaries, order and publication." rows={data?.days.map((row) => ({ ...row, name:row.tabLabel }))} fields={["slug","tabLabel","navigationLabel","dateLabel","summary","order","status"]} blank={{ slug:"",tabLabel:"",navigationLabel:"",dateLabel:"",summary:"",order:50,status:"draft" }} onSave={saveDay} onRemove={removeDay} />
+    <RecordCards title="Sessions" copy="Schedule time, speakers, location and session copy under a day." rows={data?.sessions.map((row) => ({ ...row, name:row.title }))} fields={["daySlug","slug","startTime","endTime","title","description","tag","speakers","location","order","status"]} blank={{ daySlug:data?.days[0]?.slug ?? "day-one",slug:"",startTime:"",endTime:"",title:"",description:"",tag:"",speakers:"",location:"",order:50,status:"draft" }} onSave={saveSession} onRemove={removeSession} />
+  </section>
+}
+
+function ChartsAdmin() {
+  const data = useQuery(api.charts.listForAdmin)
+  const saveSeries = useMutation(api.charts.saveSeries)
+  const savePoint = useMutation(api.charts.savePoint)
+  const removeSeries = useMutation(api.charts.removeSeries)
+  const removePoint = useMutation(api.charts.removePoint)
+  return <section className="admin-panel">
+    <PanelTitle eyebrow="Accessible evidence" title="Chart series, sources and numeric points." copy="Every visual chart also renders as a readable data table on the public site." />
+    <RecordCards title="Chart series" copy="Titles, context, units and source citations." rows={data?.series.map((row) => ({ ...row, name:row.title }))} fields={["slug","title","eyebrow","description","sourceLabel","sourceUrl","unit","order","status"]} blank={{ slug:"",title:"",eyebrow:"",description:"",sourceLabel:"",sourceUrl:"",unit:"",order:50,status:"draft" }} onSave={saveSeries} onRemove={removeSeries} />
+    <RecordCards title="Chart points" copy="Editable periods and validated non-negative numeric values." rows={data?.points.map((row) => ({ ...row, name:row.label }))} fields={["seriesSlug","label","sublabel","value","order"]} blank={{ seriesSlug:data?.series[0]?.slug ?? "population-share",label:"",sublabel:"",value:0,order:50 }} onSave={savePoint} onRemove={removePoint} />
+  </section>
 }
 
 function DonationsPanel() {
@@ -446,11 +490,25 @@ function AssetsPanel() {
   async function upload(file: File) {
     setBusy(true)
     try {
+      const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif", ".pdf"]
+      if (!allowedExtensions.some((extension) => file.name.toLowerCase().endsWith(extension))) {
+        throw new Error("Choose a JPEG, PNG, WebP, AVIF, or PDF file.")
+      }
+      if (file.type.startsWith("image/")) {
+        const bitmap = await createImageBitmap(file)
+        if (bitmap.width < 320 || bitmap.height < 180) {
+          bitmap.close()
+          throw new Error("Images must be at least 320 × 180 pixels.")
+        }
+        bitmap.close()
+      }
       const url = await uploadUrl()
       const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
       const { storageId } = await response.json()
       await register({ storageId, fileName:file.name, mimeType:file.type, byteSize:file.size, altText:file.name.replace(/\.[^.]+$/, ""), category:file.type === "application/pdf" ? "document" : "general" })
       toast.success("Asset uploaded to Convex.")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Upload failed.")
     } finally { setBusy(false) }
   }
   return (
@@ -465,6 +523,10 @@ function AssetsPanel() {
 function AuditPanel() {
   const rows = useQuery(api.admin.listAuditEvents)
   return <section className="admin-panel"><PanelTitle eyebrow="Accountability" title="Editorial activity log." copy="Important content, file and inbox actions leave a timestamped record." /><div className="audit-timeline">{rows?.map((row) => <article key={row._id}><span /><div><Badge variant="outline">{row.entityType}</Badge><h3>{row.summary}</h3><p>{row.actorEmail} · {new Date(row.createdAt).toLocaleString()}</p></div></article>)}</div></section>
+}
+
+function ConfirmDelete({ label, onConfirm }: { label:string; onConfirm:()=>Promise<void> }) {
+  return <AlertDialog><AlertDialogTrigger render={<Button variant="destructive" />}>Delete</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete {label}?</AlertDialogTitle><AlertDialogDescription>This removes the record from Convex. This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Keep record</AlertDialogCancel><AlertDialogAction onClick={() => void onConfirm()}>Delete permanently</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
 }
 
 function Field({ label, multiline, onValueChange, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label:string; multiline?:boolean; onValueChange?:(value:string)=>void }) {

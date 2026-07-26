@@ -10,11 +10,17 @@ import {
 import { Button } from "@/components/ui/button"
 import { Countdown } from "@/components/site/countdown"
 import {
+  EvidenceCharts,
+  FeaturedSpeakers,
+  HomeInfoBar,
+  WhyAndChallenges,
+} from "@/components/site/home-dynamic-sections"
+import {
   PartnerWall,
   RegionalSection,
 } from "@/components/site/institutional-sections"
 import { PaymentDialog } from "@/components/site/payment-dialog"
-import { event, evidence, speakers } from "@/lib/content"
+import { event, evidence } from "@/lib/content"
 
 export default function HomePage() {
   return (
@@ -75,6 +81,7 @@ export default function HomePage() {
         <p>One room. Many institutions. A shared commitment.</p>
         <span>{event.dates}</span>
       </section>
+      <HomeInfoBar />
 
       <section className="split-intro section-shell">
         <div>
@@ -105,6 +112,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <WhyAndChallenges />
+
       <section className="evidence-band">
         <div className="section-heading compact">
           <p className="kicker">Bangladesh · the record</p>
@@ -123,6 +132,7 @@ export default function HomePage() {
           publication should include approved source links and methodology.
         </p>
       </section>
+      <EvidenceCharts />
 
       <section
         className="section-shell programme-preview"
@@ -167,36 +177,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="speaker-preview section-shell">
-        <div className="section-heading compact">
-          <p className="kicker">Voices in the room</p>
-          <h2>People carrying evidence into action.</h2>
-        </div>
-        <div className="speaker-preview-grid">
-          {speakers.slice(0, 3).map((speaker) => (
-            <article key={speaker.name}>
-              <div>
-                <Image
-                  src={speaker.image}
-                  alt={speaker.name}
-                  fill
-                  sizes="(max-width: 720px) 100vw, 33vw"
-                />
-              </div>
-              <p>{speaker.country}</p>
-              <h3>{speaker.name}</h3>
-              <span>{speaker.role}</span>
-            </article>
-          ))}
-        </div>
-        <Button
-          nativeButton={false}
-          variant="outline"
-          render={<Link href="/speakers" />}
-        >
-          Meet the speakers <ArrowRightIcon data-icon="inline-end" />
-        </Button>
-      </section>
+      <FeaturedSpeakers />
 
       <PartnerWall />
 

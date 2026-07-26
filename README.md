@@ -42,13 +42,14 @@ scope, dynamic-content boundary, and launch checks are maintained in
 - Tuned compact-phone, large-phone, tablet, small-laptop, and desktop layouts
 - Two-day programme tabs
 - Delegate registration form with a realistic success state
-- Contact and participation entry points
+- Convex-persistent registration, contact, volunteer, sponsor, support, and media enquiry flows with references, consent, spam controls, and CSV export
 - Donation dialog with selectable euro amounts, email validation, and a mock success state
 - Dedicated Stripe Checkout-ready donation page with server-side amount validation, a Convex contribution ledger, signed webhook handling, and a safe demo mode while payment keys are absent
 - Better Auth email/password login; the first verified account can establish the initial administrator, and later accounts require an assigned role
 - Administrator and editor roles enforced inside Convex mutations
 - Global settings editor for event identity, dates, venue, format, audience numbers, languages, announcement, email addresses, phone/WhatsApp, social links, hero, donation, and footer copy
 - Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, advisory council, programme, media, and FAQs
+- Purpose-built programme-day/session and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
 - Editable regional-country and partner/sponsor directories
 - Support, contact, sponsorship, volunteer, and media forms with a protected admin inbox
 - Convex file library for managed images and PDF documents
@@ -58,6 +59,7 @@ scope, dynamic-content boundary, and launch checks are maintained in
 - Admin-extensible regional-country model with draft/published ordering
 - Stationary, tiered partner and sponsor wall (no carousel)
 - Convex storage-ready asset records for logos, portraits, media, and documents
+- Privacy and terms draft pages, managed social/footer links, fixed announcement/navigation, and accessible chart data tables
 
 ## Local development
 
@@ -75,6 +77,17 @@ bun run typecheck
 bun run lint
 bun run build
 ```
+
+Vercel requires these public endpoint variables in Production, Preview, and
+Development:
+
+```bash
+NEXT_PUBLIC_CONVEX_URL
+NEXT_PUBLIC_CONVEX_SITE_URL
+```
+
+Authentication secrets remain in Convex environment variables and must not be
+duplicated into `NEXT_PUBLIC_*` values.
 
 Convex workflow:
 

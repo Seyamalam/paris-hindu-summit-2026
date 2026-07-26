@@ -79,7 +79,8 @@ export default defineSchema({
       v.literal("advisory"),
       v.literal("programme"),
       v.literal("media"),
-      v.literal("faq")
+      v.literal("faq"),
+      v.literal("legal")
     ),
     slug: v.string(),
     title: v.string(),
@@ -103,8 +104,63 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_slug", ["slug"])
+    .index("by_image_storage_id", ["imageStorageId"])
     .index("by_category_and_status_and_order", ["category", "status", "order"])
     .index("by_category_and_order", ["category", "order"]),
+
+  programmeDays: defineTable({
+    slug: v.string(),
+    tabLabel: v.string(),
+    navigationLabel: v.string(),
+    dateLabel: v.string(),
+    summary: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status_and_order", ["status", "order"]),
+
+  programmeSessions: defineTable({
+    daySlug: v.string(),
+    slug: v.string(),
+    startTime: v.string(),
+    endTime: v.string(),
+    title: v.string(),
+    description: v.string(),
+    tag: v.string(),
+    speakers: v.string(),
+    location: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_day_slug_and_status_and_order", ["daySlug", "status", "order"])
+    .index("by_day_slug_and_order", ["daySlug", "order"]),
+
+  chartSeries: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    eyebrow: v.string(),
+    description: v.string(),
+    sourceLabel: v.string(),
+    sourceUrl: v.string(),
+    unit: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status_and_order", ["status", "order"]),
+
+  chartPoints: defineTable({
+    seriesSlug: v.string(),
+    label: v.string(),
+    sublabel: v.string(),
+    value: v.number(),
+    order: v.number(),
+    updatedAt: v.number(),
+  }).index("by_series_slug_and_order", ["seriesSlug", "order"]),
 
   regionalCountries: defineTable({
     slug: v.string(),
@@ -121,6 +177,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_slug", ["slug"])
+    .index("by_image_storage_id", ["imageStorageId"])
     .index("by_status_and_order", ["status", "order"]),
 
   organizations: defineTable({
@@ -141,6 +198,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_slug", ["slug"])
+    .index("by_logo_storage_id", ["logoStorageId"])
     .index("by_status_and_order", ["status", "order"])
     .index("by_kind_and_status_and_order", ["kind", "status", "order"]),
 

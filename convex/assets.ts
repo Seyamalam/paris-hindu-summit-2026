@@ -39,7 +39,7 @@ export const register = mutation({
       "image/avif",
       "application/pdf",
     ]
-    if (!allowed.includes(args.mimeType) || args.byteSize > 20_000_000) {
+    if (!allowed.includes(args.mimeType) || args.byteSize > 20_000_000 || args.altText.trim().length < 3) {
       await ctx.storage.delete(args.storageId)
       throw new ConvexError("File type or size is not allowed.")
     }
@@ -65,6 +65,7 @@ export const list = query({
   returns: v.array(
     v.object({
       _id: v.id("assets"),
+      storageId: v.id("_storage"),
       fileName: v.string(),
       mimeType: v.string(),
       byteSize: v.number(),
@@ -84,6 +85,7 @@ export const list = query({
     return Promise.all(
       rows.map(async (item) => ({
         _id: item._id,
+        storageId: item.storageId,
         fileName: item.fileName,
         mimeType: item.mimeType,
         byteSize: item.byteSize,
@@ -103,6 +105,14 @@ export const remove = mutation({
     const actor = await getAdmin(ctx)
     const asset = await ctx.db.get(args.id)
     if (asset) {
+      const [cmsReference, regionalReference, organizationReference] = await Promise.all([
+        ctx.db.query("cmsEntries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
+        ctx.db.query("regionalCountries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
+        ctx.db.query("organizations").withIndex("by_logo_storage_id", (q) => q.eq("logoStorageId", asset.storageId)).first(),
+      ])
+      if (cmsReference || regionalReference || organizationReference) {
+        throw new ConvexError("This file is attached to published content. Detach it before deleting.")
+      }
       await ctx.storage.delete(asset.storageId)
       await ctx.db.delete(args.id)
     }
