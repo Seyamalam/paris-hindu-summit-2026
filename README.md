@@ -24,6 +24,12 @@ The complete website includes matching **light and dark modes**. The header cont
 | `/committee`   | Organising committee and responsibilities                                           |
 | `/media`       | Research, publication, documentary, press, and media resources                      |
 | `/participate` | Registration, volunteering, sponsorship, media accreditation, contact, and donation |
+| `/engage`      | Convex-managed ways to attend, support, volunteer, partner, and amplify              |
+| `/regional`    | Dynamic Beyond Bangladesh regional forum, including Nepal                           |
+| `/partners`    | Non-carousel institutional partner and sponsor wall                                |
+| `/support`     | Persistent support, contact, volunteer, sponsor, and media enquiry forms             |
+| `/donate`      | Stripe-ready contribution flow with a safe demonstration mode                       |
+| `/admin`       | Better Auth-protected editorial control room                                         |
 
 The client’s living delivery requirements, implementation state, admin-panel
 scope, dynamic-content boundary, and launch checks are maintained in
@@ -38,7 +44,15 @@ scope, dynamic-content boundary, and launch checks are maintained in
 - Delegate registration form with a realistic success state
 - Contact and participation entry points
 - Donation dialog with selectable euro amounts, email validation, and a mock success state
-- The payment flow is deliberately non-transactional; a production provider can be connected later without redesigning the entry flow
+- Dedicated Stripe Checkout-ready donation page with server-side amount validation, a Convex contribution ledger, signed webhook handling, and a safe demo mode while payment keys are absent
+- Better Auth email/password login; the first verified account can establish the initial administrator, and later accounts require an assigned role
+- Administrator and editor roles enforced inside Convex mutations
+- Global settings editor for event identity, dates, venue, format, audience numbers, languages, announcement, email addresses, phone/WhatsApp, social links, hero, donation, and footer copy
+- Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, advisory council, programme, media, and FAQs
+- Editable regional-country and partner/sponsor directories
+- Support, contact, sponsorship, volunteer, and media forms with a protected admin inbox
+- Convex file library for managed images and PDF documents
+- Donation tiers and contribution ledger, plus editorial activity logs
 - Generated witness-flame favicon and Apple touch icon
 - Convex-backed Beyond Bangladesh section with Pakistan, Afghanistan, Myanmar, and Nepal
 - Admin-extensible regional-country model with draft/published ordering
@@ -67,6 +81,24 @@ Convex workflow:
 ```bash
 bunx convex dev
 ```
+
+### Initial administrator
+
+1. Open `/admin`.
+2. Create an account using an organiser-owned email address and a password of at least 10 characters.
+3. While no administrator exists, sign in and choose **Become administrator**.
+4. Subsequent accounts do not receive access automatically.
+
+Better Auth signing secrets and payment credentials stay in Convex environment
+variables. Never add them to CMS fields or commit them to Git.
+
+### Stripe activation
+
+The donation journey is intentionally usable in demonstration mode. To enable
+real payments, add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` to the
+production Convex deployment, register the `/stripe/webhook` endpoint in
+Stripe, and replace the production `SITE_URL` placeholder with the deployed
+frontend origin.
 
 Every commit must be followed by a production backend deploy:
 

@@ -4,10 +4,11 @@ import { Bodoni_Moda, Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import "./assembly-theme.css"
 import { ConvexClientProvider } from "@/components/convex-client-provider"
-import { SiteFooter } from "@/components/site/site-footer"
-import { SiteHeader } from "@/components/site/site-header"
+import { RouteChrome } from "@/components/site/route-chrome"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { getToken } from "@/lib/auth-server"
 import { cn } from "@/lib/utils"
 
 const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" })
@@ -26,9 +27,10 @@ export const metadata: Metadata = {
     "Global Solidarity Summit for Bangladeshi Hindus, 3–4 October 2026 in Paris, France.",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const initialToken = await getToken()
   return (
     <html
       lang="en"
@@ -40,12 +42,12 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ConvexClientProvider>
+        <ConvexClientProvider initialToken={initialToken}>
           <ThemeProvider>
-            <SiteHeader />
-            <main>{children}</main>
-            <SiteFooter />
-            <Toaster position="bottom-right" />
+            <TooltipProvider>
+              <RouteChrome>{children}</RouteChrome>
+              <Toaster position="bottom-right" />
+            </TooltipProvider>
           </ThemeProvider>
         </ConvexClientProvider>
       </body>

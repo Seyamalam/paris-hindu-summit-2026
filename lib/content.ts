@@ -9,12 +9,13 @@ export const event = {
 
 export const navItems = [
   { href: "/about", label: "About" },
-  { href: "/context", label: "The context" },
   { href: "/programme", label: "Programme" },
-  { href: "/#beyond-bangladesh", label: "Regional" },
   { href: "/speakers", label: "Speakers" },
-  { href: "/committee", label: "Committee" },
+  { href: "/regional", label: "Regional" },
+  { href: "/engage", label: "Engage" },
+  { href: "/partners", label: "Partners" },
   { href: "/media", label: "Media" },
+  { href: "/support", label: "Support" },
 ]
 
 export const regionalFallback = [

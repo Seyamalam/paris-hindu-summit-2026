@@ -5,7 +5,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MenuIcon } from "lucide-react"
 import { useState } from "react"
+import { useQuery } from "convex/react"
 
+import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/site/theme-toggle"
 import {
@@ -19,7 +21,7 @@ import {
 import { navItems } from "@/lib/content"
 import { cn } from "@/lib/utils"
 
-function Brand() {
+function Brand({ name = "Paris Assembly" }: { name?: string }) {
   return (
     <span className="brand-lockup">
       <Image
@@ -32,7 +34,7 @@ function Brand() {
         aria-hidden="true"
       />
       <span>
-        <b>Paris Assembly</b>
+        <b>{name}</b>
         <small>For dignity &amp; rights</small>
       </span>
     </span>
@@ -42,11 +44,12 @@ function Brand() {
 export function SiteHeader() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const settings = useQuery(api.settings.get)
 
   return (
     <header className="site-header">
       <Link href="/" aria-label="Paris Assembly home">
-        <Brand />
+        <Brand name={settings?.shortName} />
       </Link>
       <nav className="desktop-nav" aria-label="Main navigation">
         {navItems.map((item) => (
@@ -60,8 +63,8 @@ export function SiteHeader() {
         ))}
       </nav>
       <ThemeToggle />
-      <Button nativeButton={false} render={<Link href="/participate" />} className="header-action">
-        Reserve a place
+      <Button nativeButton={false} render={<Link href="/donate" />} className="header-action">
+        Donate
       </Button>
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger
@@ -78,11 +81,11 @@ export function SiteHeader() {
         </SheetTrigger>
         <SheetContent className="mobile-sheet">
           <SheetHeader>
-            <SheetTitle><Brand /></SheetTitle>
+            <SheetTitle><Brand name={settings?.shortName} /></SheetTitle>
             <SheetDescription>Global Solidarity Summit for Bangladeshi Hindus</SheetDescription>
           </SheetHeader>
           <nav aria-label="Mobile navigation">
-            {[{ href: "/", label: "Home" }, ...navItems, { href: "/participate", label: "Attend and support" }].map((item) => (
+            {[{ href: "/", label: "Home" }, ...navItems, { href: "/participate", label: "Reserve a place" }, { href: "/donate", label: "Donate" }].map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
                 {item.label}
               </Link>

@@ -8,8 +8,18 @@
  * @module
  */
 
+import type * as admin from "../admin.js";
+import type * as assets from "../assets.js";
+import type * as auth from "../auth.js";
+import type * as cms from "../cms.js";
 import type * as content from "../content.js";
+import type * as donations from "../donations.js";
+import type * as forms from "../forms.js";
+import type * as http from "../http.js";
+import type * as lib_admin from "../lib/admin.js";
 import type * as seed from "../seed.js";
+import type * as settings from "../settings.js";
+import type * as stripe from "../stripe.js";
 
 import type {
   ApiFromModules,
@@ -18,8 +28,18 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  admin: typeof admin;
+  assets: typeof assets;
+  auth: typeof auth;
+  cms: typeof cms;
   content: typeof content;
+  donations: typeof donations;
+  forms: typeof forms;
+  http: typeof http;
+  "lib/admin": typeof lib_admin;
   seed: typeof seed;
+  settings: typeof settings;
+  stripe: typeof stripe;
 }>;
 
 /**
@@ -48,4 +68,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  betterAuth: import("@convex-dev/better-auth/_generated/component.js").ComponentApi<"betterAuth">;
+};

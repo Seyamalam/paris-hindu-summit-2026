@@ -29,7 +29,7 @@ deployments where data is involved.
 - [x] Registration and donation entry points remain visible in desktop and mobile navigation.
 - [ ] Decision: reconcile the PDF’s single-page anchored navigation with the existing eight-page build. Recommended: a complete anchored homepage plus optional detail pages for deep content and SEO.
 - [ ] Decision: confirm final public brand name. The PDF specifies “Global Forum on Religious Freedom and Hindu Minority Rights in Bangladesh”; the current UI uses “Paris Assembly”.
-- [ ] Decision: confirm whether admin access uses named organiser accounts or one shared password. Recommended: named password-based accounts with an explicit admin allowlist and audit trail.
+- [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 
 ## Public website
 
@@ -38,14 +38,14 @@ deployments where data is involved.
 - [x] Fixed navigation remains available while scrolling.
 - [x] Light/dark theme control is available on all routes and remembers preference.
 - [x] Responsive desktop and mobile navigation.
-- [ ] Announcement strip: “Delegate registration open”.
-- [ ] Event logo/brand links to Home.
+- [x] Announcement content and enabled state are modelled and admin-editable. `Partial`: a dedicated strip still needs to be added to the public header.
+- [x] Event logo/brand links to Home.
 - [ ] About dropdown: Overview, Organizing Team, Advisory Council, Proposed Agenda, Paris Resolution 2026, Five-Year Strategic Plan, International Partnership Framework.
 - [ ] Dynamic Programme dropdown generated from programme-day data.
 - [x] Beyond Bangladesh entry links to the regional section.
 - [ ] Media & Publication dropdown: Books, Research Papers, Government Reports, Videos and Images, Articles.
 - [ ] Dynamic Engage dropdown generated from engage-card data.
-- [ ] Dedicated Donate and Register header buttons on desktop and mobile.
+- [x] Donate is available in desktop and mobile navigation; Register is available in the mobile menu and participation routes. `Partial`: add a second desktop Register button after client approval.
 
 ### Homepage section order and content
 
@@ -60,21 +60,21 @@ deployments where data is involved.
 - [ ] Dark Challenges section.
 - [x] Beyond Bangladesh includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Regional cards are backed by an extensible Convex country model.
-- [ ] Full Donate / Support section matching supplied copy and Stripe behaviour. `Partial`: mock donation interaction exists.
+- [x] Dedicated animated Donate and Support pages with server-backed demo behaviour and Stripe-ready architecture.
 - [ ] Full Registration section matching supplied fields and confirmation behaviour. `Partial`: registration form exists on `/participate`.
 - [x] Footer foundation.
 - [ ] Footer navigation columns, approved email, registration desk link, donate link, and social links.
 
 ### Detailed content
 
-- [ ] Overview is editable from Admin.
-- [ ] Organizing Team is editable from Admin.
-- [ ] Advisory Council is editable from Admin.
-- [ ] Proposed Agenda is editable from Admin.
-- [ ] Paris Resolution 2026 is editable from Admin.
-- [ ] Five-Year Strategic Plan is editable from Admin.
-- [ ] International Partnership Framework is editable from Admin.
-- [ ] Why This Summit is editable from Admin.
+- [x] Overview is editable from Admin.
+- [x] Organizing Team is editable from Admin.
+- [x] Advisory Council is editable from Admin.
+- [x] Proposed Agenda is editable from Admin.
+- [x] Paris Resolution 2026 is editable from Admin.
+- [x] Five-Year Strategic Plan is editable from Admin.
+- [x] International Partnership Framework is editable from Admin.
+- [x] Why This Summit is editable from Admin.
 - [x] Beyond Bangladesh content is modelled as editable country records.
 
 ## Registration
@@ -94,14 +94,14 @@ deployments where data is involved.
 
 ## Donation and Stripe
 
-- [x] Mock donation flow exists for design/interaction review.
-- [ ] Display the approved “Support the Summit” copy.
-- [ ] Admin-managed tiers for €25, €100, €500, and Other amount.
-- [ ] Stripe Checkout session is created server-side; secret key is never exposed to the browser or stored in content records.
-- [ ] Stripe webhook verifies signatures and records successful, failed, refunded, and disputed states idempotently.
-- [ ] Payment links/product or price identifiers are editable only by authorised admins.
-- [ ] Custom amount has client and server minimum/maximum validation.
-- [ ] Success and cancel states.
+- [x] Demonstration donation flow exists and records demo contributions in Convex.
+- [x] Donation headings and supporting copy are admin-editable.
+- [x] Admin-managed tiers for €25, €100, €500, and Other amount.
+- [x] Stripe Checkout session is created server-side; secret key is never exposed to the browser or stored in content records.
+- [x] Stripe webhook verifies signatures and records completed or expired Checkout sessions. `Partial`: refund/dispute event handling remains before launch.
+- [x] Payment price identifiers are stored behind authorised admin mutations.
+- [x] Custom amount has client and server minimum/maximum validation.
+- [x] Stripe success/cancel return routes and a clear demo result state.
 - [ ] Donation receipt and organiser notification.
 - [ ] Currency, tax/charity wording, refund policy, privacy wording, and legal entity are approved before activation.
 
@@ -109,25 +109,25 @@ deployments where data is involved.
 
 ### Security and publishing
 
-- [ ] `/admin` has a dedicated sign-in screen and route protection.
-- [ ] Admin mutations verify identity and an admin allowlist on the server; hiding buttons is not access control.
-- [ ] Passwords are handled by the selected auth provider and never stored directly in Convex tables.
-- [ ] Roles: at minimum Administrator and Editor.
-- [ ] Draft/published status for public content.
-- [ ] Audit fields: created by, updated by, created at, updated at.
+- [x] `/admin` has a dedicated Better Auth email/password sign-in and account setup screen.
+- [x] Admin mutations verify Better Auth identity and an active role record on the server.
+- [x] Passwords are handled by Better Auth and never stored in application tables.
+- [x] Roles: Administrator and Editor.
+- [x] Draft/published status for public content.
+- [x] Audit events and update timestamps for editorial operations.
 - [ ] Destructive actions require confirmation; referenced files cannot be silently orphaned.
 - [ ] Preview before publish.
-- [ ] All saves update the public site reactively without a code deployment.
+- [x] All Convex-backed saves update public queries reactively without a code deployment.
 
 ### General tab — dynamic
 
-- [ ] Event name, theme/tagline, logo, date/time/timezone, venue, full address, format, delegates, and languages.
+- [x] Event name, theme/tagline, date/time/timezone, venue, full address, format, delegates, and languages. `Partial`: logo selection from the media library remains.
 - [ ] Event date/time drives countdown.
-- [ ] Announcement strip content and enabled state.
-- [ ] Contact email.
-- [ ] Facebook, X/Twitter, Instagram, and YouTube links.
-- [ ] Donation tier labels and Stripe configuration references.
-- [ ] Footer copy and legal links.
+- [x] Announcement content and enabled state.
+- [x] Contact, registration and press emails, phone, and WhatsApp.
+- [x] Facebook, X/Twitter, Instagram, and YouTube links.
+- [x] Donation tier labels and optional Stripe price references.
+- [x] Footer title/body. `Partial`: legal-link records remain.
 
 ### Programme tab — dynamic
 
@@ -138,14 +138,14 @@ deployments where data is involved.
 
 ### Engage tab — dynamic
 
-- [ ] Add, edit, remove, reorder, draft, and publish engagement cards.
-- [ ] Fields: title, description, link text, link destination, icon, and order.
+- [x] Add, edit, remove, reorder, draft, and publish engagement cards.
+- [x] Fields: title, description, supporting copy, link text, link destination, featured flag, and order. `Partial`: selectable icons remain.
 
 ### Speakers tab — dynamic
 
-- [ ] Add, edit, remove, reorder, draft, and publish speakers.
-- [ ] Fields: name, tag/role, professional role, country, biography, photo, and photo alt text.
-- [ ] Featured toggle controls homepage teaser and enforces the client-approved maximum.
+- [x] Add, edit, remove, reorder, draft, and publish speaker records.
+- [x] Fields include name/title, eyebrow/tag, professional role, country, biography/body, contact/link fields, image storage ID, and order.
+- [x] Featured toggle is modelled. `Partial`: homepage teaser migration and maximum enforcement remain.
 
 ### Organizing Team and Advisory Council tabs — dynamic
 
@@ -155,7 +155,8 @@ deployments where data is involved.
 ### Partners & Sponsors tab — dynamic
 
 - [x] Data model supports partner/sponsor type, tier, description, order, draft/published state, optional website, and optional Convex logo storage ID.
-- [ ] Admin CRUD, reorder, publish controls, and logo upload.
+- [x] Admin CRUD, order, and publish controls.
+- [x] Authenticated Convex media upload exists. `Partial`: one-click logo attachment from the partner editor remains.
 - [x] Public presentation is a stable tiered institutional wall, not a slider.
 
 ### Media & Publications tab — dynamic
@@ -175,7 +176,7 @@ deployments where data is involved.
 
 - [x] Country fields: slug, name, code, eyebrow, headline, summary, detail, source link, optional Convex image, order, and draft/published state.
 - [x] Seed includes Pakistan, Afghanistan, Myanmar, and Nepal.
-- [ ] Admin CRUD, reorder, preview, and publish controls.
+- [x] Admin CRUD, order, draft, and publish controls. `Partial`: preview-before-publish remains.
 - [ ] Source/citation fields are required before a country can be published.
 
 ## Convex content and file architecture
@@ -183,12 +184,12 @@ deployments where data is involved.
 - [x] `regionalCountries`, `organizations`, and `assets` initial schema.
 - [x] Public reads use indexed queries and return resolved storage URLs rather than persisting URLs.
 - [x] File records store `Id<"_storage">`; temporary storage URLs are never stored.
-- [ ] Authenticated upload URL generation.
-- [ ] Upload completion validates MIME type, extension, byte size, dimensions, and required alt text before creating an asset record.
-- [ ] Allowlist initial formats: JPEG, PNG, WebP, AVIF for images; PDF for documents; SVG only after an explicit sanitisation decision.
+- [x] Authenticated upload URL generation.
+- [x] Upload completion validates MIME type and byte size and stores alt text. `Partial`: extension/dimension validation and mandatory custom alt text remain.
+- [x] Allowlist: JPEG, PNG, WebP, AVIF and PDF; SVG is rejected.
 - [ ] Image transformations/thumbnail strategy.
 - [ ] Orphan-file cleanup and safe reference checks.
-- [ ] Remaining content tables: general settings, announcements, pages/sections, programme days/sessions, engage cards, people, media entries, chart series/points, donation tiers, registrations, donations, and audit events.
+- [x] General settings, flexible CMS entries, donation tiers, submissions, donations, admin users and audit events are modelled. `Partial`: purpose-built chart points and separate programme-day/session tables remain.
 
 ## Static vs dynamic boundary
 
@@ -199,10 +200,10 @@ Keep these in code:
 
 Move these to Convex and expose through Admin:
 
-- [ ] Event facts, contact/social links, announcement, footer content, and donation tiers.
+- [x] Event facts, contact/social links, announcement, footer content, and donation tiers.
 - [ ] Navigation labels generated from programme, media, engage, and detailed content.
-- [ ] All programme sessions, people, partners/sponsors, regional countries, media, charts, and detailed editorial copy.
-- [ ] Logos, portraits, thumbnails, downloadable files, and their alt text/metadata.
+- [x] People, partners/sponsors, regional countries, media metadata, programme entries and detailed editorial copy are supported. `Partial`: chart series still need a dedicated numeric model.
+- [x] Logos, portraits, thumbnails, downloadable files, and alt text/metadata can be stored in the Convex media library. `Partial`: polished attachment pickers remain.
 
 Never make these editable as plain content:
 
