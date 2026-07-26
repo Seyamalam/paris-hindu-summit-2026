@@ -12,13 +12,19 @@ const siteUrl = process.env.SITE_URL!
 
 export const authComponent = createClient<DataModel>(components.betterAuth)
 
-export const createAuth = (ctx: GenericCtx<DataModel>) =>
+export const createAuth = (
+  ctx: GenericCtx<DataModel>,
+  options: { allowSignUp?: boolean } = {}
+) =>
   betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
     trustedOrigins: [siteUrl],
     emailAndPassword: {
       enabled: true,
+      disableSignUp:
+        !options.allowSignUp &&
+        process.env.ALLOW_INITIAL_ADMIN_SIGNUP !== "true",
       requireEmailVerification: false,
       minPasswordLength: 10,
     },

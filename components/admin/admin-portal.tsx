@@ -22,6 +22,7 @@ import {
   Settings2Icon,
   ShieldCheckIcon,
   SparklesIcon,
+  UserCogIcon,
   Users2Icon,
 } from "lucide-react"
 import { FormEvent, useEffect, useMemo, useState } from "react"
@@ -41,6 +42,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 const panels = [
   ["dashboard", "Overview", LayoutDashboardIcon],
+  ["team", "Team access", UserCogIcon],
   ["settings", "Site settings", Settings2Icon],
   ["content", "Page content", FileTextIcon],
   ["programme", "Programme", CalendarRangeIcon],
@@ -186,17 +188,20 @@ function AuthGate() {
               {mode === "signin" ? "Enter control room" : "Create account"}
             </Button>
           </form>
-          <button className="admin-text-button" onClick={() => {
-            setMode(mode === "signin" ? "signup" : "signin")
-            setShowPassword(false)
-            setShowConfirmation(false)
-            setPasswordError("")
-          }}>
-            {mode === "signin" ? "Need the initial administrator account?" : "Already have an account? Sign in"}
-          </button>
+          {access.bootstrapAvailable && (
+            <button className="admin-text-button" onClick={() => {
+              setMode(mode === "signin" ? "signup" : "signin")
+              setShowPassword(false)
+              setShowConfirmation(false)
+              setPasswordError("")
+            }}>
+              {mode === "signin" ? "Need the initial administrator account?" : "Already have an account? Sign in"}
+            </button>
+          )}
           <p className="auth-note">
-            New accounts only gain access when the first administrator slot is
-            available or an administrator assigns access.
+            {access.bootstrapAvailable
+              ? "Initial account creation is available until the first administrator is established."
+              : "Public account creation is closed. An administrator must create every additional team account."}
           </p>
         </section>
       </main>
@@ -265,6 +270,7 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
           <a href="/" target="_blank" rel="noreferrer">View live site ↗</a>
         </header>
         {panel === "dashboard" && <Dashboard />}
+        {panel === "team" && <TeamAccessPanel canManage={admin.role === "administrator"} />}
         {panel === "settings" && <SettingsPanel />}
         {panel === "content" && <ContentPanel />}
         {panel === "programme" && <ProgrammeAdmin />}
@@ -277,6 +283,147 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
         {panel === "audit" && <AuditPanel />}
       </main>
     </div>
+  )
+}
+
+function TeamAccessPanel({ canManage }: { canManage:boolean }) {
+  const members = useQuery(api.admin.listTeamMembers)
+  const provision = useMutation(api.admin.provisionTeamMember)
+  const changeRole = useMutation(api.admin.changeAdminRole)
+  const setStatus = useMutation(api.admin.setTeamMemberStatus)
+  const [busy, setBusy] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [passwordError, setPasswordError] = useState("")
+
+  async function createMember(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const data = new FormData(form)
+    const password = String(data.get("password"))
+    const confirmation = String(data.get("confirmPassword"))
+    if (password !== confirmation) {
+      setPasswordError("The passwords do not match.")
+      return
+    }
+    setPasswordError("")
+    setBusy(true)
+    try {
+      await provision({
+        name:String(data.get("name")),
+        email:String(data.get("email")),
+        password,
+        role:String(data.get("role")) as "administrator" | "editor",
+      })
+      form.reset()
+      setShowPassword(false)
+      setShowConfirmation(false)
+      toast.success("Team account created. Share the credentials securely.")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "The team account could not be created.")
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (!members) return <PanelLoading />
+  return (
+    <section className="admin-panel">
+      <PanelTitle
+        eyebrow="Invitation-only access"
+        title="Every account begins here."
+        copy="Public sign-up is disabled. Administrators create named accounts, choose the role, and can suspend access immediately."
+      />
+      {canManage && (
+        <form className="team-access-form" onSubmit={createMember}>
+          <fieldset className="admin-fieldset">
+            <legend>Create a team account</legend>
+            <div className="admin-form-grid">
+              <Field name="name" label="Full name" required />
+              <Field name="email" type="email" label="Email address" required />
+              <label className="admin-field">
+                <span>Access role</span>
+                <select name="role" defaultValue="editor">
+                  <option value="editor">Editor</option>
+                  <option value="administrator">Administrator</option>
+                </select>
+              </label>
+              <div className="team-access-guidance">
+                Editors manage content. Administrators can also create accounts and change access.
+              </div>
+              <PasswordField
+                id="team-password"
+                name="password"
+                label="Initial password"
+                visible={showPassword}
+                onToggle={() => setShowPassword((visible) => !visible)}
+                autoComplete="new-password"
+                describedBy={passwordError ? "team-password-error" : undefined}
+              />
+              <PasswordField
+                id="team-confirm-password"
+                name="confirmPassword"
+                label="Retype initial password"
+                visible={showConfirmation}
+                onToggle={() => setShowConfirmation((visible) => !visible)}
+                autoComplete="new-password"
+                describedBy={passwordError ? "team-password-error" : undefined}
+              />
+            </div>
+            {passwordError && <p className="admin-field-error" id="team-password-error" role="alert">{passwordError}</p>}
+            <Button disabled={busy} type="submit">
+              {busy ? <Loader2Icon className="animate-spin" /> : <UserCogIcon />}
+              Create authorised account
+            </Button>
+          </fieldset>
+        </form>
+      )}
+      {!canManage && <p className="team-access-guidance">Only an administrator can create accounts or change access. Editors can review the authorised team below.</p>}
+      <div className="team-access-list">
+        {members.map((member) => (
+          <article key={member._id} data-status={member.status}>
+            <div>
+              <Badge variant={member.status === "active" ? "default" : "outline"}>{member.status}</Badge>
+              <h3>{member.name}</h3>
+              <p>{member.email}</p>
+            </div>
+            <label>
+              <span>Role</span>
+              <select
+                value={member.role}
+                disabled={!canManage}
+                onChange={async (event) => {
+                  try {
+                    await changeRole({ id:member._id, role:event.target.value as "administrator" | "editor" })
+                    toast.success("Team role updated.")
+                  } catch (error) {
+                    toast.error(error instanceof Error ? error.message : "Role could not be updated.")
+                  }
+                }}
+              >
+                <option value="editor">Editor</option>
+                <option value="administrator">Administrator</option>
+              </select>
+            </label>
+            {canManage && (
+              <Button
+                variant={member.status === "active" ? "outline" : "default"}
+                onClick={async () => {
+                  try {
+                    await setStatus({ id:member._id, status:member.status === "active" ? "suspended" : "active" })
+                    toast.success(member.status === "active" ? "Account suspended." : "Account activated.")
+                  } catch (error) {
+                    toast.error(error instanceof Error ? error.message : "Account access could not be changed.")
+                  }
+                }}
+              >
+                {member.status === "active" ? "Suspend access" : "Restore access"}
+              </Button>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 

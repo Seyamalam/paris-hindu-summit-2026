@@ -49,6 +49,7 @@ The detailed record of delivered work is maintained in
 - Dedicated Stripe Checkout-ready donation page with server-side amount validation, a Convex contribution ledger, signed webhook handling, and a safe demo mode while payment keys are absent
 - Better Auth email/password login; the first verified account can establish the initial administrator, and later accounts require an assigned role
 - Administrator and editor roles enforced inside Convex mutations
+- Invitation-only team access: public account creation closes after bootstrap, and administrators provision or suspend named accounts from Admin
 - Global settings editor for event identity, dates, venue, format, audience numbers, languages, announcement, email addresses, phone/WhatsApp, social links, hero, donation, and footer copy
 - Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, advisory council, programme, media, and FAQs
 - Purpose-built programme-day/session and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
@@ -99,13 +100,21 @@ bunx convex dev
 
 ### Initial administrator
 
-1. Open `/admin`.
-2. Create an account using an organiser-owned email address and a password of at least 10 characters.
-3. While no administrator exists, sign in and choose **Become administrator**.
-4. Subsequent accounts do not receive access automatically.
+For a brand-new Convex deployment only:
 
-Better Auth signing secrets and payment credentials stay in Convex environment
-variables. Never add them to CMS fields or commit them to Git.
+1. Temporarily set `ALLOW_INITIAL_ADMIN_SIGNUP=true` in that Convex deployment.
+2. Open `/admin` and create the organiser-owned account with a password of at least 10 characters.
+3. Sign in and choose **Become administrator**.
+4. Immediately set `ALLOW_INITIAL_ADMIN_SIGNUP=false`.
+
+After bootstrap, public account creation is disabled at the Better Auth endpoint.
+An administrator creates every additional named account from **Admin → Team
+access**, chooses Administrator or Editor, and shares the initial credentials
+securely. Administrators can suspend or restore those accounts at any time.
+
+Better Auth signing secrets, `ALLOW_INITIAL_ADMIN_SIGNUP`, and payment
+credentials stay in Convex environment variables. Never add them to CMS fields
+or commit them to Git.
 
 ### Stripe activation
 

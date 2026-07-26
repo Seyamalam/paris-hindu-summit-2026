@@ -168,6 +168,14 @@ for incomplete work, approvals, and launch dependencies.
 ## Authentication and access control
 
 - ✅ Better Auth email/password account creation and sign-in.
+- ✅ Public Better Auth sign-up disabled after initial administrator bootstrap.
+- ✅ Administrator-only Team Access panel.
+- ✅ Administrators can provision additional named accounts.
+- ✅ Administrator or Editor role selected at provisioning time.
+- ✅ Administrators can suspend and restore team access.
+- ✅ Editors can review the authorised team but cannot change access.
+- ✅ Self-suspension and removal of the last active administrator are blocked.
+- ✅ Team account creation and access changes are written to the audit log.
 - ✅ Ten-character minimum password.
 - ✅ Password visibility toggle on sign-in.
 - ✅ Password visibility toggles on both account-creation password fields.
@@ -255,4 +263,3 @@ for incomplete work, approvals, and launch dependencies.
 
 - ✅ Stripe remains excluded from this delivery at the client’s request.
 - ✅ No live payment keys, checkout, collection, or webhook were activated.
-

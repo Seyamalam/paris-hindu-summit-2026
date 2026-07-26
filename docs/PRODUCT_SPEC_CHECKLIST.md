@@ -33,6 +33,7 @@ For the full delivered-feature inventory, see
 - [x] Working delivery decision: retain the complete homepage plus detail pages for deep content and SEO.
 - [x] Working delivery decision: retain “Paris Assembly” as the short public brand while preserving the formal forum name in settings.
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
+- [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
 
 ## Public website
 
@@ -116,6 +117,7 @@ For the full delivered-feature inventory, see
 - [x] Admin mutations verify Better Auth identity and an active role record on the server.
 - [x] Passwords are handled by Better Auth and never stored in application tables.
 - [x] Roles: Administrator and Editor.
+- [x] Invitation-only Team Access panel supports account creation, role selection, suspension, restoration, and last-administrator safeguards.
 - [x] Draft/published status for public content.
 - [x] Audit events and update timestamps for editorial operations.
 - [x] Destructive content actions require confirmation; referenced files cannot be deleted until detached.

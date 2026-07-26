@@ -1,10 +1,11 @@
 import { ConvexError, v } from "convex/values"
 
 import { mutation, query } from "./_generated/server"
-import { authComponent } from "./auth"
+import { authComponent, createAuth } from "./auth"
 import { getAdmin, writeAudit } from "./lib/admin"
 
 const role = v.union(v.literal("administrator"), v.literal("editor"))
+const adminStatus = v.union(v.literal("active"), v.literal("suspended"))
 export const getAccessState = query({
   args: {},
   returns: v.object({
@@ -70,6 +71,136 @@ export const bootstrapFirstAdmin = mutation({
       updatedAt: now,
     })
     return true
+  },
+})
+
+export const listTeamMembers = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("adminUsers"),
+      name: v.string(),
+      email: v.string(),
+      role,
+      status: adminStatus,
+      createdAt: v.number(),
+    })
+  ),
+  handler: async (ctx) => {
+    await getAdmin(ctx)
+    const members = await ctx.db
+      .query("adminUsers")
+      .withIndex("by_email")
+      .take(100)
+    return members.map((member) => ({
+      _id: member._id,
+      name: member.name,
+      email: member.email,
+      role: member.role,
+      status: member.status,
+      createdAt: member.createdAt,
+    }))
+  },
+})
+
+export const provisionTeamMember = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    password: v.string(),
+    role,
+  },
+  returns: v.id("adminUsers"),
+  handler: async (ctx, args) => {
+    const actor = await getAdmin(ctx)
+    if (actor?.admin.role !== "administrator") {
+      throw new ConvexError("Only administrators can create team accounts.")
+    }
+    const name = args.name.trim()
+    const email = args.email.trim().toLowerCase()
+    if (name.length < 2 || !email.includes("@")) {
+      throw new ConvexError("Enter a valid name and email address.")
+    }
+    if (args.password.length < 10) {
+      throw new ConvexError("Temporary passwords must contain at least 10 characters.")
+    }
+    const existing = await ctx.db
+      .query("adminUsers")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .unique()
+    if (existing) {
+      throw new ConvexError("This email already has a team account.")
+    }
+
+    const auth = createAuth(ctx, { allowSignUp: true })
+    let authUserId: string
+    try {
+      const result = await auth.api.signUpEmail({
+        body: { name, email, password: args.password },
+      })
+      authUserId = result.user.id
+    } catch (error) {
+      throw new ConvexError(
+        error instanceof Error
+          ? error.message
+          : "The authentication account could not be created."
+      )
+    }
+
+    const now = Date.now()
+    const id = await ctx.db.insert("adminUsers", {
+      authUserId,
+      name,
+      email,
+      role: args.role,
+      status: "active",
+      createdAt: now,
+      updatedAt: now,
+    })
+    await writeAudit(ctx, actor, {
+      action: "create",
+      entityType: "adminUser",
+      entityId: id,
+      summary: `Created ${args.role} account for ${email}`,
+    })
+    return id
+  },
+})
+
+export const setTeamMemberStatus = mutation({
+  args: { id: v.id("adminUsers"), status: adminStatus },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const actor = await getAdmin(ctx)
+    if (actor?.admin.role !== "administrator") {
+      throw new ConvexError("Only administrators can change account access.")
+    }
+    const target = await ctx.db.get(args.id)
+    if (!target) throw new ConvexError("Team account not found.")
+    if (target._id === actor.admin._id && args.status === "suspended") {
+      throw new ConvexError("You cannot suspend your own account.")
+    }
+    if (
+      target.role === "administrator" &&
+      target.status === "active" &&
+      args.status === "suspended"
+    ) {
+      const active = await ctx.db
+        .query("adminUsers")
+        .withIndex("by_status", (q) => q.eq("status", "active"))
+        .take(100)
+      if (active.filter((member) => member.role === "administrator").length <= 1) {
+        throw new ConvexError("At least one active administrator is required.")
+      }
+    }
+    await ctx.db.patch(args.id, { status: args.status, updatedAt: Date.now() })
+    await writeAudit(ctx, actor, {
+      action: "update",
+      entityType: "adminUser",
+      entityId: args.id,
+      summary: `${args.status === "active" ? "Activated" : "Suspended"} ${target.email}`,
+    })
+    return null
   },
 })
 
@@ -274,7 +405,24 @@ export const changeAdminRole = mutation({
     if (actor?.admin.role !== "administrator") {
       throw new ConvexError("Only administrators can change roles.")
     }
+    const target = await ctx.db.get(args.id)
+    if (!target) throw new ConvexError("Team account not found.")
+    if (target.role === "administrator" && args.role === "editor") {
+      const active = await ctx.db
+        .query("adminUsers")
+        .withIndex("by_status", (q) => q.eq("status", "active"))
+        .take(100)
+      if (active.filter((member) => member.role === "administrator").length <= 1) {
+        throw new ConvexError("At least one active administrator is required.")
+      }
+    }
     await ctx.db.patch(args.id, { role: args.role, updatedAt: Date.now() })
+    await writeAudit(ctx, actor, {
+      action: "update",
+      entityType: "adminUser",
+      entityId: args.id,
+      summary: `Changed ${target.email} to ${args.role}`,
+    })
     return null
   },
 })
