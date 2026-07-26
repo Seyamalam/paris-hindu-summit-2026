@@ -209,6 +209,15 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Editable announcement, contact details, social links, hero, and footer.
 - ✅ Editable Overview, Agenda, Resolution, Strategy, and Partnership records.
 - ✅ Editable Why, Challenge, Engage, Speaker, Team, and Advisory records.
+- ✅ Supplied seminar brief mapped into 68 additional editable CMS records.
+- ✅ Three public conference-overview sections.
+- ✅ Four-member Advisory Board with editable roles and responsibilities.
+- ✅ Fifteen-member Organising Committee with editable responsibilities.
+- ✅ Seventeen-part proposed agenda published on a dedicated route.
+- ✅ Twelve Paris Resolution commitments plus the Final Declaration.
+- ✅ Eight goals for the 2027–2031 strategic action plan.
+- ✅ Seven international cooperation areas plus the future institutional framework.
+- ✅ “Advisory Council” public navigation renamed to “Advisory Board”.
 - ✅ Editable Programme, Media, FAQ, and Legal records.
 - ✅ Featured speaker records connected to the homepage.
 

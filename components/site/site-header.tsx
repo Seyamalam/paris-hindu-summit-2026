@@ -56,9 +56,9 @@ export function SiteHeader() {
   const engage = useQuery(api.cms.listPublished, { category: "engage" })
   const media = useQuery(api.cms.listPublished, { category: "media" })
   const aboutLinks = [
-    ["/about", "Overview"], ["/committee", "Organising team"], ["/committee#advisory", "Advisory council"],
-    ["/programme", "Proposed agenda"], ["/context#charter", "Paris Resolution 2026"],
-    ["/about#outcomes", "Five-year strategy"], ["/partners", "International partnerships"],
+    ["/about", "Overview"], ["/committee#organising-team", "Organising team"], ["/committee#advisory", "Advisory Board"],
+    ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
+    ["/strategy", "Five-year strategy"], ["/partnership-framework", "International partnerships"],
   ]
   const navGroups = [
     ["About", aboutLinks],

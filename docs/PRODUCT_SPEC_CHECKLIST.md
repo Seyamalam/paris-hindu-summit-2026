@@ -73,11 +73,11 @@ For the full delivered-feature inventory, see
 
 - [x] Overview is editable from Admin.
 - [x] Organizing Team is editable from Admin.
-- [x] Advisory Council is editable from Admin.
-- [x] Proposed Agenda is editable from Admin.
-- [x] Paris Resolution 2026 is editable from Admin.
-- [x] Five-Year Strategic Plan is editable from Admin.
-- [x] International Partnership Framework is editable from Admin.
+- [x] Advisory Board is editable from Admin and published on the Committee page.
+- [x] Proposed Agenda is editable from Admin and published on `/agenda`.
+- [x] Paris Resolution 2026 is editable from Admin and published on `/resolution`.
+- [x] Five-Year Strategic Plan is editable from Admin and published on `/strategy`.
+- [x] International Partnership Framework is editable from Admin and published on `/partnership-framework`.
 - [x] Why This Summit is editable from Admin.
 - [x] Beyond Bangladesh content is modelled as editable country records.
 
@@ -152,7 +152,7 @@ For the full delivered-feature inventory, see
 - [x] Fields include name/title, eyebrow/tag, professional role, country, biography/body, contact/link fields, image storage ID, and order.
 - [x] Featured toggle drives the homepage teaser and the backend enforces the approved maximum of three.
 
-### Organizing Team and Advisory Council tabs — dynamic
+### Organizing Team and Advisory Board tabs — dynamic
 
 - [x] Team fields support name, role, biography, photo, alt text/metadata, duties and order through structured CMS records.
 - [x] Advisory fields support title/name, role, biography, icon/image metadata and order through structured CMS records.

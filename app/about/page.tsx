@@ -4,6 +4,7 @@ import { ArrowRightIcon, Globe2Icon, ScaleIcon, UsersIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { PageHero } from "@/components/site/page-hero"
+import { ManagedOverview } from "@/components/site/managed-forum-content"
 
 export default function AboutPage() {
   return (
@@ -14,6 +15,7 @@ export default function AboutPage() {
         intro="Paris brings survivors, scholars, rights defenders, diplomats, legal advocates, and diaspora organisations into one coordinated, evidence-based forum."
         image="/images/paris-night.png"
       />
+      <ManagedOverview />
       <section className="section-shell editorial-story">
         <aside><p className="kicker">Prelude and purpose</p><span>01</span></aside>
         <div>

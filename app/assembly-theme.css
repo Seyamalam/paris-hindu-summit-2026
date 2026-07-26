@@ -1651,12 +1651,41 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
 .footer-socials { display: flex; gap: 10px; }
 .footer-socials a { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--assembly-rule); }
 .footer-socials svg { width: 15px; }
+.managed-overview { display: grid; gap: 18px; }
+.managed-overview article { display: grid; grid-template-columns: 90px 1fr; gap: clamp(24px,5vw,80px); padding: clamp(30px,5vw,68px); border: 1px solid var(--assembly-rule); }
+.managed-overview article>span { color: var(--assembly-red); font: 750 11px var(--font-mono); }
+.managed-overview article>div { max-width: 920px; }
+.managed-overview h2 { margin: 15px 0 24px; font: 800 clamp(42px,5vw,76px)/.9 var(--font-body); letter-spacing: -.065em; text-transform: uppercase; }
+.managed-overview article p:not(.kicker) { line-height: 1.75; }
+.managed-overview aside,.document-collection aside { margin-top: 24px; padding: 18px 20px; color: var(--assembly-ink); background: color-mix(in srgb,var(--assembly-blue) 8%,transparent); border-left: 4px solid var(--assembly-red); font-size: 12px; line-height: 1.7; }
+.advisor-grid { display: grid; grid-template-columns: repeat(2,1fr); border: 1px solid var(--assembly-rule); }
+.advisor-grid>div { border-right: 1px solid var(--assembly-rule); border-bottom: 1px solid var(--assembly-rule); }
+.advisor-grid>div:nth-child(2n) { border-right: 0; }
+.advisor-grid article { min-height: 350px; display: flex; flex-direction: column; padding: clamp(26px,4vw,48px); }
+.advisor-grid article>span { align-self: flex-end; font: 750 9px var(--font-mono); }
+.advisor-grid .kicker { margin-top: 54px; }
+.advisor-grid h3 { margin: 14px 0 22px; font: 800 clamp(38px,4vw,60px)/.9 var(--font-body); letter-spacing: -.06em; text-transform: uppercase; }
+.advisor-grid article>p:last-child { margin-top: auto; color: var(--ash); line-height: 1.65; }
+.managed-roster article { align-items: start; }
+.managed-roster article>div>p { margin: 20px 0 0; color: var(--ash); line-height: 1.65; }
+.document-collection { display: grid; grid-template-columns: minmax(190px,.32fr) minmax(0,1fr); gap: clamp(34px,7vw,110px); }
+.document-collection>header { position: sticky; top: 150px; align-self: start; }
+.document-collection>header>p:last-child { margin-top: 24px; color: var(--ash); font-size: 12px; line-height: 1.7; }
+.document-collection>div { border-top: 1px solid var(--assembly-rule); }
+.document-collection article { display: grid; grid-template-columns: 60px 1fr; gap: clamp(20px,4vw,60px); padding: clamp(35px,5vw,70px) 0; border-bottom: 1px solid var(--assembly-rule); scroll-margin-top: 150px; }
+.document-collection article>span { color: var(--assembly-red); font: 750 10px var(--font-mono); }
+.document-collection article>div { max-width: 900px; }
+.document-collection h2 { margin: 14px 0 24px; font: 800 clamp(38px,4.8vw,68px)/.9 var(--font-body); letter-spacing: -.06em; text-transform: uppercase; }
+.document-collection article p:not(.kicker) { line-height: 1.75; }
+.document-collection .document-summary { color: var(--assembly-ink); font-size: clamp(17px,1.7vw,22px); }
 :focus-visible { outline: 3px solid var(--assembly-red); outline-offset: 3px; }
 @media(max-width:1050px){
   .home-info-bar { grid-template-columns: repeat(2,1fr); }
   .home-info-bar div:nth-child(2){border-right:0}
   .home-info-bar div:nth-child(-n+2){border-bottom:1px solid var(--assembly-rule)}
   .evidence-charts { grid-template-columns:1fr; }
+  .document-collection { grid-template-columns:1fr; }
+  .document-collection>header { position:static; }
 }
 @media(max-width:720px){
   .announcement-strip { justify-content:space-between; font-size:7px; }
@@ -1670,4 +1699,8 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   .evidence-charts article{padding-inline:18px}
   .evidence-chart-canvas{min-height:270px}
   .legal-copy{padding-top:150px}
+  .managed-overview article,.document-collection article{grid-template-columns:1fr}
+  .advisor-grid{grid-template-columns:1fr}
+  .advisor-grid>div{border-right:0}
+  .document-collection h2{font-size:40px}
 }

@@ -393,6 +393,250 @@ const cmsEntries = [
   },
 ] as const
 
+const seminarEntries = [
+  {
+    category: "overview" as const,
+    slug: "overview-community-erasure",
+    title: "A community being erased, one generation at a time",
+    eyebrow: "Conference overview",
+    summary:
+      "Successive census periods record a steep decline in the Hindu share of the population, while families continue to face violence, dispossession, displacement, and pressure to conceal their identity.",
+    body:
+      "The forum treats demographic decline as a human record rather than an abstract trend. Behind every percentage are families deciding whether it is safe to remain, places of worship damaged or abandoned, property lost, and children learning how visible it is safe to be.",
+    secondaryText:
+      "The supplied seminar paper also places Bangladesh within a regional pattern affecting Hindu and Sikh communities in Pakistan and Afghanistan. All public statistics remain subject to final source approval.",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "overview" as const,
+    slug: "overview-why-forum",
+    title: "Giving the voiceless a voice",
+    eyebrow: "Why this forum",
+    summary:
+      "Paris places survivors, scholars, and community leaders directly before international institutions, allied governments, and a global press corps.",
+    body:
+      "For decades, testimony has often remained within local and Bengali-language reporting. The forum brings those accounts into an international, evidence-based record so recurring violations cannot be dismissed as isolated events.",
+    secondaryText:
+      "An international stage is a practical route from private suffering to documentation, policy engagement, legal attention, and sustained institutional pressure.",
+    order: 2,
+    featured: true,
+  },
+  {
+    category: "overview" as const,
+    slug: "overview-sustained-support",
+    title: "What sustained support will build",
+    eyebrow: "Beyond the forum",
+    summary:
+      "The Paris gathering is a launching point for long-term protection, legal capacity, economic resilience, documentation, and community leadership.",
+    body:
+      "Priorities include FoRB and human-rights training for Hindu youth; vocational training, livelihood grants, and cooperative support; legal aid for seized and vested property; continued documentation and rapid response; and stronger local institutions and youth leadership.",
+    secondaryText:
+      "The seminar paper calls for multi-year cooperation, diplomatic engagement, safe participation, and logistical support—not a one-time contribution tied only to the October event.",
+    order: 3,
+    featured: true,
+  },
+  {
+    category: "advisory" as const,
+    slug: "advisor-khalid-ahsas",
+    title: "Khalid Ahsas",
+    eyebrow: "Advisory Board",
+    role: "Chief Advisor",
+    summary:
+      "International guests, speaker selection, seminar coordination, and fundraising.",
+    body:
+      "Invite internationally distinguished guests and dignitaries; assist in selecting speakers; support international seminar coordination; and assist fundraising activities.",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "advisory" as const,
+    slug: "advisor-phushpita-prasad",
+    title: "Phushpita Prasad",
+    eyebrow: "Advisory Board",
+    role: "Advisor",
+    summary:
+      "Dignitary invitations, sponsor and partner coordination, international networking, and outreach.",
+    body:
+      "Invite internationally distinguished guests and dignitaries; coordinate sponsoring organisations and partner institutions; and support international networking and outreach.",
+    order: 2,
+    featured: true,
+  },
+  {
+    category: "advisory" as const,
+    slug: "advisor-sudha-jagannathan",
+    title: "Sudha Jagannathan",
+    eyebrow: "Advisory Board",
+    role: "Advisor",
+    summary:
+      "Dignitary invitations, institutional coordination, international collaboration, and strategic partnerships.",
+    body:
+      "Invite internationally distinguished guests and dignitaries; coordinate sponsoring organisations and partner institutions; and expand international collaboration and strategic partnerships.",
+    order: 3,
+    featured: true,
+  },
+  {
+    category: "advisory" as const,
+    slug: "advisor-charan-singh",
+    title: "Charan Singh",
+    eyebrow: "Advisory Board",
+    role: "Advisor",
+    summary:
+      "Participant coordination across Afghanistan, India, Nepal, and Bangladesh.",
+    body:
+      "Coordinate participants across South Asia; facilitate cross-border communication; and support participant coordination, travel arrangements, and logistics.",
+    order: 4,
+    featured: true,
+  },
+  ...[
+    ["richard-benkin", "Dr. Richard L. Benkin", "President", "Lead dignitary invitations, keynote and panel selection, international coordination, fundraising, donor relations, and sponsor coordination."],
+    ["anovesh-chakraborty", "Anovesh Chakraborty", "Vice-President", "Invite international guests, assist speaker selection, and support international seminar coordination."],
+    ["richa-gautam", "Richa Gautam", "Vice President", "Support dignitary invitations, speaker selection, international coordination, fundraising, sponsors, and institutional partners."],
+    ["suvra-dev-kar", "Suvra Dev Kar", "Vice President", "Coordinate participants from the Indian subcontinent, invitations, visas, website development, official email, and ICT activities."],
+    ["dipan-mitra", "Dipan Mitra", "Organizing Secretary", "Prepare and manage the budget, coordinate the venue, oversee administration, and supervise local operations."],
+    ["sujit-chakrabarty", "Sujit Chakrabarty", "Joint Organizing Secretary", "Assist seminar administration, logistics, participant coordination, and operational implementation."],
+    ["mithun-kumar-das", "Mithun Kumar Das", "Joint Organizing Secretary", "Assist seminar administration, logistics, participant coordination, and operational implementation."],
+    ["jony-sharma", "Jony Sharma", "Assistant Organising Secretary", "Assist seminar administration, logistics, participant coordination, and operational implementation."],
+    ["wahidullah-shirzad", "Dr. Wahidullah Shirzad", "Organizing Executive", "Support administrative implementation, logistics, participant coordination, and operations."],
+    ["obaidullah-baweri", "Dr. Obaidullah Baweri", "Organizing Executive", "Support administrative and operational implementation, logistics, and international participant coordination."],
+    ["dulal-chandra-das", "Dulal Chandra Das", "Organizing Executive", "Support administrative and operational implementation, logistics, and international participant coordination."],
+    ["rahul-kumar-das", "Rahul Kumar Das", "Organizing Executive", "Support administrative and operational implementation, logistics, and international participant coordination."],
+    ["gobinda-saha", "Gobinda Saha", "Organizing Executive", "Support administrative implementation, logistics, participant coordination, and operations."],
+    ["indranil-bhowmik", "Indranil Bhowmik", "Cultural Affairs Secretary", "Prepare promotional materials, manage digital communications, coordinate the documentary, and lead cultural awareness initiatives."],
+    ["aditya-trivedi", "Advocate Aditya Trivedi", "Joint Cultural Affairs Secretary", "Invite South Asian delegates, support visas, coordinate human-rights organisations, and lead outreach campaigns."],
+  ].map(([slug, title, role, body], index) => ({
+    category: "team" as const,
+    slug: `committee-${slug}`,
+    title,
+    eyebrow: "Organising Committee",
+    role,
+    summary: body,
+    body,
+    order: index + 1,
+    featured: index < 5,
+  })),
+  ...[
+    ["current-situation", "Assessment of the Current Situation", "Assess security, human rights, religious freedom, social conditions, economic conditions, violence, discrimination, displacement, exclusion, and the effectiveness of existing protections.", "An internationally credible situation assessment; an evidence base for policy recommendations; and increased international awareness."],
+    ["victim-testimonies", "Victims’ Testimonies and Field Evidence", "Present survivor testimony, verified observations, photographs, video, and case studies while examining humanitarian, psychological, social, and economic consequences.", "Amplified survivor voices; greater understanding of humanitarian impact; and a reliable evidence base for research, advocacy, and legal initiatives."],
+    ["human-rights-standards", "International Human Rights Standards and Commitments", "Review constitutional guarantees and commitments under the UDHR, ICCPR, ICESCR, and other relevant instruments; identify implementation gaps and opportunities for cooperation.", "Policy recommendations aligned with international standards and stronger national–international dialogue."],
+    ["early-warning", "Early Warning, Rapid Action, and Prevention", "Develop risk assessment, threat monitoring, rapid information-sharing, GIS and data-analysis capacity, and coordinated preventive responses.", "Earlier identification of risk, stronger preventive capacity, and improved stakeholder coordination."],
+    ["access-to-justice", "Access to Justice and Protection of Victims", "Expand legal assistance, professional case documentation, judicial monitoring, fair-process support, and international legal cooperation.", "Improved remedies, stronger legal cooperation, and greater confidence in protection mechanisms."],
+    ["international-cooperation", "International Cooperation and Diplomatic Engagement", "Create a permanent coordination platform and engage the UN, EU, diplomatic missions, parliamentarians, universities, civil society, and international organisations.", "A sustainable international partnership network for policy, research, capacity-building, and protection."],
+    ["vested-property", "Justice, Property Rights, and Vested Property", "Promote fair implementation of property law, time-bound dispute resolution, legal aid, land-record verification, digital documentation, and due process.", "Stronger property safeguards, transparent dispute resolution, and expanded access to remedies."],
+    ["research-centre", "Research, Monitoring, and Early Warning Centre", "Consider an independent civilian centre for nationwide information collection, verification, analysis, secure documentation, risk alerts, and policy support.", "A sustainable monitoring and documentation framework capable of supporting preventive policy."],
+    ["annual-reporting", "Documentation, Research, and Annual Reporting", "Develop recognised documentation methods, standard procedures, analytical reports, policy papers, annual human-rights reporting, and academic collaboration.", "Credible documentation, stronger research, and reliable information for policymakers."],
+    ["media-advocacy", "Media Engagement and Public Awareness", "Develop international media relationships, documentaries, research publications, multilingual resources, and evidence-based awareness campaigns.", "Broader dissemination of verified information and stronger global public engagement."],
+    ["youth-women", "Youth Leadership, Women’s Leadership, and Capacity Building", "Develop education, fellowships, exchanges, technology, research, legal-awareness, advocacy, and organisational leadership programmes.", "A skilled new generation of leaders and stronger participation by women and young people."],
+    ["humanitarian-livelihoods", "Humanitarian Assistance, Rehabilitation, and Livelihoods", "Support education, healthcare, psychosocial care, rehabilitation, vocational training, entrepreneurship, employment, and development partnerships.", "Improved rehabilitation, sustainable livelihoods, economic resilience, and social reintegration."],
+    ["property-framework", "Implementation of the Vested Property Legal Framework", "Advance legal and administrative reform, free legal assistance, digitised records, claim documentation, case monitoring, due process, and effective remedies.", "Greater transparency, efficiency, and legal protection in property disputes."],
+    ["policy-coordination", "Evidence-Based Monitoring and Policy Coordination", "Build an integrated national research, data, technology, civil-society, and policy-support framework governed by impartiality, confidentiality, and data protection.", "Credible policy recommendations, preventive diplomacy, and stronger humanitarian response."],
+    ["international-advisory-board", "Establishment of an International Advisory Board", "Create an independent body of human-rights experts, legal scholars, former judges, diplomats, academics, and policy specialists.", "A permanent international advisory mechanism with strategic guidance and implementation review."],
+    ["paris-declaration", "Adoption of the Paris Declaration", "Adopt the principal outcome document and reaffirm religious freedom, equality, non-discrimination, dignity, and the rule of law.", "A common international policy framework and lasting reference for advocacy and cooperation."],
+    ["long-term-framework", "Long-Term Strategy and Institutional Sustainability", "Develop a five-year plan, a professionally managed institution, annual forums, transparent governance, partnerships, and sustainable resource mobilisation.", "A durable platform for research, advocacy, legal support, capacity-building, and community empowerment."],
+  ].map(([slug, title, body, outcomes], index) => ({
+    category: "agenda" as const,
+    slug: `agenda-${slug}`,
+    title,
+    eyebrow: `Agenda ${index + 1}`,
+    summary: body,
+    body,
+    secondaryText: `Expected outcomes: ${outcomes}`,
+    order: index + 1,
+    featured: index < 4,
+  })),
+  ...[
+    ["religious-freedom", "Freedom of Religion or Belief and Equal Rights", "Equal protection, freedom of religion or belief, non-discrimination, and access to justice."],
+    ["community-security", "Human Rights and Community Security", "Lawful preventive and community-based measures, coordination, evidence-based policy, and peaceful conflict prevention."],
+    ["research-centre", "International Research, Monitoring, and Documentation Centre", "An independent civilian institution for research, policy analysis, monitoring, verified documentation, reporting, and international cooperation."],
+    ["property-rights", "Property Rights and Access to Justice", "Fair implementation of law, legal assistance, independent dispute resolution, land-record digitisation, and protection against unlawful deprivation."],
+    ["victim-protection", "Legal Assistance and Protection of Victims", "Qualified representation, professional case documentation, fair process, and cooperation among legal, civil-society, and academic institutions."],
+    ["humanitarian-rehabilitation", "Humanitarian Assistance and Community Rehabilitation", "Education, healthcare, psychosocial support, rehabilitation, and sustainable livelihood recovery."],
+    ["economic-empowerment", "Economic Empowerment and Sustainable Development", "Skills, vocational education, entrepreneurship, employment, women’s empowerment, small business, and development partnerships."],
+    ["youth-women", "Youth Leadership and Women’s Participation", "Leadership, participation in public life, human-rights education, civic engagement, fellowships, and training."],
+    ["international-dialogue", "International Cooperation and Constructive Dialogue", "Evidence-based cooperation among the UN, governments, missions, universities, civil society, rights institutions, and development partners."],
+    ["annual-review", "Annual International Review and Reporting", "An independent annual situation report, periodic reviews, and annual forums to assess implementation."],
+    ["advisory-board", "International Advisory Board", "A distinguished expert body providing strategic guidance, independent expertise, and long-term policy recommendations."],
+    ["institutional-development", "Long-Term Partnership and Institutional Development", "International partnerships, sustainable institutions, research, capacity building, dialogue, education, transparent governance, and peaceful advocacy."],
+  ].map(([slug, title, body], index) => ({
+    category: "resolution" as const,
+    slug: `resolution-${slug}`,
+    title,
+    eyebrow: `Resolution ${index + 1}`,
+    summary: body,
+    body,
+    order: index + 1,
+    featured: index < 3,
+  })),
+  {
+    category: "resolution" as const,
+    slug: "resolution-final-declaration",
+    title: "Final Declaration",
+    eyebrow: "Shared commitment",
+    summary:
+      "Human dignity, equality, freedom of religion or belief, non-discrimination, justice, the rule of law, and peaceful international cooperation.",
+    body:
+      "Lasting protection requires constructive dialogue, evidence-based policymaking, accountable institutions, legal protection, sustainable development, and continued international engagement.",
+    secondaryText:
+      "Governments, international organisations, civil society, academic institutions, and development partners are encouraged to work together for equal rights, security, and dignity.",
+    order: 13,
+    featured: true,
+  },
+  ...[
+    ["protection-early-warning", "Human Rights Protection, Security, and Early Warning", "Establish monitoring and early-warning capacity, trained local focal points, verified reporting, risk alerts, and cooperation with researchers, lawyers, and civil society."],
+    ["justice-property", "Legal Protection, Justice, and Property Rights", "Expand legal aid, property dispute resolution, digital case monitoring, professional legal networks, and institutional reform."],
+    ["international-advocacy", "International Advocacy and Diplomatic Engagement", "Engage UN mechanisms, governments, missions, parliamentarians, experts, rights organisations, and universities."],
+    ["research-policy", "Research, Documentation, and Evidence-Based Policy", "Build secure archives, publish reports and thematic studies, and collaborate with universities, institutes, and think tanks."],
+    ["economic-livelihoods", "Economic Empowerment and Sustainable Livelihoods", "Develop skills, entrepreneurship, women- and youth-led enterprise, employment partnerships, training, and financial inclusion."],
+    ["humanitarian-recovery", "Humanitarian Assistance and Community Rehabilitation", "Expand education, healthcare, psychosocial care, rehabilitation, emergency response, resilience, and humanitarian partnerships."],
+    ["youth-women", "Youth Leadership and Women’s Participation", "Create leadership programmes, fellowships, exchanges, civic education, and support for young researchers and community leaders."],
+    ["institutional-framework", "Sustainable International Institutional Framework", "Create an International Board of Advisors, permanent Secretariat, annual policy forums, durable partnerships, and sustainable governance and finance."],
+  ].map(([slug, title, body], index) => ({
+    category: "strategy" as const,
+    slug: `strategy-${slug}`,
+    title,
+    eyebrow: `Strategic goal ${index + 1}`,
+    summary: body,
+    body,
+    dateLabel: "2027–2031",
+    order: index + 1,
+    featured: index < 3,
+  })),
+  ...[
+    ["united-nations", "United Nations", "Human rights, FoRB, minority rights, SDGs, rule of law, justice, humanitarian support, resilience, and institutional capacity."],
+    ["european-union", "European Union", "Human rights, democracy, rule of law, governance, civil society, research, youth leadership, economic empowerment, and capacity building."],
+    ["united-states", "United States of America", "Human-rights research, legal assistance, academic exchange, policy dialogue, leadership, documentation, and humanitarian cooperation."],
+    ["canada", "Canada", "Human-rights protection, resilience, inclusive governance, youth and women’s empowerment, research, education, and community development."],
+    ["rights-organisations", "International Human Rights Organizations", "Independent documentation, capacity-building, legal research, technical assistance, monitoring, and advocacy."],
+    ["universities", "Universities, Research Institutions, and Think Tanks", "Independent research, joint publications, policy analysis, fellowships, leadership development, and evidence-based policy."],
+    ["development-partners", "Development Partners and Philanthropic Foundations", "Institutional development, humanitarian programmes, education, scholarships, employment, resilience, research, and innovation."],
+  ].map(([slug, title, body], index) => ({
+    category: "partnership" as const,
+    slug: `partnership-${slug}`,
+    title,
+    eyebrow: "International cooperation",
+    summary: body,
+    body,
+    secondaryText:
+      "Expected outcome: stronger institutional cooperation, technical expertise, policy dialogue, and sustainable long-term support.",
+    order: index + 1,
+    featured: index < 4,
+  })),
+  {
+    category: "partnership" as const,
+    slug: "partnership-future-institutional-framework",
+    title: "Future Institutional Framework",
+    eyebrow: "Implementation and accountability",
+    summary:
+      "A five-year implementation framework will coordinate, monitor, and evaluate conference recommendations.",
+    body:
+      "The proposed governance structure includes an Advisory Board, Executive Committee, International Partners Forum, and Annual Review Committee. It will coordinate annual work plans, publish progress reports, support fundraising, and review priorities.",
+    secondaryText:
+      "Independent reviews will take place annually, with an international review conference every five years to assess progress and approve the next strategic plan.",
+    order: 8,
+    featured: true,
+  },
+] as const
+
 const programmeDays = [
   { slug: "day-one", tabLabel: "Day 01", navigationLabel: "3 October", dateLabel: "Saturday · 3 October 2026", summary: "Evidence enters the public record.", order: 1 },
   { slug: "day-two", tabLabel: "Day 02", navigationLabel: "4 October", dateLabel: "Sunday · 4 October 2026", summary: "Evidence becomes commitment.", order: 2 },
@@ -512,7 +756,17 @@ export const seedInitialContent = internalMutation({
       tiersUpserted += 1
     }
 
-    for (const entry of cmsEntries) {
+    for (const entry of [...cmsEntries, ...seminarEntries]) {
+      const optional = entry as typeof entry & {
+        secondaryText?: string
+        country?: string
+        role?: string
+        linkLabel?: string
+        linkUrl?: string
+        dateLabel?: string
+        timeLabel?: string
+        parentSlug?: string
+      }
       const existing = await ctx.db
         .query("cmsEntries")
         .withIndex("by_slug", (q) => q.eq("slug", entry.slug))
@@ -524,16 +778,16 @@ export const seedInitialContent = internalMutation({
         eyebrow: entry.eyebrow,
         summary: entry.summary,
         body: entry.body,
-        secondaryText: "",
-        country: "",
-        role: "",
+        secondaryText: optional.secondaryText ?? "",
+        country: optional.country ?? "",
+        role: optional.role ?? "",
         email: "",
         phone: "",
-        linkLabel: "linkLabel" in entry ? entry.linkLabel : "",
-        linkUrl: "linkUrl" in entry ? entry.linkUrl : "",
-        dateLabel: "dateLabel" in entry ? entry.dateLabel : "",
-        timeLabel: "timeLabel" in entry ? entry.timeLabel : "",
-        parentSlug: "parentSlug" in entry ? entry.parentSlug : "",
+        linkLabel: optional.linkLabel ?? "",
+        linkUrl: optional.linkUrl ?? "",
+        dateLabel: optional.dateLabel ?? "",
+        timeLabel: optional.timeLabel ?? "",
+        parentSlug: optional.parentSlug ?? "",
         order: entry.order,
         status: "published" as const,
         featured: entry.featured,

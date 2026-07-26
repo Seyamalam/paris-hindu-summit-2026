@@ -20,6 +20,10 @@ The complete website includes matching **light and dark modes**. The header cont
 | `/about`       | Mission, principles, outcomes, and seven-point charter                              |
 | `/context`     | Historical, demographic, legal, and recent-incident context                         |
 | `/programme`   | Interactive two-day summit schedule                                                 |
+| `/agenda`      | Seventeen-part, Convex-managed proposed agenda                                      |
+| `/resolution`  | Paris Resolution commitments and final declaration                                  |
+| `/strategy`    | Editable Five-Year Strategic Action Plan for 2027–2031                              |
+| `/partnership-framework` | International cooperation and future institutional framework             |
 | `/speakers`    | Confirmed and proposed contributors                                                 |
 | `/committee`   | Organising committee and responsibilities                                           |
 | `/media`       | Research, publication, documentary, press, and media resources                      |
@@ -51,7 +55,8 @@ The detailed record of delivered work is maintained in
 - Administrator and editor roles enforced inside Convex mutations
 - Invitation-only team access: public account creation closes after bootstrap, and administrators provision or suspend named accounts from Admin
 - Global settings editor for event identity, dates, venue, format, audience numbers, languages, announcement, email addresses, phone/WhatsApp, social links, hero, donation, and footer copy
-- Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, advisory council, programme, media, and FAQs
+- Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, Advisory Board, programme, media, and FAQs
+- New seminar brief represented as 68 editable records across overview, people, agenda, resolution, strategy, and international partnership content
 - Purpose-built programme-day/session and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
 - Editable regional-country and partner/sponsor directories
 - Support, contact, sponsorship, volunteer, and media forms with a protected admin inbox
