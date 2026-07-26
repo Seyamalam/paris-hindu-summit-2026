@@ -5,6 +5,8 @@
 - Source visual truth: `public/reference/design-09-night-testimony.png`
 - Desktop implementation: `public/reference/implementation-home-desktop.png`
 - Mobile implementation: `public/reference/implementation-home-mobile.png`
+- Scrolled desktop navigation: `public/reference/implementation-sticky-header-desktop.png`
+- Scrolled mobile navigation: `public/reference/implementation-sticky-header-mobile.png`
 - Source pixels: 1487 × 1058
 - Desktop implementation pixels: 1425 × 1013
 - Mobile implementation pixels: 345 × 639
@@ -118,6 +120,20 @@ Post-fix evidence:
 - At 360 × 667, the headline, both actions, and event metadata remain visible; the page reports no horizontal overflow.
 - Desktop and mobile checks report no browser-console errors.
 - The final source/implementation comparison used an identical 720 × 512 top-aligned cover crop; no actionable P0/P1/P2 mismatch remains.
+
+### Iteration 5
+
+- **P1:** The site header used document-level absolute positioning, so navigation disappeared after leaving the top of any page.
+
+Fix:
+
+- Changed the shared header to fixed viewport positioning while preserving its existing glass background, stacking order, desktop height, and compact-mobile height.
+
+Post-fix evidence:
+
+- At a desktop scroll position of approximately 1100px, the header remains at `top: 0` with its full 82px height.
+- At a mobile scroll position beyond 2400px, the header remains at `top: 0` with its full 68px height and 44 × 44px menu control.
+- No horizontal overflow or browser-console warnings/errors were introduced.
 
 ## Remaining findings
 
