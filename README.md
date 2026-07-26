@@ -34,6 +34,8 @@ The complete website includes matching **light and dark modes**. The header cont
 The client’s living delivery requirements, implementation state, admin-panel
 scope, dynamic-content boundary, and launch checks are maintained in
 [`docs/PRODUCT_SPEC_CHECKLIST.md`](docs/PRODUCT_SPEC_CHECKLIST.md).
+The detailed record of delivered work is maintained in
+[`docs/COMPLETED_WORK_CHECKLIST.md`](docs/COMPLETED_WORK_CHECKLIST.md).
 
 ## Functional prototype flows
 

@@ -1,0 +1,258 @@
+# Completed Work Checklist
+
+Last verified: 26 July 2026
+
+This is the detailed delivery record for the Paris Hindu Summit 2026 website.
+It complements `PRODUCT_SPEC_CHECKLIST.md`, which remains the source of truth
+for incomplete work, approvals, and launch dependencies.
+
+## Project foundation
+
+- ✅ Dedicated Next.js project created for the selected Design 06 direction.
+- ✅ Previous multi-design exploration preserved separately.
+- ✅ Next.js 16 App Router and React 19 foundation.
+- ✅ TypeScript, Bun, Tailwind CSS 4, and shadcn/ui integration.
+- ✅ Convex database, functions, realtime queries, and file storage.
+- ✅ Better Auth email/password authentication integrated with Convex.
+- ✅ Shared layouts and reusable public-site components.
+- ✅ Shared administrative interface components.
+- ✅ Light and dark themes with stored visitor preference.
+- ✅ Responsive layouts from compact phones through wide desktop screens.
+- ✅ Product specification maintained as a living checklist.
+- ✅ README includes setup, architecture, deployment, and administrator guidance.
+
+## Visual system and responsive design
+
+- ✅ Client-selected Design 06 visual language implemented.
+- ✅ Paper, cobalt, signal-red, and editorial typography system.
+- ✅ Matching dark-mode palette.
+- ✅ Persistent theme switcher on public pages.
+- ✅ System-theme preference used on first visit.
+- ✅ Fluid hero typography prevents horizontal overflow.
+- ✅ Long programme headlines wrap cleanly.
+- ✅ Day 01 and Day 02 content reflowed for narrow screens.
+- ✅ Compact-phone, large-phone, tablet, small-laptop, desktop, and wide-screen passes.
+- ✅ Mobile-friendly input and button sizing.
+- ✅ Responsive speaker, partner, regional, chart, and footer grids.
+- ✅ Deliberate reveal and staggered-entry animation.
+- ✅ Reduced-motion alternatives.
+- ✅ Visible keyboard focus treatment.
+- ✅ Generated witness-flame favicon and Apple touch icon.
+- ✅ Supplied logo integrated into the site identity.
+
+## Header, navigation, and footer
+
+- ✅ Fixed header remains available while scrolling.
+- ✅ Admin-controlled announcement strip and registration link.
+- ✅ Structured desktop navigation using shadcn Navigation Menu.
+- ✅ Detailed About dropdown.
+- ✅ Dynamic Programme dropdown from published programme days.
+- ✅ Dynamic Media dropdown from published media records.
+- ✅ Dynamic Engage dropdown from published engagement records.
+- ✅ Beyond Bangladesh and Support navigation.
+- ✅ Desktop Register and Donate actions.
+- ✅ Complete mobile navigation.
+- ✅ Registration and donation routes available on mobile.
+- ✅ Footer navigation columns.
+- ✅ Managed contact email and social links.
+- ✅ Footer registration, contribution, privacy, and terms links.
+- ✅ Responsive footer wrapping.
+
+## Public pages
+
+- ✅ Homepage.
+- ✅ About.
+- ✅ Historical and human-rights Context.
+- ✅ Programme.
+- ✅ Speakers.
+- ✅ Organizing Committee.
+- ✅ Media and Publications.
+- ✅ Participate and Registration.
+- ✅ Engage.
+- ✅ Beyond Bangladesh Regional Forum.
+- ✅ Partners and Sponsors.
+- ✅ Support and Contact.
+- ✅ Donation demonstration page.
+- ✅ Privacy Notice.
+- ✅ Terms and Conditions.
+- ✅ Protected Admin workspace.
+- ✅ Route-level titles and metadata.
+
+## Homepage
+
+- ✅ Summit hero with date, location, and calls to action.
+- ✅ Responsive 03–04 October date composition.
+- ✅ Paris editorial banner.
+- ✅ Dynamic Venue, Format, Delegates, and Languages information bar.
+- ✅ “Why Paris · Why now” introduction.
+- ✅ Admin-managed “Why This Summit” cards.
+- ✅ Admin-managed Challenges cards.
+- ✅ Evidence statistics band.
+- ✅ Editable demographic and displacement charts.
+- ✅ Chart sources, tooltips, and accessible data tables.
+- ✅ Two-day programme preview.
+- ✅ Admin-controlled featured-speaker teaser.
+- ✅ Backend maximum of three featured homepage speakers.
+- ✅ Safe fallback speaker presentation.
+- ✅ Stable non-carousel partner and sponsor wall.
+- ✅ Dynamic Beyond Bangladesh section including Nepal.
+- ✅ Countdown driven by the admin-managed event start time.
+- ✅ Closing support and contribution section.
+
+## Programme
+
+- ✅ Purpose-built `programmeDays` and `programmeSessions` models.
+- ✅ Indexed public and administrator queries.
+- ✅ Published-only public programme data.
+- ✅ Day creation, editing, deletion, ordering, draft, and publication.
+- ✅ Day tab label, navigation label, date, summary, and order.
+- ✅ Session creation, editing, deletion, ordering, draft, and publication.
+- ✅ Session times, title, description, tag, speakers, and location.
+- ✅ Public programme tabs connected to Convex.
+- ✅ Header programme navigation connected to Convex.
+- ✅ Two production programme days and four sessions seeded.
+
+## Evidence charts
+
+- ✅ Purpose-built `chartSeries` and `chartPoints` models.
+- ✅ Indexed public and administrator queries.
+- ✅ Published-only public chart data.
+- ✅ Series creation, editing, deletion, ordering, draft, and publication.
+- ✅ Title, eyebrow, description, unit, source label, and source URL fields.
+- ✅ Point creation, editing, deletion, and ordering.
+- ✅ Point labels, supporting labels, and numeric values.
+- ✅ Backend validation rejects negative chart values.
+- ✅ Recharts and shadcn chart presentation.
+- ✅ Equivalent accessible data table for every chart.
+- ✅ Two production chart series and six points seeded.
+
+## Beyond Bangladesh
+
+- ✅ Pakistan, Afghanistan, Myanmar, and Nepal regional records.
+- ✅ Extensible Convex country model.
+- ✅ Administrators can add more countries.
+- ✅ Slug, country name, code, eyebrow, headline, summary, and detail fields.
+- ✅ Optional managed image and source link.
+- ✅ Ordering and draft/published state.
+- ✅ Source URL required when an administrator publishes a country.
+- ✅ Protected create, edit, delete, order, and publish controls.
+- ✅ Public regional cards connected to Convex.
+
+## Partners and sponsors
+
+- ✅ Rotating carousel replaced with a stable institutional wall.
+- ✅ Partner and sponsor record types and sponsorship tiers.
+- ✅ Description, website, logo, and order fields.
+- ✅ Draft and published status.
+- ✅ Protected administrator CRUD.
+- ✅ Public organisation wall connected to Convex.
+- ✅ Initial production organisations seeded.
+
+## Registration, support, and forms
+
+- ✅ Persistent Convex registration workflow.
+- ✅ Required first name, last name, email, and WhatsApp number.
+- ✅ Optional organisation and notes.
+- ✅ Survivor, Delegate, Audience, and Researcher-Speaker options.
+- ✅ Delegate selected as the default attendance type.
+- ✅ Consent language and privacy link.
+- ✅ Honeypot and per-email rate protection.
+- ✅ Server-side input trimming and length limits.
+- ✅ Unique submission references and success state.
+- ✅ Registrations delivered to the protected inbox.
+- ✅ Registration and enquiry CSV export.
+- ✅ Persistent general-support, contact, sponsorship, volunteer, and media pathways.
+- ✅ Submission status management and private organiser notes.
+- ✅ Interpretation information for English, French, and Bengali.
+
+## Authentication and access control
+
+- ✅ Better Auth email/password account creation and sign-in.
+- ✅ Ten-character minimum password.
+- ✅ Password visibility toggle on sign-in.
+- ✅ Password visibility toggles on both account-creation password fields.
+- ✅ Required “Retype password” field during account creation.
+- ✅ Client-side password-match validation with an accessible error.
+- ✅ Correct browser autocomplete hints for current and new passwords.
+- ✅ First-administrator bootstrap process.
+- ✅ Later accounts receive no automatic administrator access.
+- ✅ Administrator and Editor roles.
+- ✅ Convex-side role enforcement.
+- ✅ Secure sign-out and protected administrator functions.
+- ✅ Production trusted origin configured.
+- ✅ Production authentication endpoint verified with HTTP 200.
+- ✅ Deployed sign-in and account-creation states verified.
+
+## Admin panel and editable content
+
+- ✅ Protected editorial dashboard and Global Site Settings.
+- ✅ Structured Page Content editor.
+- ✅ Programme and Evidence Chart editors.
+- ✅ Regional-country and Partner/Sponsor editors.
+- ✅ Forms Inbox and Registration management.
+- ✅ Donation-record preparation.
+- ✅ Media Library and Audit Activity timeline.
+- ✅ Administrator-role controls.
+- ✅ Draft, publication, feature, and order controls.
+- ✅ Destructive-action confirmation dialogs.
+- ✅ Success and failure notifications.
+- ✅ Public-site preview link.
+- ✅ Editable identity, dates, timezone, venue, address, format, delegates, and languages.
+- ✅ Editable announcement, contact details, social links, hero, and footer.
+- ✅ Editable Overview, Agenda, Resolution, Strategy, and Partnership records.
+- ✅ Editable Why, Challenge, Engage, Speaker, Team, and Advisory records.
+- ✅ Editable Programme, Media, FAQ, and Legal records.
+- ✅ Featured speaker records connected to the homepage.
+
+## Media and Convex storage
+
+- ✅ Convex-managed file uploads.
+- ✅ JPEG, PNG, WebP, AVIF, and PDF allowlist; SVG rejected.
+- ✅ MIME, extension, file-size, and image-dimension validation.
+- ✅ Mandatory custom alternative text.
+- ✅ Permanent Convex storage IDs instead of temporary URLs.
+- ✅ Resolved storage URLs returned by public queries.
+- ✅ Managed asset selection in the CMS editor.
+- ✅ Next.js remote-image configuration for Convex.
+- ✅ Image-reference database indexes.
+- ✅ Referenced CMS, regional, and organisation files protected from deletion.
+
+## Legal, accessibility, and safety
+
+- ✅ CMS-backed Privacy Notice and Terms and Conditions.
+- ✅ Visible draft notice until final client approval.
+- ✅ Semantic headings, page sections, and clear form labels.
+- ✅ Keyboard-accessible navigation, theme controls, and dialogs.
+- ✅ Screen-reader chart captions and data tables.
+- ✅ Meaningful image alternative text.
+- ✅ Loading and submission status messages.
+- ✅ Reduced-motion behaviour.
+- ✅ Backend validators and explicit return validators.
+- ✅ Draft/published content boundary.
+- ✅ Audit events and update timestamps.
+- ✅ Authentication secrets kept out of public frontend variables.
+- ✅ No personal registrations, credentials, or donor data in production seeds.
+
+## Production, verification, and source control
+
+- ✅ Latest Convex schema and functions deployed to production.
+- ✅ Production chart, programme, and storage-reference indexes deployed.
+- ✅ Production content seed completed.
+- ✅ Nineteen CMS records seeded.
+- ✅ Two chart series, six chart points, two programme days, and four sessions seeded.
+- ✅ Four regional countries and four organisations updated.
+- ✅ Global settings and four demonstration tiers seeded.
+- ✅ Production programme, chart, and regional queries verified.
+- ✅ `bun run typecheck`, `bun run lint`, and `bun run build` pass.
+- ✅ All application routes compile.
+- ✅ `git diff --check` passes.
+- ✅ Vercel Convex endpoint requirements documented.
+- ✅ Production Better Auth origin corrected.
+- ✅ GitHub repository is the source of truth.
+- ✅ Latest completed work pushed to `master`.
+
+## Intentionally not activated
+
+- ✅ Stripe remains excluded from this delivery at the client’s request.
+- ✅ No live payment keys, checkout, collection, or webhook were activated.
+

@@ -10,6 +10,8 @@ import {
   CircleDollarSignIcon,
   FileTextIcon,
   Globe2Icon,
+  EyeIcon,
+  EyeOffIcon,
   ImageIcon,
   InboxIcon,
   LayoutDashboardIcon,
@@ -99,21 +101,36 @@ function AuthGate() {
   const bootstrap = useMutation(api.admin.bootstrapFirstAdmin)
   const [mode, setMode] = useState<"signin" | "signup">("signin")
   const [busy, setBusy] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [passwordError, setPasswordError] = useState("")
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setBusy(true)
     const data = new FormData(event.currentTarget)
     const email = String(data.get("email"))
     const password = String(data.get("password"))
+    const confirmation = String(data.get("confirmPassword"))
     const name = String(data.get("name") || "Paris Assembly editor")
-    const result =
-      mode === "signin"
-        ? await authClient.signIn.email({ email, password })
-        : await authClient.signUp.email({ email, password, name })
-    setBusy(false)
-    if (result.error) toast.error(result.error.message)
-    else toast.success(mode === "signin" ? "Signed in." : "Account created.")
+    if (mode === "signup" && password !== confirmation) {
+      setPasswordError("The passwords do not match. Check both entries and try again.")
+      toast.error("The passwords do not match.")
+      return
+    }
+    setPasswordError("")
+    setBusy(true)
+    try {
+      const result =
+        mode === "signin"
+          ? await authClient.signIn.email({ email, password })
+          : await authClient.signUp.email({ email, password, name })
+      if (result.error) toast.error(result.error.message)
+      else toast.success(mode === "signin" ? "Signed in." : "Account created.")
+    } catch {
+      toast.error("Authentication could not be completed. Check your details and try again.")
+    } finally {
+      setBusy(false)
+    }
   }
 
   if (access === undefined) {
@@ -139,13 +156,42 @@ function AuthGate() {
           <form onSubmit={submit}>
             {mode === "signup" && <Field name="name" label="Your name" required />}
             <Field name="email" type="email" label="Email address" required />
-            <Field name="password" type="password" label="Password" minLength={10} required />
+            <PasswordField
+              id="admin-password"
+              name="password"
+              label="Password"
+              visible={showPassword}
+              onToggle={() => setShowPassword((visible) => !visible)}
+              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              describedBy={passwordError ? "password-match-error" : undefined}
+            />
+            {mode === "signup" && (
+              <PasswordField
+                id="admin-confirm-password"
+                name="confirmPassword"
+                label="Retype password"
+                visible={showConfirmation}
+                onToggle={() => setShowConfirmation((visible) => !visible)}
+                autoComplete="new-password"
+                describedBy={passwordError ? "password-match-error" : undefined}
+              />
+            )}
+            {passwordError && (
+              <p className="admin-field-error" id="password-match-error" role="alert">
+                {passwordError}
+              </p>
+            )}
             <Button disabled={busy} type="submit">
               {busy && <Loader2Icon className="animate-spin" />}
               {mode === "signin" ? "Enter control room" : "Create account"}
             </Button>
           </form>
-          <button className="admin-text-button" onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
+          <button className="admin-text-button" onClick={() => {
+            setMode(mode === "signin" ? "signup" : "signin")
+            setShowPassword(false)
+            setShowConfirmation(false)
+            setPasswordError("")
+          }}>
             {mode === "signin" ? "Need the initial administrator account?" : "Already have an account? Sign in"}
           </button>
           <p className="auth-note">
@@ -532,6 +578,44 @@ function ConfirmDelete({ label, onConfirm }: { label:string; onConfirm:()=>Promi
 function Field({ label, multiline, onValueChange, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label:string; multiline?:boolean; onValueChange?:(value:string)=>void }) {
   const shared = { name:props.name, value:props.value, defaultValue:props.defaultValue, required:props.required, placeholder:props.placeholder, onChange:(event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onValueChange?.(event.target.value) }
   return <label className={`admin-field ${multiline ? "wide" : ""}`}><span>{label}</span>{multiline ? <Textarea {...shared} /> : <Input {...props} onChange={shared.onChange as React.ChangeEventHandler<HTMLInputElement>} />}</label>
+}
+function PasswordField({
+  id,
+  label,
+  visible,
+  onToggle,
+  describedBy,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  id:string
+  label:string
+  visible:boolean
+  onToggle:()=>void
+  describedBy?:string
+}) {
+  return (
+    <div className="admin-field admin-password-field">
+      <label htmlFor={id}>{label}</label>
+      <div className="admin-password-control">
+        <Input
+          {...props}
+          id={id}
+          type={visible ? "text" : "password"}
+          minLength={10}
+          required
+          aria-describedby={describedBy}
+        />
+        <button
+          type="button"
+          aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+          aria-pressed={visible}
+          onClick={onToggle}
+        >
+          {visible ? <EyeOffIcon /> : <EyeIcon />}
+        </button>
+      </div>
+    </div>
+  )
 }
 function PanelTitle({ eyebrow, title, copy }: { eyebrow:string; title:string; copy?:string }) { return <header className="admin-panel-title"><p className="admin-kicker">{eyebrow}</p><h2>{title}</h2>{copy && <p>{copy}</p>}</header> }
 function PanelLoading() { return <div className="admin-loading"><Spinner /> Reading the live workspace…</div> }

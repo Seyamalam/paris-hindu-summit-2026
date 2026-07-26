@@ -10,6 +10,9 @@ model, integrations, and launch. Update a checkbox only when the behaviour has
 been implemented and verified in both the development and production Convex
 deployments where data is involved.
 
+For the full delivered-feature inventory, see
+[`COMPLETED_WORK_CHECKLIST.md`](COMPLETED_WORK_CHECKLIST.md).
+
 ## Status legend
 
 - `[x]` Implemented and verified
