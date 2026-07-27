@@ -1570,3 +1570,37 @@
     transition: none;
   }
 }
+
+.media-publication-admin > .admin-panel {
+  margin: 22px 0 34px;
+  padding: 22px;
+  background: var(--admin-paper);
+  border: 1px solid var(--admin-line);
+  box-shadow: none;
+}
+
+.media-publication-admin > .admin-panel .admin-panel-heading h2 {
+  font-size: 22px;
+}
+
+.admin-subpanel {
+  margin-top: 34px;
+  padding-top: 28px;
+  border-top: 2px solid var(--admin-blue);
+}
+
+.admin-subpanel .admin-panel-heading {
+  margin-bottom: 20px;
+}
+
+.admin-logo-upload {
+  min-height: 48px;
+}
+
+.admin-logo-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

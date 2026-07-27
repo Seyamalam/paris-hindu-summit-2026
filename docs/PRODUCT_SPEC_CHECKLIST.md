@@ -157,13 +157,15 @@ For the full delivered-feature inventory, see
 ### Speakers tab — dynamic
 
 - [x] Add, edit, remove, reorder, draft, and publish speaker records.
-- [x] Fields include name/title, eyebrow/tag, professional role, country, biography/body, contact/link fields, image storage ID, and order.
+- [x] Purpose-built speaker editor uses client-facing fields: name, short introduction shown below the name, country, biography, direct profile-picture upload/selection, order, and publication state.
+- [x] The public Speakers page now reads published speaker records from Convex instead of a code-only list.
 - [x] Featured toggle drives the homepage teaser and the backend enforces the approved maximum of three.
 
 ### Organizing Team and Advisory Board tabs — dynamic
 
-- [x] Team fields support name, role, biography, photo, alt text/metadata, duties and order through structured CMS records.
-- [x] Advisory fields support title/name, role, biography, icon/image metadata and order through structured CMS records.
+- [x] One purpose-built “Organizing Team and Advisory Board” editor switches between both groups.
+- [x] Team and Advisory Board fields support name, short introduction, biography, direct profile-picture upload/selection, order, and publication state.
+- [x] Published portraits and biographies render on the public committee page.
 
 ### Partners & Sponsors tab — dynamic
 
@@ -174,9 +176,19 @@ For the full delivered-feature inventory, see
 
 ### Media & Publications tab — dynamic
 
-- [x] Media records can represent Books, Research Papers, Government Reports, Videos and Images, and Articles via their eyebrow/category field.
-- [x] Media fields support title, description, metadata/date, category, link/download destination, thumbnail, alt text/metadata and order.
-- [x] Media files cannot be deleted while referenced; attachment replacement is performed by selecting a different managed asset.
+- [x] Public and admin navigation label is “Media & Publication”.
+- [x] Admin can create, order, draft, publish, and remove submenu sections such as Books, Government Reports, and Research & Briefings.
+- [x] Every publication belongs to a submenu section and supports title, description, optional cover image, uploaded file, order, and publication state.
+- [x] Direct cover and PDF/Word/PowerPoint upload uses Convex storage; stored IDs, not expiring URLs, are persisted.
+- [x] The public Media & Publication page renders published sections and downloadable files reactively.
+- [x] Media covers and publication files cannot be deleted while referenced.
+
+### Purpose-built About document editors
+
+- [x] Proposed Agenda editor exposes agenda number, title, discussion points, and expected outcome.
+- [x] Paris Resolution editor exposes resolution number, title, summary, and expected outcomes; published outcomes appear after the resolution list.
+- [x] 5-Year Strategic Plan editor supports a Vision above all goals, numbered strategic goals, key actions, expected outcomes, and year-based “Implementation Timeline” cards.
+- [x] International Partnership Framework editor exposes country/institution name, area of cooperation, and expected outcomes.
 
 ### Population and displacement tabs — dynamic
 

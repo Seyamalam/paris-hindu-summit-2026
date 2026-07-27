@@ -60,7 +60,9 @@ The detailed record of delivered work is maintained in
 - Administrator and editor roles enforced inside Convex mutations
 - Invitation-only team access: public account creation closes after bootstrap, and administrators provision or suspend named accounts from Admin
 - Global settings editor for event identity, dates, venue, format, audience numbers, languages, announcement, email addresses, phone/WhatsApp, social links, hero, donation, and footer copy
-- Structured CMS editor for overview, agenda, resolution, strategy, partnership, summit rationale, challenges, engagement, speakers, team, Advisory Board, programme, media, and FAQs
+- Purpose-built page editors for Proposed Agenda, Paris Resolution, the 5-Year Strategic Plan, the International Partnership Framework, Speakers, Organizing Team and Advisory Board, and Media & Publication
+- Dynamic Media & Publication submenu sections with direct cover and downloadable PDF/Word/PowerPoint uploads to Convex storage
+- Strategic Plan Vision and editable 2027–2031 Implementation Timeline cards
 - New seminar brief represented as 68 editable records across overview, people, agenda, resolution, strategy, and international partnership content
 - Purpose-built programme-day/session and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
 - Editable regional-country and partner/sponsor directories

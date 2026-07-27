@@ -54,16 +54,16 @@ export function SiteHeader() {
   const settings = useQuery(api.settings.get)
   const programme = useQuery(api.programme.listPublished)
   const engage = useQuery(api.cms.listPublished, { category: "engage" })
-  const media = useQuery(api.cms.listPublished, { category: "media" })
+  const media = useQuery(api.media.listPublished)
   const aboutLinks = [
-    ["/about", "Overview"], ["/committee#organising-team", "Organising team"], ["/committee#advisory", "Advisory Board"],
+    ["/about", "Overview"], ["/committee", "Organizing Team and Advisory Board"],
     ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
     ["/strategy", "Five-year strategy"], ["/partnership-framework", "International partnerships"],
   ]
   const navGroups = [
     ["About", aboutLinks],
     ["Programme", programme?.map((item) => [`/programme#${item.slug}`, `${item.tabLabel} · ${item.navigationLabel}`]) ?? [["/programme", "Full programme"]]],
-    ["Media", media?.map((item) => [item.linkUrl || "/media", item.title]) ?? [["/media", "Media & publications"]]],
+    ["Media & Publication", media?.map((section) => [`/media#${section.slug}`, section.name]) ?? [["/media", "Media & Publication"]]],
     ["Engage", engage?.map((item) => [item.linkUrl || "/engage", item.title]) ?? [["/engage", "Ways to engage"]]],
   ] as const
 
@@ -80,6 +80,7 @@ export function SiteHeader() {
             <NavigationMenuTrigger>{label}</NavigationMenuTrigger>
             <NavigationMenuContent><ul className="summit-nav-panel">{links.map(([href,title]) => <li key={`${href}-${title}`}><NavigationMenuLink render={<Link href={href} />}><b>{title}</b></NavigationMenuLink></li>)}</ul></NavigationMenuContent>
           </NavigationMenuItem>)}
+          <NavigationMenuItem><NavigationMenuLink render={<Link href="/speakers" />} className={cn(pathname === "/speakers" && "active")}>Speakers</NavigationMenuLink></NavigationMenuItem>
           <NavigationMenuItem><NavigationMenuLink render={<Link href="/regional" />} className={cn(pathname === "/regional" && "active")}>Regional</NavigationMenuLink></NavigationMenuItem>
           <NavigationMenuItem><NavigationMenuLink render={<Link href="/support" />} className={cn(pathname === "/support" && "active")}>Support</NavigationMenuLink></NavigationMenuItem>
         </NavigationMenuList>
@@ -117,8 +118,9 @@ export function SiteHeader() {
             {[
               { href: "/", label: "Home" },
               ...aboutLinks.map(([href,label]) => ({ href,label })),
+              { href:"/speakers",label:"Speakers" },
               { href:"/regional",label:"Regional" },
-              { href:"/media",label:"Media" },
+              { href:"/media",label:"Media & Publication" },
               { href:"/engage",label:"Engage" },
               { href:"/support",label:"Support" },
               ...(settings?.registrationOpen !== false ? [{ href: "/participate", label: "Reserve a place" }] : []),

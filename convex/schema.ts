@@ -202,6 +202,41 @@ export default defineSchema({
     .index("by_status_and_order", ["status", "order"])
     .index("by_kind_and_status_and_order", ["kind", "status", "order"]),
 
+  mediaSections: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    description: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status_and_order", ["status", "order"])
+    .index("by_order", ["order"]),
+
+  mediaItems: defineTable({
+    sectionSlug: v.string(),
+    slug: v.string(),
+    title: v.string(),
+    description: v.string(),
+    coverStorageId: v.optional(v.id("_storage")),
+    fileStorageId: v.id("_storage"),
+    fileName: v.string(),
+    mimeType: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_section_slug_and_status_and_order", [
+      "sectionSlug",
+      "status",
+      "order",
+    ])
+    .index("by_section_slug_and_order", ["sectionSlug", "order"])
+    .index("by_cover_storage_id", ["coverStorageId"])
+    .index("by_file_storage_id", ["fileStorageId"]),
+
   donationTiers: defineTable({
     slug: v.string(),
     label: v.string(),

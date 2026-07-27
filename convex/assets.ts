@@ -38,6 +38,10 @@ export const register = mutation({
       "image/webp",
       "image/avif",
       "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     ]
     if (!allowed.includes(args.mimeType) || args.byteSize > 20_000_000 || args.altText.trim().length < 3) {
       await ctx.storage.delete(args.storageId)
@@ -105,12 +109,26 @@ export const remove = mutation({
     const actor = await getAdmin(ctx)
     const asset = await ctx.db.get(args.id)
     if (asset) {
-      const [cmsReference, regionalReference, organizationReference] = await Promise.all([
+      const [
+        cmsReference,
+        regionalReference,
+        organizationReference,
+        mediaCoverReference,
+        mediaFileReference,
+      ] = await Promise.all([
         ctx.db.query("cmsEntries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
         ctx.db.query("regionalCountries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
         ctx.db.query("organizations").withIndex("by_logo_storage_id", (q) => q.eq("logoStorageId", asset.storageId)).first(),
+        ctx.db.query("mediaItems").withIndex("by_cover_storage_id", (q) => q.eq("coverStorageId", asset.storageId)).first(),
+        ctx.db.query("mediaItems").withIndex("by_file_storage_id", (q) => q.eq("fileStorageId", asset.storageId)).first(),
       ])
-      if (cmsReference || regionalReference || organizationReference) {
+      if (
+        cmsReference ||
+        regionalReference ||
+        organizationReference ||
+        mediaCoverReference ||
+        mediaFileReference
+      ) {
         throw new ConvexError("This file is attached to published content. Detach it before deleting.")
       }
       await ctx.storage.delete(asset.storageId)

@@ -6,6 +6,7 @@ import {
   ArchiveIcon,
   BarChart3Icon,
   BlocksIcon,
+  BookOpenIcon,
   CheckCircle2Icon,
   CircleDollarSignIcon,
   FileTextIcon,
@@ -29,6 +30,7 @@ import {
   SmartphoneIcon,
   SparklesIcon,
   TabletIcon,
+  UploadIcon,
   UserCogIcon,
   Users2Icon,
 } from "lucide-react"
@@ -52,13 +54,18 @@ const websitePages = [
   ["about", "About", "/about", FileTextIcon],
   ["programme", "Programme", "/programme", CalendarRangeIcon],
   ["speakers", "Speakers", "/speakers", Users2Icon],
+  ["teamBoard", "Organizing Team & Board", "/committee", UserCogIcon],
+  ["agenda", "Proposed Agenda", "/agenda", FileTextIcon],
+  ["resolution", "Paris Resolution", "/resolution", FileTextIcon],
+  ["strategy", "5-Year Strategic Plan", "/strategy", BarChart3Icon],
+  ["partnership", "Partnership Framework", "/partnership-framework", HandshakeIcon],
   ["regional", "Regional", "/regional", Globe2Icon],
   ["partners", "Partners", "/partners", HandshakeIcon],
-  ["media", "Media", "/media", ImageIcon],
+  ["media", "Media & Publication", "/media", BookOpenIcon],
   ["engage", "Engage", "/engage", SparklesIcon],
   ["support", "Support", "/support", InboxIcon],
   ["evidence", "Evidence", "/context", BarChart3Icon],
-  ["content", "More pages", "/resolution", FileTextIcon],
+  ["content", "Other pages", "/engage", FileTextIcon],
   ["settings", "Site settings", "/", Settings2Icon],
 ] as const
 
@@ -406,10 +413,15 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
   if (page === "about") return <ContentPanel compact initialCategory="overview" />
   if (page === "programme") return <ProgrammeAdmin />
-  if (page === "speakers") return <ContentPanel compact initialCategory="speaker" />
+  if (page === "speakers") return <PeopleEditor mode="speaker" />
+  if (page === "teamBoard") return <PeopleEditor mode="team" />
+  if (page === "agenda") return <StructuredDocumentPanel category="agenda" />
+  if (page === "resolution") return <StructuredDocumentPanel category="resolution" />
+  if (page === "strategy") return <StructuredDocumentPanel category="strategy" />
+  if (page === "partnership") return <StructuredDocumentPanel category="partnership" />
   if (page === "regional") return <RegionalPanel />
   if (page === "partners") return <PartnersPanel />
-  if (page === "media") return <ContentPanel compact initialCategory="media" />
+  if (page === "media") return <MediaPublicationPanel />
   if (page === "engage") return <ContentPanel compact initialCategory="engage" />
   if (page === "support") return <ContentPanel compact initialCategory="faq" />
   if (page === "evidence") return <ChartsAdmin />
@@ -647,6 +659,333 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
       <Button className="admin-save" onClick={publish}>
         <SaveIcon /> Publish {focus === "home" ? "Home page" : "site settings"}
       </Button>
+    </section>
+  )
+}
+
+type StructuredCategory = "agenda" | "resolution" | "strategy" | "partnership"
+
+function StructuredDocumentPanel({ category }: { category:StructuredCategory }) {
+  const entries = useQuery(api.cms.listForAdmin, { category })
+  const save = useMutation(api.cms.save)
+  const remove = useMutation(api.cms.remove)
+  const [selected, setSelected] = useState<string>("new")
+  const [draft, setDraft] = useState<ContentDraft>({
+    ...blankContent,
+    parentSlug:category === "strategy" ? "goal" : "",
+  })
+  const existing = entries?.find((entry) => entry._id === selected)
+  useEffect(() => {
+    if (existing) {
+      const { _id, category: _category, imageStorageId: _image, imageUrl: _url, ...fields } = existing
+      void _id; void _category; void _image; void _url
+      setDraft(fields)
+    } else {
+      setDraft({ ...blankContent, parentSlug:category === "strategy" ? "goal" : "" })
+    }
+  }, [category, existing, selected])
+
+  const labels = {
+    agenda:["Proposed Agenda", "Each agenda entry has its own number, discussion points, and expected outcome."],
+    resolution:["Paris Resolution 2026", "Expected outcomes are collected into one section after all published resolutions."],
+    strategy:["5-Year Strategic Plan", "Create one Vision, strategic goals, and year-by-year Implementation Timeline cards."],
+    partnership:["International Partnership Framework", "Create a country or institution card with its cooperation area and expected outcomes."],
+  }[category]
+  const update = (key:keyof ContentDraft, value:string | number | boolean) =>
+    setDraft((current) => ({ ...current, [key]:value }))
+  const strategyType = draft.parentSlug || "goal"
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle eyebrow="Page editor" title={labels[0]} copy={labels[1]} />
+      <div className="admin-record-chips">
+        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ New</button>
+        {entries?.map((entry) => <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>{entry.title}</button>)}
+      </div>
+      <div className="admin-form-grid">
+        {category === "strategy" && <label className="admin-field"><span>Content type</span><select value={strategyType} onChange={(event) => update("parentSlug", event.target.value)}><option value="goal">Strategic goal</option><option value="vision">Vision</option><option value="timeline">Implementation Timeline card</option></select></label>}
+        <Field label="URL slug" value={draft.slug} onValueChange={(value) => update("slug", value)} />
+        {category === "agenda" && <Field label="Agenda number" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />}
+        {category === "resolution" && <Field label="Resolution number" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />}
+        {category === "strategy" && strategyType === "goal" && <Field label="Strategic goal number" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />}
+        {category === "strategy" && strategyType === "timeline" && <Field label="Year" value={draft.dateLabel} onValueChange={(value) => update("dateLabel", value)} />}
+        <Field label={category === "agenda" ? "Agenda title" : category === "partnership" ? "Country or institution name" : strategyType === "vision" ? "Vision title" : "Title"} value={draft.title} onValueChange={(value) => update("title", value)} />
+        {category === "resolution" && <Field label="Summary" multiline value={draft.summary} onValueChange={(value) => update("summary", value)} />}
+        {category !== "resolution" && <Field label={category === "agenda" ? "Discussion points" : category === "partnership" ? "Area of cooperation" : strategyType === "goal" ? "Key actions" : strategyType === "timeline" ? "Plan for this year" : "Vision"} multiline value={draft.body} onValueChange={(value) => update("body", value)} />}
+        {(category === "agenda" || category === "resolution" || category === "partnership" || (category === "strategy" && strategyType === "goal")) && <Field label="Expected outcomes" multiline value={draft.secondaryText} onValueChange={(value) => update("secondaryText", value)} />}
+        <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
+        <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => update("status", event.target.value)}><option value="draft">Draft</option><option value="published">Published</option></select></label>
+      </div>
+      <div className="admin-editor-actions">
+        <Button onClick={async () => {
+          try {
+            await save({
+              ...(existing ? { id:existing._id } : {}),
+              category,
+              ...draft,
+              summary:category === "agenda" && !draft.summary ? draft.body : draft.summary,
+              parentSlug:category === "strategy" ? strategyType : draft.parentSlug,
+            })
+            toast.success(`${labels[0]} updated.`)
+            setSelected("new")
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "The section could not be saved.")
+          }
+        }}><SaveIcon /> Save section</Button>
+        {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await remove({ id:existing._id }); setSelected("new") }} />}
+      </div>
+    </section>
+  )
+}
+
+async function uploadAdminAsset({
+  file,
+  category,
+  uploadUrl,
+  register,
+}: {
+  file:File
+  category:"portrait" | "media" | "document"
+  uploadUrl:()=>Promise<string>
+  register:(args:{ storageId:Id<"_storage">; fileName:string; mimeType:string; byteSize:number; altText:string; category:"portrait" | "media" | "document" })=>Promise<unknown>
+}) {
+  if (file.size > 20_000_000) throw new Error("Files must be smaller than 20 MB.")
+  const url = await uploadUrl()
+  const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
+  if (!response.ok) throw new Error("The file could not be uploaded to Convex.")
+  const result = await response.json() as { storageId:Id<"_storage"> }
+  await register({
+    storageId:result.storageId,
+    fileName:file.name,
+    mimeType:file.type,
+    byteSize:file.size,
+    altText:file.name.replace(/\.[^.]+$/, "").trim() || "Uploaded file",
+    category,
+  })
+  return result.storageId
+}
+
+function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
+  const [category, setCategory] = useState<"speaker" | "team" | "advisory">(mode === "speaker" ? "speaker" : "team")
+  const entries = useQuery(api.cms.listForAdmin, { category })
+  const assets = useQuery(api.assets.list)
+  const save = useMutation(api.cms.save)
+  const remove = useMutation(api.cms.remove)
+  const generateUploadUrl = useMutation(api.assets.generateUploadUrl)
+  const register = useMutation(api.assets.register)
+  const [selected, setSelected] = useState<string>("new")
+  const [draft, setDraft] = useState<ContentDraft>({ ...blankContent })
+  const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | undefined>()
+  const [uploading, setUploading] = useState(false)
+  const existing = entries?.find((entry) => entry._id === selected)
+  const portraits = assets?.filter((asset) => asset.mimeType.startsWith("image/"))
+  useEffect(() => { setSelected("new") }, [category])
+  useEffect(() => {
+    if (existing) {
+      const { _id, category: _category, imageStorageId:image, imageUrl: _url, ...fields } = existing
+      void _id; void _category; void _url
+      setDraft(fields)
+      setImageStorageId(image)
+    } else {
+      setDraft({ ...blankContent })
+      setImageStorageId(undefined)
+    }
+  }, [existing, selected, category])
+  const update = (key:keyof ContentDraft, value:string | number | boolean) => setDraft((current) => ({ ...current, [key]:value }))
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : "Organizing Team and Advisory Board"} copy="Add each person with a name, short introduction, biography, and profile picture." />
+      {mode === "team" && <div className="admin-record-chips"><button data-active={category === "team"} onClick={() => setCategory("team")}>Organizing Team</button><button data-active={category === "advisory"} onClick={() => setCategory("advisory")}>Advisory Board</button></div>}
+      <div className="admin-record-chips">
+        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ Add person</button>
+        {entries?.map((entry) => <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>{entry.title}</button>)}
+      </div>
+      <div className="admin-form-grid">
+        <Field label="URL slug" value={draft.slug} onValueChange={(value) => update("slug", value)} />
+        <Field label="Name" value={draft.title} onValueChange={(value) => update("title", value)} />
+        <Field label="Short intro shown below the name" value={draft.role} onValueChange={(value) => update("role", value)} />
+        {category === "speaker" && <Field label="Country" value={draft.country} onValueChange={(value) => update("country", value)} />}
+        <Field label="Short biography" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
+        <label className="admin-field"><span>Profile picture</span><select value={imageStorageId ?? ""} onChange={(event) => setImageStorageId((event.target.value || undefined) as Id<"_storage"> | undefined)}><option value="">No picture selected</option>{portraits?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
+        <label className="admin-logo-upload">
+          {uploading ? <Spinner /> : <UploadIcon />}<span>{uploading ? "Uploading…" : "Upload profile picture"}</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={uploading} onChange={async (event) => {
+            const file = event.target.files?.[0]
+            if (!file) return
+            if (!file.type.startsWith("image/")) { toast.error("Choose an image file."); return }
+            setUploading(true)
+            try {
+              const storageId = await uploadAdminAsset({ file, category:"portrait", uploadUrl:generateUploadUrl, register })
+              setImageStorageId(storageId)
+              toast.success("Profile picture uploaded and selected.")
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Upload failed.")
+            } finally {
+              setUploading(false)
+              event.target.value = ""
+            }
+          }} />
+        </label>
+        <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
+        <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => update("status", event.target.value)}><option value="draft">Draft</option><option value="published">Published</option></select></label>
+        {category === "speaker" && <label className="admin-check"><Checkbox checked={draft.featured} onCheckedChange={(value) => update("featured", Boolean(value))} /> Feature on Home page</label>}
+      </div>
+      <div className="admin-editor-actions">
+        <Button onClick={async () => {
+          try {
+            await save({
+              ...(existing ? { id:existing._id } : {}),
+              category,
+              ...draft,
+              summary:draft.summary || draft.role,
+              eyebrow:category === "speaker" ? "Speaker" : category === "team" ? "Organizing Team" : "Advisory Board",
+              imageStorageId,
+            })
+            toast.success("Person saved.")
+            setSelected("new")
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "The person could not be saved.")
+          }
+        }}><SaveIcon /> Save person</Button>
+        {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await remove({ id:existing._id }); setSelected("new") }} />}
+      </div>
+    </section>
+  )
+}
+
+function MediaPublicationPanel() {
+  const data = useQuery(api.media.listForAdmin)
+  const assets = useQuery(api.assets.list)
+  const saveSection = useMutation(api.media.saveSection)
+  const removeSection = useMutation(api.media.removeSection)
+  const saveItem = useMutation(api.media.saveItem)
+  const removeItem = useMutation(api.media.removeItem)
+  const generateUploadUrl = useMutation(api.assets.generateUploadUrl)
+  const register = useMutation(api.assets.register)
+  const [selected, setSelected] = useState<string>("new")
+  const [uploading, setUploading] = useState<"cover" | "file" | null>(null)
+  const [draft, setDraft] = useState<{
+    sectionSlug:string
+    slug:string
+    title:string
+    description:string
+    coverStorageId?:Id<"_storage">
+    fileStorageId?:Id<"_storage">
+    fileName:string
+    mimeType:string
+    order:number
+    status:"draft" | "published"
+  }>({
+    sectionSlug:"",
+    slug:"",
+    title:"",
+    description:"",
+    fileName:"",
+    mimeType:"",
+    order:50,
+    status:"draft",
+  })
+  const existing = data?.items.find((item) => item._id === selected)
+  const imageAssets = assets?.filter((asset) => asset.mimeType.startsWith("image/"))
+  const fileAssets = assets?.filter((asset) => !asset.mimeType.startsWith("image/") || asset.category === "document")
+  useEffect(() => {
+    if (existing) setDraft(existing)
+    else {
+      setDraft({
+        sectionSlug:data?.sections[0]?.slug ?? "",
+        slug:"",
+        title:"",
+        description:"",
+        fileName:"",
+        mimeType:"",
+        order:50,
+        status:"draft",
+      })
+    }
+  }, [data?.sections, existing, selected])
+
+  return (
+    <section className="admin-panel media-publication-admin" data-compact="true">
+      <PanelTitle eyebrow="Publication editor" title="Media & Publication" copy="Create submenu sections, then add downloadable publications with a title, description, optional cover, and file." />
+      <RecordCards
+        title="Publication sections"
+        copy="These section names become the Media & Publication submenu."
+        rows={data?.sections}
+        fields={["slug","name","description","order","status"]}
+        blank={{ slug:"",name:"",description:"",order:50,status:"draft" }}
+        onSave={saveSection}
+        onRemove={removeSection}
+      />
+      <div className="admin-subpanel">
+        <PanelTitle eyebrow="Files" title="Publications" copy="Every publication belongs to one of the sections above." />
+        <div className="admin-record-chips">
+          <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ Add publication</button>
+          {data?.items.map((item) => <button data-active={selected === item._id} key={item._id} onClick={() => setSelected(item._id)}>{item.title}</button>)}
+        </div>
+        <div className="admin-form-grid">
+          <label className="admin-field"><span>Submenu section</span><select value={draft.sectionSlug} onChange={(event) => setDraft({ ...draft, sectionSlug:event.target.value })}><option value="">Choose a section</option>{data?.sections.map((section) => <option key={section._id} value={section.slug}>{section.name}</option>)}</select></label>
+          <Field label="URL slug" value={draft.slug} onValueChange={(value) => setDraft({ ...draft, slug:value })} />
+          <Field label="Title" value={draft.title} onValueChange={(value) => setDraft({ ...draft, title:value })} />
+          <Field label="Description" multiline value={draft.description} onValueChange={(value) => setDraft({ ...draft, description:value })} />
+          <label className="admin-field"><span>Optional cover image</span><select value={draft.coverStorageId ?? ""} onChange={(event) => setDraft({ ...draft, coverStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined })}><option value="">No cover image</option>{imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
+          <label className="admin-logo-upload">
+            {uploading === "cover" ? <Spinner /> : <ImageIcon />}<span>{uploading === "cover" ? "Uploading…" : "Upload cover image"}</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={Boolean(uploading)} onChange={async (event) => {
+              const file = event.target.files?.[0]
+              if (!file) return
+              setUploading("cover")
+              try {
+                const storageId = await uploadAdminAsset({ file, category:"media", uploadUrl:generateUploadUrl, register })
+                setDraft((current) => ({ ...current, coverStorageId:storageId }))
+                toast.success("Cover uploaded and selected.")
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Cover upload failed.")
+              } finally {
+                setUploading(null)
+                event.target.value = ""
+              }
+            }} />
+          </label>
+          <label className="admin-field"><span>Publication file</span><select value={draft.fileStorageId ?? ""} onChange={(event) => {
+            const asset = assets?.find((item) => item.storageId === event.target.value)
+            setDraft({ ...draft, fileStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined, fileName:asset?.fileName ?? "", mimeType:asset?.mimeType ?? "" })
+          }}><option value="">Choose a file</option>{fileAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
+          <label className="admin-logo-upload">
+            {uploading === "file" ? <Spinner /> : <UploadIcon />}<span>{uploading === "file" ? "Uploading…" : "Upload PDF, Word, or PowerPoint file"}</span>
+            <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,application/pdf" disabled={Boolean(uploading)} onChange={async (event) => {
+              const file = event.target.files?.[0]
+              if (!file) return
+              setUploading("file")
+              try {
+                const storageId = await uploadAdminAsset({ file, category:"document", uploadUrl:generateUploadUrl, register })
+                setDraft((current) => ({ ...current, fileStorageId:storageId, fileName:file.name, mimeType:file.type }))
+                toast.success("Publication file uploaded and selected.")
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "File upload failed.")
+              } finally {
+                setUploading(null)
+                event.target.value = ""
+              }
+            }} />
+          </label>
+          <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => setDraft({ ...draft, order:Number(value) })} />
+          <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => setDraft({ ...draft, status:event.target.value as "draft" | "published" })}><option value="draft">Draft</option><option value="published">Published</option></select></label>
+        </div>
+        <div className="admin-editor-actions">
+          <Button onClick={async () => {
+            if (!draft.fileStorageId) { toast.error("Choose or upload a publication file first."); return }
+            try {
+              await saveItem({ ...(existing ? { id:existing._id } : {}), ...draft, fileStorageId:draft.fileStorageId })
+              toast.success("Publication saved.")
+              setSelected("new")
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "The publication could not be saved.")
+            }
+          }}><SaveIcon /> Save publication</Button>
+          {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await removeItem({ id:existing._id }); setSelected("new") }} />}
+        </div>
+      </div>
     </section>
   )
 }

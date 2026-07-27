@@ -268,6 +268,12 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #6 resolved: partner and sponsor editors support direct Convex logo upload, managed-logo selection, replacement, and removal.
 - ✅ Partner and sponsor cards display the organisation name together with its attached logo.
 - ✅ GitHub issue #7 resolved: the programme editor clearly identifies draft visibility and can publish all prepared days and sessions in one action.
+- ✅ GitHub issue #8 resolved: the generic Page Content workflow is replaced by page-specific Agenda, Resolution, Strategic Plan, Partnership, Speakers, Team/Board, and Media & Publication editors.
+- ✅ Media & Publication has dynamic submenu sections plus title, description, optional cover, and downloadable-file uploads for every item.
+- ✅ Speakers, Organizing Team, and Advisory Board have direct portrait upload, short-introduction, biography, ordering, draft, and publication controls.
+- ✅ Proposed Agenda, Paris Resolution, 5-Year Strategic Plan, and International Partnership Framework expose the client-requested field names and public layouts.
+- ✅ The Strategic Plan includes an editable Vision and five editable Implementation Timeline cards for 2027–2031.
+- ✅ Seeded Books, Government Reports, and Research & Briefings publication sections in development and production.
 - ✅ Production programme repair safely removes completely empty session rows and publishes prepared session drafts without altering their content.
 - ✅ Directory-editor mutation failures now remain on screen and show an actionable error instead of appearing to revert.
 - ✅ Animated flip-clock countdown added to the landing-page hero.
@@ -276,9 +282,10 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Latest Convex schema and functions deployed to production.
 - ✅ Production chart, programme, and storage-reference indexes deployed.
 - ✅ Production content seed completed.
-- ✅ Nineteen CMS records seeded.
+- ✅ Ninety-three CMS records seeded.
 - ✅ Two chart series, six chart points, two programme days, and four sessions seeded.
 - ✅ Four regional countries and four organisations updated.
+- ✅ Three Media & Publication submenu sections seeded.
 - ✅ Global settings and four demonstration tiers seeded.
 - ✅ Production programme, chart, and regional queries verified.
 - ✅ `bun run typecheck`, `bun run lint`, and `bun run build` pass.

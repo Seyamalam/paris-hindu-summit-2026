@@ -14,7 +14,7 @@ export const navItems = [
   { href: "/regional", label: "Regional" },
   { href: "/engage", label: "Engage" },
   { href: "/partners", label: "Partners" },
-  { href: "/media", label: "Media" },
+  { href: "/media", label: "Media & Publication" },
   { href: "/support", label: "Support" },
 ]
 

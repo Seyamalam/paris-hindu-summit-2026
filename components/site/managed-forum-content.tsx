@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useQuery } from "convex/react"
 import { ArrowRightIcon } from "lucide-react"
 import Link from "next/link"
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { PageHero } from "@/components/site/page-hero"
 import { Reveal } from "@/components/site/reveal"
 import { committee as fallbackCommittee } from "@/lib/content"
+import { speakers as fallbackSpeakers } from "@/lib/content"
 
 type DocumentCategory =
   | "agenda"
@@ -71,6 +73,16 @@ export function ManagedCommittee() {
             <Reveal key={person._id} delay={index * 70}>
               <article>
                 <span>{String(index + 1).padStart(2, "0")}</span>
+                {person.imageUrl && (
+                  <div className="committee-portrait">
+                    <Image
+                      src={person.imageUrl}
+                      alt={person.title}
+                      fill
+                      sizes="(max-width: 720px) 100vw, 45vw"
+                    />
+                  </div>
+                )}
                 <p className="kicker">{person.role}</p>
                 <h3>{person.title}</h3>
                 <p>{person.body || person.summary}</p>
@@ -88,6 +100,16 @@ export function ManagedCommittee() {
           {team.map((person, index) => (
             <article key={person._id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
+              {"imageUrl" in person && person.imageUrl && (
+                <div className="committee-portrait">
+                  <Image
+                    src={person.imageUrl}
+                    alt={person.title}
+                    fill
+                    sizes="(max-width: 720px) 100vw, 30vw"
+                  />
+                </div>
+              )}
               <div>
                 <h3>{person.title}</h3>
                 <Badge variant="outline">{person.role}</Badge>
@@ -103,6 +125,58 @@ export function ManagedCommittee() {
   )
 }
 
+export function ManagedSpeakers() {
+  const managed = useQuery(api.cms.listPublished, { category: "speaker" })
+  const speakers =
+    managed && managed.length > 0
+      ? managed.map((speaker) => ({
+          key: speaker._id,
+          name: speaker.title,
+          intro: speaker.role || speaker.summary,
+          country: speaker.country,
+          bio: speaker.body || speaker.summary,
+          image: speaker.imageUrl,
+        }))
+      : fallbackSpeakers.map((speaker) => ({
+          key: speaker.name,
+          name: speaker.name,
+          intro: speaker.role,
+          country: speaker.country,
+          bio: speaker.bio,
+          image: speaker.image,
+        }))
+
+  return (
+    <section className="speaker-list section-shell">
+      {speakers.map((speaker, index) => (
+        <article key={speaker.key}>
+          <span className="speaker-number">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <div className="speaker-portrait">
+            {speaker.image ? (
+              <Image
+                src={speaker.image}
+                alt={speaker.name}
+                fill
+                sizes="(max-width: 720px) 100vw, 32vw"
+              />
+            ) : (
+              <span aria-hidden="true">{speaker.name.charAt(0)}</span>
+            )}
+          </div>
+          <div>
+            <p className="kicker">{speaker.country || "Paris 2026"}</p>
+            <h2>{speaker.name}</h2>
+            <h3>{speaker.intro}</h3>
+            <p>{speaker.bio}</p>
+          </div>
+        </article>
+      ))}
+    </section>
+  )
+}
+
 export function CmsDocumentPage({
   category,
   eyebrow,
@@ -115,28 +189,69 @@ export function CmsDocumentPage({
   intro:string
 }) {
   const entries = useQuery(api.cms.listPublished, { category })
+  const records = entries ?? []
+  const strategyVision = category === "strategy"
+    ? records.find((entry) => entry.parentSlug === "vision")
+    : undefined
+  const strategyTimeline = category === "strategy"
+    ? records.filter((entry) => entry.parentSlug === "timeline")
+    : []
+  const mainRecords = category === "strategy"
+    ? records.filter((entry) => !["vision", "timeline"].includes(entry.parentSlug))
+    : records
+
   return (
     <>
       <PageHero eyebrow={eyebrow} title={title} intro={intro} />
+      {strategyVision && (
+        <section className="strategy-vision section-shell">
+          <p className="kicker">{strategyVision.eyebrow || "Vision"}</p>
+          <h2>{strategyVision.title}</h2>
+          <p>{strategyVision.body || strategyVision.summary}</p>
+        </section>
+      )}
       <section className="document-collection section-shell">
         <header>
-          <p className="kicker">{entries?.length ?? 0} published sections</p>
+          <p className="kicker">{mainRecords.length} published sections</p>
           <p>
-            This working document is managed in the protected Admin content
-            editor. Published changes appear here immediately.
+            This working document is managed in the protected page editor.
+            Published changes appear here immediately.
           </p>
         </header>
-        <div>
-          {entries?.map((entry, index) => (
+        <div className={category === "partnership" ? "partnership-document-grid" : undefined}>
+          {mainRecords.map((entry, index) => (
             <Reveal key={entry._id} delay={(index % 4) * 60}>
-              <article id={entry.slug}>
+              <article id={entry.slug} data-document-category={category}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="kicker">{entry.eyebrow}</p>
                   <h2>{entry.title}</h2>
-                  <p className="document-summary">{entry.summary}</p>
-                  {entry.body && <p>{entry.body}</p>}
-                  {entry.secondaryText && <aside>{entry.secondaryText}</aside>}
+                  {entry.summary && (category === "resolution" || entry.summary !== entry.body) && (
+                    <p className="document-summary">{entry.summary}</p>
+                  )}
+                  {entry.body && category !== "resolution" && (
+                    <div className="document-labelled-copy">
+                      <small>
+                        {category === "agenda"
+                          ? "Discussion points"
+                          : category === "strategy"
+                            ? "Key actions"
+                            : category === "partnership"
+                              ? "Area of cooperation"
+                              : "Details"}
+                      </small>
+                      <p>{entry.body}</p>
+                    </div>
+                  )}
+                  {entry.secondaryText && !["resolution", "strategy"].includes(category) && (
+                    <aside>{entry.secondaryText}</aside>
+                  )}
+                  {entry.secondaryText && category === "strategy" && (
+                    <aside>
+                      <small>Expected outcomes</small>
+                      {entry.secondaryText}
+                    </aside>
+                  )}
                   {entry.linkUrl && (
                     <Button
                       nativeButton={false}
@@ -153,7 +268,37 @@ export function CmsDocumentPage({
           ))}
         </div>
       </section>
+      {category === "resolution" && records.some((entry) => entry.secondaryText) && (
+        <section className="resolution-outcomes section-shell">
+          <p className="kicker">After the resolutions</p>
+          <h2>Expected outcomes</h2>
+          <div>
+            {records.filter((entry) => entry.secondaryText).map((entry) => (
+              <article key={entry._id}>
+                <span>{entry.eyebrow}</span>
+                <p>{entry.secondaryText}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+      {category === "strategy" && strategyTimeline.length > 0 && (
+        <section className="strategy-timeline section-shell">
+          <header>
+            <p className="kicker">Five-year delivery</p>
+            <h2>Implementation Timeline</h2>
+          </header>
+          <div>
+            {strategyTimeline.map((entry) => (
+              <article key={entry._id}>
+                <span>{entry.dateLabel}</span>
+                <h3>{entry.title}</h3>
+                <p>{entry.body || entry.summary}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   )
 }
-

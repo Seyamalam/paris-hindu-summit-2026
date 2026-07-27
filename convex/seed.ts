@@ -91,6 +91,30 @@ const organizations = [
   },
 ] as const
 
+const mediaSections = [
+  {
+    slug: "books",
+    name: "Books",
+    description:
+      "Books and long-form works connected to the summit’s evidence and public record.",
+    order: 1,
+  },
+  {
+    slug: "government-reports",
+    name: "Government Reports",
+    description:
+      "Official reports, parliamentary material, and public institutional documents.",
+    order: 2,
+  },
+  {
+    slug: "research-and-briefings",
+    name: "Research & Briefings",
+    description:
+      "Research papers, policy briefs, backgrounders, and verified supporting material.",
+    order: 3,
+  },
+] as const
+
 const settings = {
   eventName:
     "Global Forum on Religious Freedom and Hindu Minority Rights in Bangladesh",
@@ -635,6 +659,37 @@ const seminarEntries = [
     order: 8,
     featured: true,
   },
+  {
+    category: "strategy" as const,
+    slug: "strategy-vision",
+    title: "Equal citizenship, durable protection, and a permanent international platform.",
+    eyebrow: "Vision",
+    summary:
+      "A future in which Hindu minorities in Bangladesh can live with dignity, security, equal rights, and meaningful access to justice.",
+    body:
+      "The five-year plan connects evidence, early warning, legal protection, livelihoods, leadership, humanitarian support, and accountable international cooperation.",
+    parentSlug: "vision",
+    order: 0,
+    featured: true,
+  },
+  ...[
+    ["2027", "Foundation", "Establish governance, secure documentation standards, map partners, and launch the first coordinated annual work plan."],
+    ["2028", "Protection", "Expand legal assistance, early-warning capacity, survivor support, and professional case documentation."],
+    ["2029", "Partnership", "Deepen university, diplomatic, civil-society, and development partnerships across the international network."],
+    ["2030", "Scale", "Extend livelihoods, youth and women’s leadership, research publication, and humanitarian recovery programmes."],
+    ["2031", "Review and renew", "Publish the five-year evaluation, hold an international review conference, and agree the next strategic plan."],
+  ].map(([year, title, body], index) => ({
+    category: "strategy" as const,
+    slug: `strategy-timeline-${year}`,
+    title,
+    eyebrow: "Implementation Timeline",
+    summary: body,
+    body,
+    dateLabel: year,
+    parentSlug: "timeline",
+    order: 100 + index,
+    featured: false,
+  })),
 ] as const
 
 const programmeDays = [
@@ -667,6 +722,7 @@ export const seedInitialContent = internalMutation({
     countriesUpdated: v.number(),
     organizationsInserted: v.number(),
     organizationsUpdated: v.number(),
+    mediaSectionsUpserted: v.number(),
     settingsUpserted: v.number(),
     tiersUpserted: v.number(),
     cmsEntriesUpserted: v.number(),
@@ -681,6 +737,7 @@ export const seedInitialContent = internalMutation({
     let countriesUpdated = 0
     let organizationsInserted = 0
     let organizationsUpdated = 0
+    let mediaSectionsUpserted = 0
     let settingsUpserted = 0
     let tiersUpserted = 0
     let cmsEntriesUpserted = 0
@@ -723,6 +780,21 @@ export const seedInitialContent = internalMutation({
         await ctx.db.insert("organizations", value)
         organizationsInserted += 1
       }
+    }
+
+    for (const section of mediaSections) {
+      const existing = await ctx.db
+        .query("mediaSections")
+        .withIndex("by_slug", (q) => q.eq("slug", section.slug))
+        .unique()
+      const value = {
+        ...section,
+        status: "published" as const,
+        updatedAt: now,
+      }
+      if (existing) await ctx.db.patch(existing._id, value)
+      else await ctx.db.insert("mediaSections", value)
+      mediaSectionsUpserted += 1
     }
 
     const existingSettings = await ctx.db
@@ -834,6 +906,7 @@ export const seedInitialContent = internalMutation({
       countriesUpdated,
       organizationsInserted,
       organizationsUpdated,
+      mediaSectionsUpserted,
       settingsUpserted,
       tiersUpserted,
       cmsEntriesUpserted,

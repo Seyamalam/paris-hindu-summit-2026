@@ -73,7 +73,7 @@ export default function HomePage() {
               nativeButton={false}
               size="lg"
               variant="outline"
-              render={<Link href="/media#film" />}
+              render={<Link href="/media" />}
             >
               <PlayIcon data-icon="inline-start" /> Watch the opening film
             </Button>
