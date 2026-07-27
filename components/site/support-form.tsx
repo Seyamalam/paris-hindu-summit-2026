@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 const pathways = [
   ["support", "General support"],
@@ -24,6 +25,11 @@ export function SupportForm() {
   const [busy, setBusy] = useState(false)
   const [reference, setReference] = useState("")
   const [consent, setConsent] = useState(false)
+  const successCopy = useEditorialRecord("support-form-success", {
+    eyebrow:"Received",
+    title:"Your message is now in the record.",
+    summary:"The summit team can review and manage this enquiry in the secure admin inbox.",
+  })
   async function send(event:FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true)
     const form = new FormData(event.currentTarget)
@@ -43,7 +49,7 @@ export function SupportForm() {
     setBusy(false)
     if (response.accepted) setReference(response.reference)
   }
-  if (reference) return <div className="support-success"><CheckCircle2Icon /><p className="kicker">Received</p><h2>Your message is now in the record.</h2><p>Reference <b>{reference}</b>. The summit team can review and manage this enquiry in the secure admin inbox.</p><Button variant="outline" onClick={() => setReference("")}>Send another message</Button></div>
+  if (reference) return <div className="support-success"><CheckCircle2Icon /><p className="kicker">{successCopy.eyebrow}</p><h2>{successCopy.title}</h2><p>Reference <b>{reference}</b>. {successCopy.summary}</p><Button variant="outline" onClick={() => setReference("")}>Send another message</Button></div>
   return (
     <form className="support-form" onSubmit={send}>
       <div className="support-pathways">{pathways.map(([value,label]) => <button type="button" data-active={type === value} key={value} onClick={() => setType(value)}>{label}</button>)}</div>

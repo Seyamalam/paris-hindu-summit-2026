@@ -9,6 +9,7 @@ import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { ThemeToggle } from "@/components/site/theme-toggle"
 import {
   Sheet,
@@ -29,6 +30,9 @@ import {
 } from "@/components/ui/navigation-menu"
 
 function Brand({ name = "Paris Assembly" }: { name?: string }) {
+  const copy = useEditorialRecord("global-brand", {
+    title:"For dignity & rights",
+  })
   return (
     <span className="brand-lockup">
       <Image
@@ -42,7 +46,7 @@ function Brand({ name = "Paris Assembly" }: { name?: string }) {
       />
       <span>
         <b>{name}</b>
-        <small>For dignity &amp; rights</small>
+        <small>{copy.title}</small>
       </span>
     </span>
   )
@@ -55,6 +59,9 @@ export function SiteHeader() {
   const programme = useQuery(api.programme.listPublished)
   const engage = useQuery(api.cms.listPublished, { category: "engage" })
   const media = useQuery(api.media.listPublished)
+  const brandCopy = useEditorialRecord("global-brand", {
+    summary:"Global Solidarity Summit for Bangladeshi Hindus",
+  })
   const aboutLinks = [
     ["/about", "Overview"], ["/committee", "Organizing Team and Advisory Board"],
     ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
@@ -112,7 +119,7 @@ export function SiteHeader() {
         <SheetContent className="mobile-sheet">
           <SheetHeader>
             <SheetTitle><Brand name={settings?.shortName} /></SheetTitle>
-            <SheetDescription>Global Solidarity Summit for Bangladeshi Hindus</SheetDescription>
+            <SheetDescription>{brandCopy.summary}</SheetDescription>
           </SheetHeader>
           <nav aria-label="Mobile navigation">
             {[

@@ -6,6 +6,7 @@ import { RadioIcon } from "lucide-react"
 
 import FlipClock from "@/components/8starlabs-ui/flip-clock"
 import { api } from "@/convex/_generated/api"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 const FALLBACK_START = "2026-10-03T08:30:00+02:00"
 
@@ -16,6 +17,11 @@ function validDate(value: string | undefined) {
 
 export function HeroCountdown() {
   const settings = useQuery(api.settings.get)
+  const copy = useEditorialRecord("home-hero-countdown", {
+    eyebrow:"Paris opens in",
+    title:"Make the time count.",
+    dateLabel:"03—04 / OCT",
+  })
   const targetDate = useMemo(
     () => validDate(settings?.eventStartIso),
     [settings?.eventStartIso]
@@ -48,8 +54,8 @@ export function HeroCountdown() {
       </div>
 
       <div className="hero-countdown-copy">
-        <p>Paris opens in</p>
-        <strong>Make the time count.</strong>
+        <p>{copy.eyebrow}</p>
+        <strong>{copy.title}</strong>
       </div>
 
       <div className="hero-clock-stage">
@@ -71,7 +77,7 @@ export function HeroCountdown() {
       </div>
 
       <div className="hero-countdown-date">
-        <span>03—04 / OCT</span>
+        <span>{copy.dateLabel}</span>
         <span>{eventLabel}</span>
       </div>
     </div>

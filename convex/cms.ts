@@ -20,7 +20,8 @@ export const categoryValidator = v.union(
   v.literal("media"),
   v.literal("faq"),
   v.literal("legal"),
-  v.literal("pageCopy")
+  v.literal("pageCopy"),
+  v.literal("sectionCopy")
 )
 
 const entryFields = {

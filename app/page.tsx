@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
 import { Countdown } from "@/components/site/countdown"
 import { HeroCountdown } from "@/components/site/hero-countdown"
+import { ManagedText, useEditorialRecord } from "@/components/site/managed-editorial"
 import {
   EvidenceCharts,
   FeaturedSpeakers,
@@ -31,6 +32,24 @@ import { formatEventDateRange } from "@/lib/event-format"
 export default function HomePage() {
   const settings = useQuery(api.settings.get)
   const programme = useQuery(api.programme.listPublished)
+  const heroActions = useEditorialRecord("home-hero-actions", {
+    title:"Reserve a place",
+    secondaryText:"Watch the opening film",
+    linkUrl:"/participate",
+    body:"/media",
+  })
+  const whyIntro = useEditorialRecord("home-why-intro", {
+    eyebrow:"Why Paris · Why now",
+    linkLabel:"Read why the forum exists",
+    linkUrl:"/about",
+  })
+  const programmeHeading = useEditorialRecord("home-programme-heading", {
+    eyebrow:"Conference programme",
+    title:"Understand. Engage. Inspire.",
+    secondaryText:"Collaborate. Commit. Conclude.",
+    linkLabel:"Explore both days",
+    linkUrl:"/programme",
+  })
   const eventDates = formatEventDateRange(
     settings?.eventStartIso,
     settings?.eventEndIso,
@@ -60,9 +79,9 @@ export default function HomePage() {
               <Button
                 nativeButton={false}
                 size="lg"
-                render={<Link href="/participate" />}
+                render={<Link href={heroActions.linkUrl || "/participate"} />}
               >
-                Reserve a place <ArrowRightIcon data-icon="inline-end" />
+                {heroActions.title} <ArrowRightIcon data-icon="inline-end" />
               </Button>
             ) : (
               <Button size="lg" disabled>
@@ -73,9 +92,9 @@ export default function HomePage() {
               nativeButton={false}
               size="lg"
               variant="outline"
-              render={<Link href="/media" />}
+              render={<Link href={heroActions.body || "/media"} />}
             >
-              <PlayIcon data-icon="inline-start" /> Watch the opening film
+              <PlayIcon data-icon="inline-start" /> {heroActions.secondaryText}
             </Button>
           </div>
           <div className="hero-meta">
@@ -97,7 +116,7 @@ export default function HomePage() {
       </section>
 
       <section className="assembly-banner">
-        <strong>PARIS</strong>
+        <strong><ManagedText slug="home-banner" field="title" fallback="PARIS" /></strong>
         <p>
           {settings?.theme ??
             "One room. Many institutions. A shared commitment."}
@@ -108,7 +127,7 @@ export default function HomePage() {
 
       <section className="split-intro section-shell">
         <div>
-          <p className="kicker">Why Paris · Why now</p>
+          <p className="kicker">{whyIntro.eyebrow}</p>
           <h2>{settings?.whyTitle ?? "Justice delayed for half a century cannot be denied indefinitely."}</h2>
         </div>
         <div className="body-copy">
@@ -116,9 +135,9 @@ export default function HomePage() {
           <Button
             nativeButton={false}
             variant="link"
-            render={<Link href="/about" />}
+            render={<Link href={whyIntro.linkUrl || "/about"} />}
           >
-            Read why the forum exists <ArrowRightIcon data-icon="inline-end" />
+            {whyIntro.linkLabel} <ArrowRightIcon data-icon="inline-end" />
           </Button>
         </div>
       </section>
@@ -127,20 +146,19 @@ export default function HomePage() {
 
       <section className="evidence-band">
         <div className="section-heading compact">
-          <p className="kicker">Bangladesh · the record</p>
-          <h2>Numbers that should stop the room.</h2>
+          <p className="kicker"><ManagedText slug="home-evidence-heading" field="eyebrow" fallback="Bangladesh · the record" /></p>
+          <h2><ManagedText slug="home-evidence-heading" field="title" fallback="Numbers that should stop the room." /></h2>
         </div>
         <div className="evidence-grid">
-          {evidence.map((item) => (
+          {evidence.map((item, index) => (
             <article key={item.value}>
-              <b>{item.value}</b>
-              <p>{item.label}</p>
+              <b><ManagedText slug={["home-evidence-1951", "home-evidence-2022", "home-evidence-2024-25", "home-evidence-2026"][index]} field="title" fallback={item.value} /></b>
+              <p><ManagedText slug={["home-evidence-1951", "home-evidence-2022", "home-evidence-2024-25", "home-evidence-2026"][index]} field="summary" fallback={item.label} /></p>
             </article>
           ))}
         </div>
         <p className="source-note">
-          Source: summit concept note and cited organisations. Detailed
-          citations and methodology will accompany the evidence archive.
+          <ManagedText slug="home-evidence-heading" field="body" fallback="Source: summit concept note and cited organisations. Detailed citations and methodology will accompany the evidence archive." />
         </p>
       </section>
       <EvidenceCharts />
@@ -150,18 +168,18 @@ export default function HomePage() {
         id="programme-preview"
       >
         <div className="section-heading">
-          <p className="kicker">Conference programme</p>
+          <p className="kicker">{programmeHeading.eyebrow}</p>
           <h2>
-            Understand. Engage. Inspire.
+            {programmeHeading.title}
             <br />
-            Collaborate. Commit. Conclude.
+            {programmeHeading.secondaryText}
           </h2>
           <Button
             nativeButton={false}
             variant="outline"
-            render={<Link href="/programme" />}
+            render={<Link href={programmeHeading.linkUrl || "/programme"} />}
           >
-            Explore both days <ArrowRightIcon data-icon="inline-end" />
+            {programmeHeading.linkLabel} <ArrowRightIcon data-icon="inline-end" />
           </Button>
         </div>
         <div className="day-preview">
@@ -185,7 +203,7 @@ export default function HomePage() {
 
       <section className="countdown-section section-shell">
         <div>
-          <p className="kicker">The room opens in</p>
+          <p className="kicker"><ManagedText slug="home-countdown-heading" field="eyebrow" fallback="The room opens in" /></p>
           <h2>
             {eventDates}
             <br />

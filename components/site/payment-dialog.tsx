@@ -15,30 +15,37 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 export function PaymentDialog({ disabled = false }: { disabled?: boolean }) {
   const [amount, setAmount] = useState("100")
   const [email, setEmail] = useState("")
   const [complete, setComplete] = useState(false)
+  const copy = useEditorialRecord("donate-dialog", {
+    eyebrow:"Donations coming soon",
+    title:"Support the work behind the testimony",
+    summary:"Preview the contribution pathway. No payment will be taken.",
+    body:"Donation intent recorded",
+    secondaryText:"No payment was taken.",
+    linkLabel:"Donate to the summit",
+  })
 
   return (
     <Dialog onOpenChange={(open) => !open && setComplete(false)}>
       <DialogTrigger render={<Button size="lg" disabled={disabled} />}>
-        {disabled ? "Donations coming soon" : "Donate to the summit"}
+        {disabled ? copy.eyebrow : copy.linkLabel}
       </DialogTrigger>
       <DialogContent className="payment-dialog">
         <DialogHeader>
           <span className="dialog-icon"><CreditCardIcon /></span>
-          <DialogTitle>Support the work behind the testimony</DialogTitle>
-          <DialogDescription>
-            Preview the contribution pathway. No payment will be taken.
-          </DialogDescription>
+          <DialogTitle>{copy.title}</DialogTitle>
+          <DialogDescription>{copy.summary}</DialogDescription>
         </DialogHeader>
         {complete ? (
           <div className="payment-success" role="status">
             <CheckIcon />
-            <h3>Donation intent recorded</h3>
-            <p>Your intention to contribute €{amount} has been recorded for {email}. No payment was taken.</p>
+            <h3>{copy.body}</h3>
+            <p>Your intention to contribute €{amount} has been recorded for {email}. {copy.secondaryText}</p>
           </div>
         ) : (
           <FieldGroup>

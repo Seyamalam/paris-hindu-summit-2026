@@ -5,21 +5,24 @@ import { ArrowUpRightIcon } from "lucide-react"
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 export function PartnerWall() {
   const liveOrganizations = useQuery(api.content.listOrganizations)
   const organizations = liveOrganizations ?? []
+  const heading = useEditorialRecord("partners-heading", {
+    eyebrow:"Partners & sponsors",
+    title:"Institutions standing in the record.",
+    summary:"Organisations contributing policy reach, research, community networks, access, and practical support remain visible together.",
+  })
 
   return (
     <section className="partner-wall section-shell" id="partners">
       <div className="section-heading">
-        <p className="kicker">Partners &amp; sponsors</p>
+        <p className="kicker">{heading.eyebrow}</p>
         <div>
-          <h2>Institutions standing in the record.</h2>
-          <p>
-            Organisations contributing policy reach, research, community
-            networks, access, and practical support remain visible together.
-          </p>
+          <h2>{heading.title}</h2>
+          <p>{heading.summary}</p>
         </div>
       </div>
       <div className="partner-grid">
@@ -54,18 +57,19 @@ export function PartnerWall() {
 export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
   const liveCountries = useQuery(api.content.listRegionalCountries)
   const countries = liveCountries ?? []
+  const heading = useEditorialRecord("regional-heading", {
+    eyebrow:"Beyond Bangladesh · regional forum",
+    title:"Solidarity without borders means listening across them.",
+    summary:"Pakistan, Afghanistan, Myanmar, and Nepal form the starting regional group—a shared record of citizenship, security, heritage, displacement, and the right to remain.",
+  })
 
   return (
     <section className="regional-section" id="beyond-bangladesh">
       {showIntro && (
         <div className="regional-intro section-shell">
-          <p className="kicker">Beyond Bangladesh · regional forum</p>
-          <h2>Solidarity without borders means listening across them.</h2>
-          <p>
-            Pakistan, Afghanistan, Myanmar, and Nepal form the starting regional
-            group—a shared record of citizenship, security, heritage,
-            displacement, and the right to remain.
-          </p>
+          <p className="kicker">{heading.eyebrow}</p>
+          <h2>{heading.title}</h2>
+          <p>{heading.summary}</p>
         </div>
       )}
       <div className="regional-grid">

@@ -3,6 +3,7 @@ import {
   ManagedOverview,
   PresentMoment,
 } from "@/components/site/managed-forum-content"
+import { ManagedText } from "@/components/site/managed-editorial"
 
 export default function AboutPage() {
   return (
@@ -17,13 +18,23 @@ export default function AboutPage() {
       <ManagedOverview />
       <PresentMoment />
       <section className="outcomes section-shell">
-        <div className="section-heading compact"><p className="kicker">Expected outcomes</p><h2>The goal is not a communiqué. It is a network ready to mobilise.</h2></div>
+        <div className="section-heading compact">
+          <p className="kicker"><ManagedText slug="about-outcomes-heading" field="eyebrow" fallback="Expected outcomes" /></p>
+          <h2><ManagedText slug="about-outcomes-heading" field="title" fallback="The goal is not a communiqué. It is a network ready to mobilise." /></h2>
+        </div>
         <ol>
-          <li><span>01</span><p>A jointly endorsed international declaration anchored in the minority-rights charter.</p></li>
-          <li><span>02</span><p>Commitments from parliamentarians and delegates to raise the issue through formal channels.</p></li>
-          <li><span>03</span><p>A standing international coordination network for campaigns, statements, and rapid response.</p></li>
-          <li><span>04</span><p>Direct legal, emergency, documentation, and media support for victims and defenders.</p></li>
-          <li><span>05</span><p>A sustained public calendar that keeps documented evidence visible after Paris.</p></li>
+          {[
+            "A jointly endorsed international declaration anchored in the minority-rights charter.",
+            "Commitments from parliamentarians and delegates to raise the issue through formal channels.",
+            "A standing international coordination network for campaigns, statements, and rapid response.",
+            "Direct legal, emergency, documentation, and media support for victims and defenders.",
+            "A sustained public calendar that keeps documented evidence visible after Paris.",
+          ].map((fallback, index) => (
+            <li key={fallback}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p><ManagedText slug={`about-outcome-${index + 1}`} field="title" fallback={fallback} /></p>
+            </li>
+          ))}
         </ol>
       </section>
     </>

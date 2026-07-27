@@ -12,6 +12,7 @@ import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldLegend 
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 const attendanceOptions = ["Survivor", "Delegate", "Audience", "Researcher-Speaker"] as const
 
@@ -21,16 +22,28 @@ export function RegisterForm({ enabled = true }: { enabled?: boolean }) {
   const [attendance, setAttendance] = useState<(typeof attendanceOptions)[number]>("Delegate")
   const [consent, setConsent] = useState(false)
   const [busy, setBusy] = useState(false)
+  const closedCopy = useEditorialRecord("participate-registration-closed", {
+    eyebrow:"Registration is currently closed",
+    title:"The delegate desk will open soon.",
+    summary:"Event information remains available while the organisers prepare the next registration window.",
+  })
+  const successCopy = useEditorialRecord("participate-registration-success", {
+    eyebrow:"Registration received",
+    title:"Your place in the room starts here.",
+    summary:"The registration team can now review this record in the secure admin inbox and follow up with confirmation and practical information.",
+  })
+  const formCopy = useEditorialRecord("participate-registration-form", {
+    title:"Delegate details",
+    summary:"Both programme days, printed materials, listed meals, and the closing gala dinner are included. Attendance remains subject to organiser confirmation.",
+    body:"I consent to the organisers using these details to administer my registration and contact me about the summit.",
+  })
 
   if (!enabled) {
     return (
       <div className="form-success" role="status">
-        <p className="kicker">Registration is currently closed</p>
-        <h2>The delegate desk will open soon.</h2>
-        <p>
-          Event information remains available while the organisers prepare the
-          next registration window.
-        </p>
+        <p className="kicker">{closedCopy.eyebrow}</p>
+        <h2>{closedCopy.title}</h2>
+        <p>{closedCopy.summary}</p>
       </div>
     )
   }
@@ -62,9 +75,9 @@ export function RegisterForm({ enabled = true }: { enabled?: boolean }) {
     return (
       <div className="form-success" role="status">
         <CheckIcon />
-        <p className="kicker">Registration received · {reference}</p>
-        <h2>Your place in the room starts here.</h2>
-        <p>The registration team can now review this record in the secure admin inbox and follow up with confirmation and practical information.</p>
+        <p className="kicker">{successCopy.eyebrow} · {reference}</p>
+        <h2>{successCopy.title}</h2>
+        <p>{successCopy.summary}</p>
         <Button variant="outline" onClick={() => setReference("")}>Register another delegate</Button>
       </div>
     )
@@ -73,8 +86,8 @@ export function RegisterForm({ enabled = true }: { enabled?: boolean }) {
   return (
     <form className="registration-form" onSubmit={register}>
       <FieldSet>
-        <FieldLegend>Delegate details</FieldLegend>
-        <FieldDescription>Both programme days, printed materials, listed meals, and the closing gala dinner are included. Attendance remains subject to organiser confirmation.</FieldDescription>
+        <FieldLegend>{formCopy.title}</FieldLegend>
+        <FieldDescription>{formCopy.summary}</FieldDescription>
         <FieldGroup>
           <div className="form-grid">
             <Field><FieldLabel htmlFor="first-name">First name</FieldLabel><Input id="first-name" name="firstName" required /></Field>
@@ -94,7 +107,7 @@ export function RegisterForm({ enabled = true }: { enabled?: boolean }) {
           <input className="form-honeypot" name="website" tabIndex={-1} autoComplete="off" />
           <Field orientation="horizontal">
             <Checkbox id="registration-consent" checked={consent} onCheckedChange={(value) => setConsent(Boolean(value))} />
-            <FieldLabel htmlFor="registration-consent">I consent to the organisers using these details to administer my registration and contact me about the summit.</FieldLabel>
+            <FieldLabel htmlFor="registration-consent">{formCopy.body}</FieldLabel>
           </Field>
           <Button type="submit" size="lg" disabled={busy || !consent}>
             {busy ? <Loader2Icon className="animate-spin" data-icon="inline-start" /> : <SendIcon data-icon="inline-start" />}

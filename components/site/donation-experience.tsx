@@ -9,6 +9,7 @@ import type { Id } from "@/convex/_generated/dataModel"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { Reveal } from "@/components/site/reveal"
 
 export function DonationExperience() {
@@ -20,6 +21,17 @@ export function DonationExperience() {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<{ reference:string; demo:boolean } | null>(null)
   const tier = tiers?.find((item) => item._id === selected)
+  const disabledCopy = useEditorialRecord("donate-disabled", {
+    title:"Contribution desk coming soon",
+    summary:"The organisers are preparing this pathway. No contribution can be recorded while donations are disabled in Global Site Settings.",
+  })
+  const checkoutCopy = useEditorialRecord("donate-checkout", {
+    eyebrow:"Secure contribution desk",
+    title:"Select a level to begin.",
+    secondaryText:"Record your intention to contribute.",
+    summary:"Online payments are not yet open. For now, this form securely records your contribution intention without taking payment.",
+    body:"No payment is taken through this form.",
+  })
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -48,11 +60,8 @@ export function DonationExperience() {
       {settings?.donationsEnabled === false ? (
         <Alert className="donation-result">
           <LockKeyholeIcon />
-          <AlertTitle>Contribution desk coming soon</AlertTitle>
-          <AlertDescription>
-            The organisers are preparing this pathway. No contribution can be
-            recorded while donations are disabled in Global Site Settings.
-          </AlertDescription>
+          <AlertTitle>{disabledCopy.title}</AlertTitle>
+          <AlertDescription>{disabledCopy.summary}</AlertDescription>
         </Alert>
       ) : (
         <>
@@ -71,9 +80,9 @@ export function DonationExperience() {
       </div>
       <Reveal className="checkout-demo">
         <div>
-          <p className="kicker">Secure contribution desk</p>
-          <h2>{selected ? "Record your intention to contribute." : "Select a level to begin."}</h2>
-          <p>Online payments are not yet open. For now, this form securely records your contribution intention without taking payment.</p>
+          <p className="kicker">{checkoutCopy.eyebrow}</p>
+          <h2>{selected ? checkoutCopy.secondaryText : checkoutCopy.title}</h2>
+          <p>{checkoutCopy.summary}</p>
           <div className="payment-readiness"><span><CheckCircle2Icon /> Secure record</span><span><CheckCircle2Icon /> Email reference</span><span><LockKeyholeIcon /> No charge today</span></div>
         </div>
         <form onSubmit={submit}>
@@ -81,7 +90,7 @@ export function DonationExperience() {
           <label><span>Name</span><Input name="name" required /></label>
           <label><span>Email for receipt</span><Input name="email" type="email" required /></label>
           <Button disabled={!selected || busy} type="submit">{busy && <Loader2Icon className="animate-spin" />} Continue to payment</Button>
-          <small>No payment is taken through this form.</small>
+          <small>{checkoutCopy.body}</small>
         </form>
       </Reveal>
       {result && <Alert className="donation-result"><CheckCircle2Icon /><AlertTitle>Contribution intention recorded</AlertTitle><AlertDescription>Reference {result.reference}. Keep this reference for your records; no payment was taken.</AlertDescription></Alert>}

@@ -66,6 +66,7 @@ const websitePages = [
   ["support", "Support", "/support", InboxIcon],
   ["evidence", "Evidence", "/context", BarChart3Icon],
   ["pageCopy", "Page titles & intros", "/about", FileTextIcon],
+  ["sectionCopy", "Editorial sections", "/", FileTextIcon],
   ["content", "Other content", "/privacy", FileTextIcon],
   ["settings", "Site settings", "/", Settings2Icon],
 ] as const
@@ -101,6 +102,7 @@ const categories = [
   "faq",
   "legal",
   "pageCopy",
+  "sectionCopy",
 ] as const
 
 const blankContent = {
@@ -430,6 +432,7 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "support") return <ContentPanel compact initialCategory="faq" />
   if (page === "evidence") return <ChartsAdmin />
   if (page === "pageCopy") return <PageCopyEditor />
+  if (page === "sectionCopy") return <EditorialCopyEditor />
   if (page === "content") return <ContentPanel compact initialCategory="legal" />
   return <ContentPanel compact initialCategory="resolution" />
 }
@@ -853,6 +856,120 @@ function PageCopyEditor() {
           toast.error(error instanceof Error ? error.message : "Page copy could not be saved.")
         }
       }}><SaveIcon /> Save page copy</Button>
+    </section>
+  )
+}
+
+const editorialPageLabels:Record<string, string> = {
+  global:"Shared header & footer",
+  home:"Home",
+  about:"About",
+  context:"Context",
+  speakers:"Speakers",
+  committee:"Committee",
+  participate:"Participate",
+  support:"Support",
+  partners:"Partners",
+  regional:"Regional",
+  donate:"Donate",
+  media:"Media & Publication",
+  resolution:"Resolution",
+  strategy:"Strategic Plan",
+  legal:"Legal",
+}
+
+function EditorialCopyEditor() {
+  const entries = useQuery(api.cms.listForAdmin, { category:"sectionCopy" })
+  const save = useMutation(api.cms.save)
+  const [page, setPage] = useState("home")
+  const [selected, setSelected] = useState<string>("")
+  const [draft, setDraft] = useState<ContentDraft>({
+    ...blankContent,
+    parentSlug:"home",
+    status:"published",
+  })
+  const pages = useMemo(
+    () => Array.from(new Set(entries?.map((entry) => entry.parentSlug).filter(Boolean) ?? [])),
+    [entries]
+  )
+  const pageEntries = useMemo(
+    () => entries?.filter((entry) => entry.parentSlug === page) ?? [],
+    [entries, page]
+  )
+  const existing = entries?.find((entry) => entry._id === selected)
+  useEffect(() => {
+    if (pages.length > 0 && !pages.includes(page)) setPage(pages[0])
+  }, [page, pages])
+  useEffect(() => {
+    setSelected("")
+    setDraft({ ...blankContent, parentSlug:page, status:"published" })
+  }, [page])
+  useEffect(() => {
+    if (!selected && pageEntries[0]) setSelected(pageEntries[0]._id)
+  }, [pageEntries, selected])
+  useEffect(() => {
+    if (existing) {
+      const { _id, category: _category, imageStorageId: _image, imageUrl: _url, ...fields } = existing
+      void _id; void _category; void _image; void _url
+      setDraft(fields)
+    } else {
+      setDraft((current) => ({ ...blankContent, parentSlug:current.parentSlug || page, status:"published" }))
+    }
+  }, [existing, page, selected])
+  const update = (key:keyof ContentDraft, value:string | number) =>
+    setDraft((current) => ({ ...current, [key]:value }))
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle
+        eyebrow="Editorial control"
+        title="Every public section"
+        copy="Choose a page and section, then edit the visible labels, headings, supporting copy and call to action without changing the layout."
+      />
+      <label className="admin-field admin-record-select">
+        <span>Page or shared area</span>
+        <select value={page} onChange={(event) => setPage(event.target.value)}>
+          {pages.map((value) => <option value={value} key={value}>{editorialPageLabels[value] || humanize(value)}</option>)}
+        </select>
+      </label>
+      <AdminRecordSelect
+        label="Section to edit"
+        value={selected}
+        records={pageEntries.map((entry) => ({ value:entry._id, label:entry.title || entry.slug }))}
+        onChange={setSelected}
+      />
+      <div className="admin-form-grid">
+        <Field label="Internal section key" value={draft.slug} disabled />
+        <Field label="Page group" value={draft.parentSlug} disabled />
+        <Field label="Small label / eyebrow" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />
+        <Field label="Heading or primary text" value={draft.title} onValueChange={(value) => update("title", value)} />
+        <Field label="Supporting paragraph" multiline value={draft.summary} onValueChange={(value) => update("summary", value)} />
+        <Field label="Detailed copy or source note" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
+        <Field label="Additional text" multiline value={draft.secondaryText} onValueChange={(value) => update("secondaryText", value)} />
+        <Field label="Button label" value={draft.linkLabel} onValueChange={(value) => update("linkLabel", value)} />
+        <Field label="Button destination" value={draft.linkUrl} onValueChange={(value) => update("linkUrl", value)} />
+        <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
+      </div>
+      <Button className="admin-save" onClick={async () => {
+        if (!existing || !draft.title.trim()) {
+          toast.error("Choose a section and add its primary heading.")
+          return
+        }
+        try {
+          await save({
+            id:existing._id,
+            category:"sectionCopy",
+            ...draft,
+            slug:existing.slug,
+            parentSlug:existing.parentSlug,
+            status:"published",
+            featured:false,
+          })
+          toast.success("Editorial section published.")
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : "Editorial copy could not be saved.")
+        }
+      }}><SaveIcon /> Save editorial section</Button>
     </section>
   )
 }
@@ -1554,7 +1671,7 @@ function AdminRecordSelect({
 }: {
   label:string
   value:string
-  createLabel:string
+  createLabel?:string
   records:Array<{ value:string; label:string }>
   onChange:(value:string)=>void
 }) {
@@ -1562,7 +1679,7 @@ function AdminRecordSelect({
     <label className="admin-field admin-record-select">
       <span>{label}</span>
       <select value={value} onChange={(event) => onChange(event.target.value)}>
-        <option value="new">{createLabel}</option>
+        {createLabel && <option value="new">{createLabel}</option>}
         {records.map((record) => (
           <option value={record.value} key={record.value}>{record.label}</option>
         ))}

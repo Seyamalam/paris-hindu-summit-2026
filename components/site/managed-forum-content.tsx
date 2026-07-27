@@ -16,6 +16,7 @@ import Link from "next/link"
 import { api } from "@/convex/_generated/api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import { Reveal } from "@/components/site/reveal"
 
@@ -50,6 +51,10 @@ export function ManagedOverview() {
 
 export function PresentMoment() {
   const entries = useQuery(api.cms.listPublished, { category:"presentMoment" })
+  const heading = useEditorialRecord("about-present-moment-heading", {
+    eyebrow:"The present moment",
+    title:"Fifty-six years after independence, structural and everyday pressures still shape daily life for Bangladesh's Hindu community.",
+  })
   const icons = [
     HouseIcon,
     ChurchIcon,
@@ -62,11 +67,8 @@ export function PresentMoment() {
   return (
     <section className="present-moment">
       <header className="section-shell">
-        <p className="kicker">The present moment</p>
-        <p>
-          Fifty-six years after independence, structural and everyday pressures
-          still shape daily life for Bangladesh&apos;s Hindu community.
-        </p>
+        <p className="kicker">{heading.eyebrow}</p>
+        <p>{heading.title}</p>
       </header>
       <div className="present-moment-grid">
         {entries?.map((entry, index) => {
@@ -88,17 +90,23 @@ export function ManagedCommittee() {
   const advisors = useQuery(api.cms.listPublished, { category: "advisory" })
   const managedTeam = useQuery(api.cms.listPublished, { category: "team" })
   const team = managedTeam ?? []
+  const advisoryHeading = useEditorialRecord("committee-advisory-heading", {
+    eyebrow:"Strategic guidance",
+    title:"Advisory Board",
+    summary:"International outreach, partnerships, fundraising, and regional coordination carried by named advisors.",
+  })
+  const teamHeading = useEditorialRecord("committee-team-heading", {
+    eyebrow:"Organising Committee",
+    title:"Working across borders, disciplines, and responsibilities.",
+  })
 
   return (
     <>
       <section className="committee-roster section-shell" id="advisory">
         <div className="section-heading compact">
-          <p className="kicker">Strategic guidance</p>
-          <h2>Advisory Board</h2>
-          <p>
-            International outreach, partnerships, fundraising, and regional
-            coordination carried by named advisors.
-          </p>
+          <p className="kicker">{advisoryHeading.eyebrow}</p>
+          <h2>{advisoryHeading.title}</h2>
+          <p>{advisoryHeading.summary}</p>
         </div>
         <div className="advisor-grid">
           {advisors?.map((person, index) => (
@@ -125,8 +133,8 @@ export function ManagedCommittee() {
       </section>
       <section className="committee-roster section-shell" id="organising-team">
         <div className="section-heading compact">
-          <p className="kicker">Organising Committee</p>
-          <h2>Working across borders, disciplines, and responsibilities.</h2>
+          <p className="kicker">{teamHeading.eyebrow}</p>
+          <h2>{teamHeading.title}</h2>
         </div>
         <div className="roster-grid managed-roster">
           {team.map((person, index) => (
@@ -221,6 +229,14 @@ export function CmsDocumentPage({
   const mainRecords = category === "strategy"
     ? records.filter((entry) => !["vision", "timeline"].includes(entry.parentSlug))
     : records
+  const resolutionOutcomesHeading = useEditorialRecord("resolution-outcomes-heading", {
+    eyebrow:"After the resolutions",
+    title:"Expected outcomes",
+  })
+  const strategyTimelineHeading = useEditorialRecord("strategy-timeline-heading", {
+    eyebrow:"Five-year delivery",
+    title:"Implementation Timeline",
+  })
 
   return (
     <>
@@ -290,8 +306,8 @@ export function CmsDocumentPage({
       </section>
       {category === "resolution" && records.some((entry) => entry.secondaryText) && (
         <section className="resolution-outcomes section-shell">
-          <p className="kicker">After the resolutions</p>
-          <h2>Expected outcomes</h2>
+          <p className="kicker">{resolutionOutcomesHeading.eyebrow}</p>
+          <h2>{resolutionOutcomesHeading.title}</h2>
           <div>
             {records.filter((entry) => entry.secondaryText).map((entry) => (
               <article key={entry._id}>
@@ -305,8 +321,8 @@ export function CmsDocumentPage({
       {category === "strategy" && strategyTimeline.length > 0 && (
         <section className="strategy-timeline section-shell">
           <header>
-            <p className="kicker">Five-year delivery</p>
-            <h2>Implementation Timeline</h2>
+            <p className="kicker">{strategyTimelineHeading.eyebrow}</p>
+            <h2>{strategyTimelineHeading.title}</h2>
           </header>
           <div>
             {strategyTimeline.map((entry) => (

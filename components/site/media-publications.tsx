@@ -6,9 +6,15 @@ import { ArrowDownToLineIcon, BookOpenIcon } from "lucide-react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 export function MediaPublications() {
   const sections = useQuery(api.media.listPublished)
+  const emptyCopy = useEditorialRecord("media-empty", {
+    eyebrow:"Editorial archive",
+    title:"No publications are currently available.",
+    summary:"Published books, reports, research papers, and media resources will be collected here.",
+  })
 
   if (sections === undefined) {
     return (
@@ -23,12 +29,9 @@ export function MediaPublications() {
       <section className="publication-library section-shell">
         <div className="publication-empty">
           <BookOpenIcon />
-          <p className="kicker">Editorial archive</p>
-          <h2>No publications are currently available.</h2>
-          <p>
-            Published books, reports, research papers, and media resources will
-            be collected here.
-          </p>
+          <p className="kicker">{emptyCopy.eyebrow}</p>
+          <h2>{emptyCopy.title}</h2>
+          <p>{emptyCopy.summary}</p>
         </div>
       </section>
     )

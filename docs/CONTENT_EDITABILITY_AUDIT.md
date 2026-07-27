@@ -38,6 +38,12 @@ are still maintained in code.
   editor.
 - Uploaded portraits, partner logos, publication covers and files, and their
   alternative text.
+- Every remaining visitor-facing editorial section through the Editorial
+  Sections editor, grouped by page. This includes homepage framing and evidence
+  statistics, About outcomes, Context chapters and charter points, committee
+  responsibility copy, speaker participation copy, participation pathways,
+  partner and regional introductions, donation-state copy, legal notices, and
+  shared header/footer language.
 
 ## Intentional interface text kept in code
 
@@ -54,23 +60,14 @@ be exposed as free-form CMS fields:
 
 ## Editorial text still maintained in code
 
-The following is approved-looking content rather than placeholder copy, but it
-does not yet have a dedicated admin editor:
+No visible event editorial is code-only. Code retains fallback copies solely so
+the public layout remains readable during an unavailable database connection or
+before an initial seed; every corresponding live record is seeded in Convex and
+can be changed from Page Studio.
 
-- Homepage section framing labels/headlines and the static evidence summary band.
-- About outcomes heading and outcomes list.
-- Context chapter cards, seven charter labels/details, evidence framing, and
-  image-band caption.
-- Committee responsibility-group headings and descriptions.
-- Speaker nomination call-to-action.
-- Participate support-option descriptions and contact-section framing.
-- Support page section introduction.
-- Regional and partner section framing copy around the dynamic records.
-- Page metadata titles and descriptions used by search engines and link previews.
-
-If the client needs every one of these phrases editable, model them as named
-page-section records rather than adding a generic unstructured text editor. That
-keeps the visual layout stable while allowing safe editorial changes.
+Search-engine metadata and social-preview descriptions remain a technical
+delivery concern rather than visible page editorial. Their final wording is
+still part of the launch approval process.
 
 ## Outstanding content decisions
 
@@ -80,4 +77,3 @@ keeps the visual layout stable while allowing safe editorial changes.
   wording.
 - Registration opening date and donation activation date.
 - Final metadata and social-preview copy.
-

@@ -9,17 +9,24 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { Reveal } from "@/components/site/reveal"
 
 const chartConfig = { value: { label: "Value", color: "var(--assembly-red)" } } satisfies ChartConfig
 
 export function HomeInfoBar() {
   const settings = useQuery(api.settings.get)
+  const labels = useEditorialRecord("home-info-labels", {
+    title:"Venue",
+    summary:"Format",
+    body:"Delegates",
+    secondaryText:"Languages",
+  })
   const facts = [
-    ["Venue", settings?.venue ?? "Salle des Princes"],
-    ["Format", settings?.format ?? "Two-day international summit"],
-    ["Delegates", settings?.delegateInfo ?? "International delegates"],
-    ["Languages", settings?.languages ?? "English · French · Bengali"],
+    [labels.title, settings?.venue ?? "Salle des Princes"],
+    [labels.summary, settings?.format ?? "Two-day international summit"],
+    [labels.body, settings?.delegateInfo ?? "International delegates"],
+    [labels.secondaryText, settings?.languages ?? "English · French · Bengali"],
   ]
   return <section className="home-info-bar">{facts.map(([label,value]) => <div key={label}><span>{label}</span><b>{value}</b></div>)}</section>
 }
@@ -27,13 +34,21 @@ export function HomeInfoBar() {
 export function WhyAndChallenges() {
   const why = useQuery(api.cms.listPublished, { category: "why" })
   const challenges = useQuery(api.cms.listPublished, { category: "challenge" })
+  const whyHeading = useEditorialRecord("home-why-record-heading", {
+    eyebrow:"Why this summit",
+    title:"Understand the record. Build protection.",
+  })
+  const challengeHeading = useEditorialRecord("home-challenges-heading", {
+    eyebrow:"The challenges",
+    title:"What the declaration must confront.",
+  })
   return <>
     <section className="why-record section-shell">
-      <div className="section-heading compact"><p className="kicker">Why this summit</p><h2>Understand the record. Build protection.</h2></div>
+      <div className="section-heading compact"><p className="kicker">{whyHeading.eyebrow}</p><h2>{whyHeading.title}</h2></div>
       <div className="why-record-grid">{why?.map((item,index) => <Reveal key={item._id} delay={index*80}><article><span>0{index+1}</span><p className="kicker">{item.eyebrow}</p><h3>{item.title}</h3><p>{item.summary}</p></article></Reveal>)}</div>
     </section>
     <section className="challenge-record">
-      <div className="section-heading compact"><p className="kicker">The challenges</p><h2>What the declaration must confront.</h2></div>
+      <div className="section-heading compact"><p className="kicker">{challengeHeading.eyebrow}</p><h2>{challengeHeading.title}</h2></div>
       <div className="challenge-record-grid">{challenges?.map((item,index) => <Reveal key={item._id} delay={index*80}><article><span>{item.eyebrow}</span><h3>{item.title}</h3><p>{item.summary}</p></article></Reveal>)}</div>
     </section>
   </>
@@ -61,6 +76,12 @@ export function EvidenceCharts() {
 
 export function FeaturedSpeakers() {
   const managedSpeakers = useQuery(api.cms.listPublished, { category: "speaker" })
+  const heading = useEditorialRecord("home-speakers-heading", {
+    eyebrow:"Voices in the room",
+    title:"People carrying evidence into action.",
+    linkLabel:"Meet the speakers",
+    linkUrl:"/speakers",
+  })
   const available = managedSpeakers ?? []
   const featured = available.filter((speaker) => speaker.featured)
   const speakers = (featured.length > 0 ? featured : available)
@@ -76,8 +97,8 @@ export function FeaturedSpeakers() {
   return (
     <section className="speaker-preview section-shell">
       <div className="section-heading compact">
-        <p className="kicker">Voices in the room</p>
-        <h2>People carrying evidence into action.</h2>
+        <p className="kicker">{heading.eyebrow}</p>
+        <h2>{heading.title}</h2>
       </div>
       <div className="speaker-preview-grid">
         {speakers.map((speaker) => (
@@ -103,9 +124,9 @@ export function FeaturedSpeakers() {
       <Button
         nativeButton={false}
         variant="outline"
-        render={<Link href="/speakers" />}
+        render={<Link href={heading.linkUrl || "/speakers"} />}
       >
-        Meet the speakers <ArrowRightIcon data-icon="inline-end" />
+        {heading.linkLabel} <ArrowRightIcon data-icon="inline-end" />
       </Button>
     </section>
   )

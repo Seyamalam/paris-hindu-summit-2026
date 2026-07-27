@@ -249,6 +249,9 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Privacy and Terms records are reachable through the Other Content inspector.
 - ✅ Stale code fixtures no longer reappear when regional, partner, or team records are unpublished or removed.
 - ✅ Content editability and remaining code-owned editorial copy are documented in `CONTENT_EDITABILITY_AUDIT.md`.
+- ✅ Sixty-six page-grouped Editorial Sections records make all remaining visible event editorial modifiable without exposing layout code.
+- ✅ Homepage evidence statistics and source note, About outcomes, Context chapters and charter, committee responsibilities, participation pathways, shared header/footer language, donation-state copy, and section framing now publish reactively from Convex.
+- ✅ The Editorial Sections inspector uses page and section dropdowns, preserving the visual page structure while giving administrators full copy control.
 
 ## Media and Convex storage
 

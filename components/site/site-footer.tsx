@@ -7,18 +7,28 @@ import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
+import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { Separator } from "@/components/ui/separator"
 import { event, navItems } from "@/lib/content"
 
 export function SiteFooter() {
   const settings = useQuery(api.settings.get)
+  const callout = useEditorialRecord("global-footer-callout", {
+    eyebrow:"Paris · October 2026",
+    title:"One room. Many institutions. A shared commitment.",
+    linkLabel:"Take part",
+    linkUrl:"/engage",
+  })
+  const legal = useEditorialRecord("global-footer-legal", {
+    title:"Human rights · dignity · equal citizenship",
+  })
   return (
     <footer className="site-footer">
       <div className="footer-callout">
-        <p className="kicker">Paris · October 2026</p>
-        <h2>{settings?.footerTitle ?? "One room. Many institutions. A shared commitment."}</h2>
-        <Button nativeButton={false} render={<Link href="/engage" />}>
-          Take part <ArrowUpRightIcon data-icon="inline-end" />
+        <p className="kicker">{callout.eyebrow}</p>
+        <h2>{settings?.footerTitle ?? callout.title}</h2>
+        <Button nativeButton={false} render={<Link href={callout.linkUrl || "/engage"} />}>
+          {callout.linkLabel} <ArrowUpRightIcon data-icon="inline-end" />
         </Button>
       </div>
       <Separator />
@@ -59,7 +69,7 @@ export function SiteFooter() {
       </div>
       <div className="footer-legal">
         <span>© 2026 {settings?.shortName ?? "Paris Assembly"}</span>
-        <span><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · Human rights · dignity · equal citizenship</span>
+        <span><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · {legal.title}</span>
       </div>
     </footer>
   )

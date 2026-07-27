@@ -134,6 +134,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
 - [x] Page titles, eyebrows, and introductory paragraphs for all principal public pages are editable through a dedicated Page Titles & Intros inspector.
+- [x] All remaining visible editorial headings, paragraphs, captions, fixed list items, calls to action, shared header/footer language, and operational content notices are editable through page-grouped Editorial Sections records.
 - [x] Record switching in the right-hand inspector uses labelled dropdowns instead of horizontally scrolling record chips.
 - [x] Privacy and Terms records are reachable through the Other Content inspector.
 
@@ -240,7 +241,7 @@ Move these to Convex and expose through Admin:
 - [x] Navigation labels are generated from programme, media, engage, and detailed content.
 - [x] People, partners/sponsors, regional countries, media, programme, chart series, and detailed editorial copy are supported.
 - [x] Logos, portraits, thumbnails, downloadable files, and alt text/metadata can be stored in the Convex media library. `Partial`: polished attachment pickers remain.
-- [ ] Remaining code-owned editorial section framing listed in `CONTENT_EDITABILITY_AUDIT.md`. These are not placeholder strings; add purpose-built fields only if the client requests control of every section heading and description.
+- [x] Remaining editorial section framing is represented by named, layout-safe Convex records rather than a generic unstructured page builder.
 
 Never make these editable as plain content:
 
