@@ -5,11 +5,10 @@ import { ArrowUpRightIcon } from "lucide-react"
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
-import { partnerFallback, regionalFallback } from "@/lib/content"
 
 export function PartnerWall() {
   const liveOrganizations = useQuery(api.content.listOrganizations)
-  const organizations = liveOrganizations ?? partnerFallback
+  const organizations = liveOrganizations ?? []
 
   return (
     <section className="partner-wall section-shell" id="partners">
@@ -54,7 +53,7 @@ export function PartnerWall() {
 
 export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
   const liveCountries = useQuery(api.content.listRegionalCountries)
-  const countries = liveCountries ?? regionalFallback
+  const countries = liveCountries ?? []
 
   return (
     <section className="regional-section" id="beyond-bangladesh">

@@ -1,7 +1,7 @@
 import { Building2Icon, Globe2Icon, MegaphoneIcon, UsersIcon } from "lucide-react"
 
-import { PageHero } from "@/components/site/page-hero"
 import { ManagedCommittee } from "@/components/site/managed-forum-content"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 
 const responsibilityGroups = [
   [Globe2Icon, "International coordination", "Guest invitations, dignitary relations, speaker selection, international networking, and institutional partnerships."],
@@ -13,7 +13,8 @@ const responsibilityGroups = [
 export default function CommitteePage() {
   return (
     <>
-      <PageHero
+      <ManagedPageHero
+        slug="committee"
         eyebrow="Organising committee"
         title="Responsibility has a name."
         intro="The committee brings together international advocacy, local operations, cultural work, digital communications, participant coordination, and fundraising."

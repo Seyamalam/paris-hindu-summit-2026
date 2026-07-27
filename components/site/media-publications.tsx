@@ -24,10 +24,10 @@ export function MediaPublications() {
         <div className="publication-empty">
           <BookOpenIcon />
           <p className="kicker">Editorial archive</p>
-          <h2>Publications are being prepared.</h2>
+          <h2>No publications are currently available.</h2>
           <p>
-            Books, government reports, research papers, and media resources will
-            appear here as soon as the editorial team publishes them.
+            Published books, reports, research papers, and media resources will
+            be collected here.
           </p>
         </div>
       </section>

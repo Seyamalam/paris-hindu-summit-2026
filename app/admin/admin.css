@@ -781,27 +781,15 @@
   margin-top: 23px;
 }
 
-.admin-record-chips {
-  display: flex;
-  gap: 5px;
+.admin-record-select {
+  width: 100%;
   margin-bottom: 23px;
-  overflow-x: auto;
 }
 
-.admin-record-chips button {
-  flex: 0 0 auto;
-  padding: 9px 11px;
-  border: 1px solid currentColor;
-  font-size: 9px;
-}
-
-.admin-record-chips button[data-active="true"] {
-  color: #fff;
-  background: #163f91;
-}
-
-.studio-inspector .admin-record-chips button[data-active="true"] {
-  background: var(--admin-red);
+.admin-record-select select {
+  min-height: 44px;
+  padding-right: 42px;
+  cursor: pointer;
 }
 
 .admin-publish-programme {

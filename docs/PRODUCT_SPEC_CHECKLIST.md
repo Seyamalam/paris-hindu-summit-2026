@@ -12,6 +12,8 @@ deployments where data is involved.
 
 For the full delivered-feature inventory, see
 [`COMPLETED_WORK_CHECKLIST.md`](COMPLETED_WORK_CHECKLIST.md).
+For the exact boundary between editable editorial copy and code-owned interface
+text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 ## Status legend
 
@@ -131,6 +133,9 @@ For the full delivered-feature inventory, see
 - [x] Forms, donations, media storage, team access, dashboard metrics, and activity are retained in a separate Operations workspace.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
+- [x] Page titles, eyebrows, and introductory paragraphs for all principal public pages are editable through a dedicated Page Titles & Intros inspector.
+- [x] Record switching in the right-hand inspector uses labelled dropdowns instead of horizontally scrolling record chips.
+- [x] Privacy and Terms records are reachable through the Other Content inspector.
 
 ### General tab — dynamic
 
@@ -231,9 +236,11 @@ Keep these in code:
 Move these to Convex and expose through Admin:
 
 - [x] Event facts, contact/social links, announcement, footer content, and donation tiers.
+- [x] Principal public-page hero labels, titles, and introductions.
 - [x] Navigation labels are generated from programme, media, engage, and detailed content.
 - [x] People, partners/sponsors, regional countries, media, programme, chart series, and detailed editorial copy are supported.
 - [x] Logos, portraits, thumbnails, downloadable files, and alt text/metadata can be stored in the Convex media library. `Partial`: polished attachment pickers remain.
+- [ ] Remaining code-owned editorial section framing listed in `CONTENT_EDITABILITY_AUDIT.md`. These are not placeholder strings; add purpose-built fields only if the client requests control of every section heading and description.
 
 Never make these editable as plain content:
 
@@ -255,4 +262,5 @@ Never make these editable as plain content:
 - [ ] Production backup/export and restore drill before launch.
 - [x] Automated and manual accessibility pass covers keyboard navigation, focus, contrast, reduced motion, form errors and chart data-table alternatives. `Partial`: final third-party audit remains a launch-day check.
 - [x] Responsive QA covers compact mobile, tablet and desktop layouts. `Partial`: final physical-device and Safari/Firefox sign-off remains.
+- [x] Visitor-facing placeholder sweep completed; empty states are neutral and operational “coming soon” messages remain intentionally tied to availability settings.
 - [ ] Content approval, legal/privacy approval, Stripe live-mode test, analytics/consent decision, and launch checklist.

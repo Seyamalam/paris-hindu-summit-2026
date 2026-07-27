@@ -16,9 +16,8 @@ import Link from "next/link"
 import { api } from "@/convex/_generated/api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { PageHero } from "@/components/site/page-hero"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import { Reveal } from "@/components/site/reveal"
-import { committee as fallbackCommittee } from "@/lib/content"
 
 type DocumentCategory =
   | "agenda"
@@ -88,17 +87,7 @@ export function PresentMoment() {
 export function ManagedCommittee() {
   const advisors = useQuery(api.cms.listPublished, { category: "advisory" })
   const managedTeam = useQuery(api.cms.listPublished, { category: "team" })
-  const team =
-    managedTeam && managedTeam.length > 0
-      ? managedTeam
-      : fallbackCommittee.map(([name, role], index) => ({
-          _id: name,
-          title: name,
-          role,
-          summary: "",
-          body: "",
-          order: index + 1,
-        }))
+  const team = managedTeam ?? []
 
   return (
     <>
@@ -235,7 +224,12 @@ export function CmsDocumentPage({
 
   return (
     <>
-      <PageHero eyebrow={eyebrow} title={title} intro={intro} />
+      <ManagedPageHero
+        slug={category === "partnership" ? "partnership-framework" : category}
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+      />
       {strategyVision && (
         <section className="strategy-vision section-shell">
           <p className="kicker">{strategyVision.eyebrow || "Vision"}</p>

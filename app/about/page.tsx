@@ -1,4 +1,4 @@
-import { PageHero } from "@/components/site/page-hero"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import {
   ManagedOverview,
   PresentMoment,
@@ -7,7 +7,8 @@ import {
 export default function AboutPage() {
   return (
     <>
-      <PageHero
+      <ManagedPageHero
+        slug="about"
         eyebrow="About the summit"
         title="A standing platform, not a single event"
         intro={'A Global Forum on Religious Freedom and Hindu Minority Rights in Bangladesh convenes in Paris under the theme "Justice for Bangladeshi Hindus: Solidarity Without Borders". It is organised by an independent organising committee chaired by Dr Richard Benkin – a human rights activist, author and lecturer – together with social activists, human rights advocates, scholars, faith leaders and the global diaspora.'}

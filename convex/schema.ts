@@ -81,7 +81,8 @@ export default defineSchema({
       v.literal("programme"),
       v.literal("media"),
       v.literal("faq"),
-      v.literal("legal")
+      v.literal("legal"),
+      v.literal("pageCopy")
     ),
     slug: v.string(),
     title: v.string(),

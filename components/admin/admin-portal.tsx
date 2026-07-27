@@ -65,7 +65,8 @@ const websitePages = [
   ["engage", "Engage", "/engage", SparklesIcon],
   ["support", "Support", "/support", InboxIcon],
   ["evidence", "Evidence", "/context", BarChart3Icon],
-  ["content", "Other pages", "/engage", FileTextIcon],
+  ["pageCopy", "Page titles & intros", "/about", FileTextIcon],
+  ["content", "Other content", "/privacy", FileTextIcon],
   ["settings", "Site settings", "/", Settings2Icon],
 ] as const
 
@@ -98,6 +99,8 @@ const categories = [
   "programme",
   "media",
   "faq",
+  "legal",
+  "pageCopy",
 ] as const
 
 const blankContent = {
@@ -426,6 +429,8 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "engage") return <ContentPanel compact initialCategory="engage" />
   if (page === "support") return <ContentPanel compact initialCategory="faq" />
   if (page === "evidence") return <ChartsAdmin />
+  if (page === "pageCopy") return <PageCopyEditor />
+  if (page === "content") return <ContentPanel compact initialCategory="legal" />
   return <ContentPanel compact initialCategory="resolution" />
 }
 
@@ -697,18 +702,20 @@ function AboutEditor() {
           ? "Edit the meaningful headings and copy on the About page."
           : "Edit the six public-interest cards in The present moment."}
       />
-      <div className="admin-record-chips">
-        <button data-active={category === "overview"} onClick={() => setCategory("overview")}>About sections</button>
-        <button data-active={category === "presentMoment"} onClick={() => setCategory("presentMoment")}>Present moment</button>
-      </div>
-      <div className="admin-record-chips">
-        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ New</button>
-        {entries?.map((entry) => (
-          <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>
-            {entry.title}
-          </button>
-        ))}
-      </div>
+      <label className="admin-field admin-record-select">
+        <span>About area</span>
+        <select value={category} onChange={(event) => setCategory(event.target.value as typeof category)}>
+          <option value="overview">About sections</option>
+          <option value="presentMoment">Present moment</option>
+        </select>
+      </label>
+      <AdminRecordSelect
+        label="Section to edit"
+        value={selected}
+        createLabel="+ Create a new section"
+        records={entries?.map((entry) => ({ value:entry._id, label:entry.title })) ?? []}
+        onChange={setSelected}
+      />
       <div className="admin-form-grid">
         {category === "overview" && (
           <Field label="Section label" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />
@@ -755,6 +762,101 @@ function AboutEditor() {
   )
 }
 
+function PageCopyEditor() {
+  const entries = useQuery(api.cms.listForAdmin, { category:"pageCopy" })
+  const save = useMutation(api.cms.save)
+  const [selected, setSelected] = useState<string>("new")
+  const [draft, setDraft] = useState<ContentDraft>({
+    ...blankContent,
+    status:"published",
+  })
+  const existing = entries?.find((entry) => entry._id === selected)
+  useEffect(() => {
+    if (existing) {
+      const {
+        _id,
+        category: _category,
+        imageStorageId: _image,
+        imageUrl: _url,
+        ...fields
+      } = existing
+      void _id
+      void _category
+      void _image
+      void _url
+      setDraft(fields)
+    } else {
+      setDraft({ ...blankContent, status:"published" })
+    }
+  }, [existing, selected])
+  const update = (key:keyof ContentDraft, value:string | number) =>
+    setDraft((current) => ({ ...current, [key]:value }))
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle
+        eyebrow="Shared page copy"
+        title="Page titles & introductions"
+        copy="Choose a public page, edit its hero label, title and introduction, then publish."
+      />
+      <AdminRecordSelect
+        label="Page to edit"
+        value={selected}
+        createLabel="+ Add another page"
+        records={entries?.map((entry) => ({
+          value:entry._id,
+          label:`${entry.linkUrl || "/"} · ${entry.title}`,
+        })) ?? []}
+        onChange={setSelected}
+      />
+      <div className="admin-form-grid">
+        <Field label="Page route" value={draft.linkUrl} placeholder="/page" onValueChange={(value) => update("linkUrl", value)} />
+        <Field label="Small label above title" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />
+        <Field label="Page title" value={draft.title} onValueChange={(value) => update("title", value)} />
+        <Field label="Page introduction" multiline value={draft.summary} onValueChange={(value) => update("summary", value)} />
+        <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
+        <label className="admin-field">
+          <span>Publication status</span>
+          <select value={draft.status} onChange={(event) => setDraft({ ...draft, status:event.target.value as "draft" | "published" })}>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </label>
+      </div>
+      <Button className="admin-save" onClick={async () => {
+        const slug =
+          draft.slug ||
+          draft.linkUrl
+            .replace(/^\/|\/$/g, "")
+            .replace(/[^a-z0-9]+/gi, "-")
+            .toLowerCase() ||
+          draft.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+        if (!slug || !draft.title.trim() || !draft.linkUrl.startsWith("/")) {
+          toast.error("Add a page route beginning with / and a page title.")
+          return
+        }
+        try {
+          await save({
+            ...(existing ? { id:existing._id } : {}),
+            category:"pageCopy",
+            ...draft,
+            slug,
+            body:"",
+            featured:false,
+          })
+          toast.success("Page title and introduction published.")
+          setSelected("new")
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : "Page copy could not be saved.")
+        }
+      }}><SaveIcon /> Save page copy</Button>
+    </section>
+  )
+}
+
 function StructuredDocumentPanel({ category }: { category:StructuredCategory }) {
   const entries = useQuery(api.cms.listForAdmin, { category })
   const save = useMutation(api.cms.save)
@@ -788,10 +890,13 @@ function StructuredDocumentPanel({ category }: { category:StructuredCategory }) 
   return (
     <section className="admin-panel" data-compact="true">
       <PanelTitle eyebrow="Page editor" title={labels[0]} copy={labels[1]} />
-      <div className="admin-record-chips">
-        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ New</button>
-        {entries?.map((entry) => <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>{entry.title}</button>)}
-      </div>
+      <AdminRecordSelect
+        label="Section to edit"
+        value={selected}
+        createLabel="+ Create a new section"
+        records={entries?.map((entry) => ({ value:entry._id, label:entry.title })) ?? []}
+        onChange={setSelected}
+      />
       <div className="admin-form-grid">
         {category === "strategy" && <label className="admin-field"><span>Content type</span><select value={strategyType} onChange={(event) => update("parentSlug", event.target.value)}><option value="goal">Strategic goal</option><option value="vision">Vision</option><option value="timeline">Implementation Timeline card</option></select></label>}
         <Field label="URL slug" value={draft.slug} onValueChange={(value) => update("slug", value)} />
@@ -886,11 +991,22 @@ function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
   return (
     <section className="admin-panel" data-compact="true">
       <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : "Organizing Team and Advisory Board"} copy="Add each person with a name, short introduction, biography, and profile picture." />
-      {mode === "team" && <div className="admin-record-chips"><button data-active={category === "team"} onClick={() => setCategory("team")}>Organizing Team</button><button data-active={category === "advisory"} onClick={() => setCategory("advisory")}>Advisory Board</button></div>}
-      <div className="admin-record-chips">
-        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ Add person</button>
-        {entries?.map((entry) => <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>{entry.title}</button>)}
-      </div>
+      {mode === "team" && (
+        <label className="admin-field admin-record-select">
+          <span>People group</span>
+          <select value={category} onChange={(event) => setCategory(event.target.value as typeof category)}>
+            <option value="team">Organizing Team</option>
+            <option value="advisory">Advisory Board</option>
+          </select>
+        </label>
+      )}
+      <AdminRecordSelect
+        label="Person to edit"
+        value={selected}
+        createLabel="+ Add a new person"
+        records={entries?.map((entry) => ({ value:entry._id, label:entry.title })) ?? []}
+        onChange={setSelected}
+      />
       <div className="admin-form-grid">
         <Field label="URL slug" value={draft.slug} onValueChange={(value) => update("slug", value)} />
         <Field label="Name" value={draft.title} onValueChange={(value) => update("title", value)} />
@@ -1009,10 +1125,13 @@ function MediaPublicationPanel() {
       />
       <div className="admin-subpanel">
         <PanelTitle eyebrow="Files" title="Publications" copy="Every publication belongs to one of the sections above." />
-        <div className="admin-record-chips">
-          <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ Add publication</button>
-          {data?.items.map((item) => <button data-active={selected === item._id} key={item._id} onClick={() => setSelected(item._id)}>{item.title}</button>)}
-        </div>
+        <AdminRecordSelect
+          label="Publication to edit"
+          value={selected}
+          createLabel="+ Add a new publication"
+          records={data?.items.map((item) => ({ value:item._id, label:item.title })) ?? []}
+          onChange={setSelected}
+        />
         <div className="admin-form-grid">
           <label className="admin-field"><span>Submenu section</span><select value={draft.sectionSlug} onChange={(event) => setDraft({ ...draft, sectionSlug:event.target.value })}><option value="">Choose a section</option>{data?.sections.map((section) => <option key={section._id} value={section.slug}>{section.name}</option>)}</select></label>
           <Field label="URL slug" value={draft.slug} onValueChange={(value) => setDraft({ ...draft, slug:value })} />
@@ -1195,10 +1314,13 @@ function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, on
   return (
     <section className="admin-panel">
       <PanelTitle eyebrow="Directory editor" title={title} copy={copy} />
-      <div className="admin-record-chips">
-        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ New</button>
-        {rows?.map((row) => <button data-active={selected === row._id} key={row._id} onClick={() => setSelected(row._id)}>{row.name}</button>)}
-      </div>
+      <AdminRecordSelect
+        label="Record to edit"
+        value={selected}
+        createLabel="+ Create a new record"
+        records={rows?.map((row) => ({ value:row._id, label:row.name || row.title || row.slug })) ?? []}
+        onChange={setSelected}
+      />
       <div className="admin-form-grid">
         {fields.map((key) => key === "status" || key === "kind" || key === "tier"
           ? <label className="admin-field" key={key}><span>{humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
@@ -1421,6 +1543,32 @@ function ConfirmDelete({ label, onConfirm }: { label:string; onConfirm:()=>Promi
 function Field({ label, multiline, onValueChange, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label:string; multiline?:boolean; onValueChange?:(value:string)=>void }) {
   const shared = { name:props.name, value:props.value, defaultValue:props.defaultValue, required:props.required, placeholder:props.placeholder, onChange:(event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onValueChange?.(event.target.value) }
   return <label className={`admin-field ${multiline ? "wide" : ""}`}><span>{label}</span>{multiline ? <Textarea {...shared} /> : <Input {...props} onChange={shared.onChange as React.ChangeEventHandler<HTMLInputElement>} />}</label>
+}
+
+function AdminRecordSelect({
+  label,
+  value,
+  createLabel,
+  records,
+  onChange,
+}: {
+  label:string
+  value:string
+  createLabel:string
+  records:Array<{ value:string; label:string }>
+  onChange:(value:string)=>void
+}) {
+  return (
+    <label className="admin-field admin-record-select">
+      <span>{label}</span>
+      <select value={value} onChange={(event) => onChange(event.target.value)}>
+        <option value="new">{createLabel}</option>
+        {records.map((record) => (
+          <option value={record.value} key={record.value}>{record.label}</option>
+        ))}
+      </select>
+    </label>
+  )
 }
 function PasswordField({
   id,

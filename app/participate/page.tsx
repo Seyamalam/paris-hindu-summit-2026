@@ -5,7 +5,7 @@ import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { PageHero } from "@/components/site/page-hero"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { RegisterForm } from "@/components/site/register-form"
 import { SupportForm } from "@/components/site/support-form"
@@ -24,7 +24,8 @@ export default function ParticipatePage() {
   )
   return (
     <>
-      <PageHero
+      <ManagedPageHero
+        slug="participate"
         eyebrow="Attend and support"
         title="There is more than one way to enter the work."
         intro="Register as a delegate, volunteer, partner, sponsor, donor, or accredited member of the media."

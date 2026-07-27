@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function ProgrammeTabs() {
   const days = useQuery(api.programme.listPublished)
-  if (!days?.length) return <p>Programme details are being prepared.</p>
+  if (!days?.length) return <p>No programme days are currently published.</p>
   return (
     <Tabs defaultValue={days[0].slug} className="programme-tabs">
       <TabsList variant="line" className="programme-tab-list">

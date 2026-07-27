@@ -244,6 +244,11 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Issue #11 — About controls simplified and Media editor readability corrected.
 - ✅ Issue #12 — full public-site sweep removed visitor-facing implementation and placeholder notes.
 - ✅ Issue #13 — public speaker views now follow the published Convex records instead of showing stale fallback speakers.
+- ✅ Page Studio record switching uses labelled dropdowns instead of horizontal scrolling rows.
+- ✅ Principal page eyebrows, titles, and introductions are Convex-backed and editable in one Page Titles & Intros inspector.
+- ✅ Privacy and Terms records are reachable through the Other Content inspector.
+- ✅ Stale code fixtures no longer reappear when regional, partner, or team records are unpublished or removed.
+- ✅ Content editability and remaining code-owned editorial copy are documented in `CONTENT_EDITABILITY_AUDIT.md`.
 
 ## Media and Convex storage
 

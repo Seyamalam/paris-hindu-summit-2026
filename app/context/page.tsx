@@ -2,13 +2,14 @@ import Image from "next/image"
 import { BookOpenIcon, LandmarkIcon, ShieldAlertIcon } from "lucide-react"
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { PageHero } from "@/components/site/page-hero"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import { charter, evidence } from "@/lib/content"
 
 export default function ContextPage() {
   return (
     <>
-      <PageHero
+      <ManagedPageHero
+        slug="context"
         eyebrow="Understanding the context"
         title="History, evidence, and the right to belong."
         intro="A concise public record of demographic decline, constitutional contradiction, documented violence, property loss, and the continuing struggle for equal citizenship."

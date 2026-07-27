@@ -3,12 +3,13 @@ import { ArrowUpRightIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ManagedSpeakers } from "@/components/site/managed-forum-content"
-import { PageHero } from "@/components/site/page-hero"
+import { ManagedPageHero } from "@/components/site/managed-page-hero"
 
 export default function SpeakersPage() {
   return (
     <>
-      <PageHero
+      <ManagedPageHero
+        slug="speakers"
         eyebrow="Speakers and contributors"
         title="Voices carrying evidence into the room."
         intro="The confirmed and proposed contributors below represent the summit’s legal, geopolitical, community, cultural, and documentation work."
