@@ -1191,13 +1191,26 @@
   border: 4px solid var(--admin-paper);
 }
 
+.audit-timeline [data-slot="badge"] {
+  color: #173f7f;
+  background: #e4eaf4;
+  border-color: #6f89b7;
+  font: 750 9px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .audit-timeline h3 {
   margin: 12px 0 5px;
+  color: #102e6f;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .audit-timeline p {
-  color: #667287;
-  font-size: 10px;
+  color: #4e5c70;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .admin-empty {
