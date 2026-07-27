@@ -822,7 +822,7 @@ export const seedInitialContent = internalMutation({
       const existing = await ctx.db
         .query("regionalCountries")
         .withIndex("by_slug", (q) => q.eq("slug", country.slug))
-        .unique()
+        .first()
       const value = { ...country, status: "published" as const, updatedAt: now }
 
       if (existing) {
@@ -837,7 +837,7 @@ export const seedInitialContent = internalMutation({
       const existing = await ctx.db
         .query("organizations")
         .withIndex("by_slug", (q) => q.eq("slug", organization.slug))
-        .unique()
+        .first()
       const value = {
         ...organization,
         status: "published" as const,
@@ -856,7 +856,7 @@ export const seedInitialContent = internalMutation({
       const existing = await ctx.db
         .query("mediaSections")
         .withIndex("by_slug", (q) => q.eq("slug", section.slug))
-        .unique()
+        .first()
       const value = {
         ...section,
         status: "published" as const,
@@ -869,7 +869,7 @@ export const seedInitialContent = internalMutation({
     const existingSettings = await ctx.db
       .query("siteSettings")
       .withIndex("by_key", (q) => q.eq("key", "primary"))
-      .unique()
+      .first()
     const settingsValue = {
       ...settings,
       key: "primary",
@@ -884,7 +884,7 @@ export const seedInitialContent = internalMutation({
       const existing = await ctx.db
         .query("donationTiers")
         .withIndex("by_slug", (q) => q.eq("slug", tier.slug))
-        .unique()
+        .first()
       const value = {
         ...tier,
         status: "published" as const,
@@ -908,7 +908,7 @@ export const seedInitialContent = internalMutation({
       const existing = await ctx.db
         .query("cmsEntries")
         .withIndex("by_slug", (q) => q.eq("slug", entry.slug))
-        .unique()
+        .first()
       const value = {
         category: entry.category,
         slug: entry.slug,
@@ -953,7 +953,7 @@ export const seedInitialContent = internalMutation({
     }
 
     for (const item of programmeDays) {
-      const existing = await ctx.db.query("programmeDays").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
+      const existing = await ctx.db.query("programmeDays").withIndex("by_slug", (q) => q.eq("slug", item.slug)).first()
       const value = { ...item, status: "published" as const, updatedAt: now }
       if (!existing) await ctx.db.insert("programmeDays", value)
       programmeDaysUpserted += 1
@@ -966,7 +966,7 @@ export const seedInitialContent = internalMutation({
       programmeSessionsUpserted += 1
     }
     for (const item of chartSeries) {
-      const existing = await ctx.db.query("chartSeries").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
+      const existing = await ctx.db.query("chartSeries").withIndex("by_slug", (q) => q.eq("slug", item.slug)).first()
       const value = { ...item, status: "published" as const, updatedAt: now }
       if (!existing) {
         await ctx.db.insert("chartSeries", value)
