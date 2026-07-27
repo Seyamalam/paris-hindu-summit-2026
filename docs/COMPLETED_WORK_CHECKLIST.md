@@ -294,6 +294,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Corrected shared footer callout and contact wrapping on narrow devices.
 - ✅ Corrected homepage record-grid min-content overflow at the 768px tablet breakpoint.
 - ✅ Stabilized the hero flip-clock’s server/client render and moved its keyframes to global CSS, eliminating the countdown hydration mismatch.
+- ✅ Corrected the flip-unit attribute passthrough so compact-phone digit sizing is applied; the entire countdown now fits at 320px and 360px without clipping.
 - ✅ Recorded the browser QA findings and verification matrix in `dogfood-output/mobile-responsive/report.md`.
 - ✅ GitHub issue #1 resolved: public Global Site Settings now reactively reflect admin changes without a Vercel redeployment or cache purge.
 - ✅ GitHub issue #2 resolved: Programme sessions are grouped into day-specific admin editors with locked day assignments.

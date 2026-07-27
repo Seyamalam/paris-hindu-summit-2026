@@ -50,7 +50,8 @@ const FlipUnit: FC<FlipUnitProps> = memo(function FlipUnit({
   digit,
   size,
   variant,
-  className
+  className,
+  ...props
 }: FlipUnitProps) {
   const [prevDigit, setPrevDigit] = useState(digit);
   const flipping = digit !== prevDigit;
@@ -66,7 +67,10 @@ const FlipUnit: FC<FlipUnitProps> = memo(function FlipUnit({
   }, [digit, flipping]);
 
   return (
-    <div className={cn(flipUnitVariants({ size, variant }), className)}>
+    <div
+      className={cn(flipUnitVariants({ size, variant }), className)}
+      {...props}
+    >
       {/* 1. Background Top (The NEW digit waiting) */}
       <div className={cn(commonCardStyle, "rounded-t-lg top-0")}>
         <DigitSpan position="top">{digit}</DigitSpan>

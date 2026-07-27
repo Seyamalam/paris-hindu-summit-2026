@@ -266,5 +266,6 @@ Never make these editable as plain content:
 - [x] All 20 public routes are browser-verified without horizontal overflow at 320px, 390px, 768px, 1024px, and 1280px.
 - [x] Mobile navigation fits a 320px viewport, scrolls vertically, wraps long labels, preserves touch targets, and exposes Programme and Partners.
 - [x] Support forms, public document layouts, long editorial headings, shared footer content, and homepage record grids have explicit compact and tablet treatments.
+- [x] Hero countdown digits, separators, labels, live indicator, and date row fit without clipping at 320px and 360px compact-phone widths.
 - [x] Visitor-facing placeholder sweep completed; empty states are neutral and operational “coming soon” messages remain intentionally tied to availability settings.
 - [ ] Content approval, legal/privacy approval, Stripe live-mode test, analytics/consent decision, and launch checklist.
