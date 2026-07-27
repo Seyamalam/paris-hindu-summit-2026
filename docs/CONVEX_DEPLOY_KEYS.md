@@ -34,9 +34,10 @@ bun run convex:seed:dev
 bun run convex:seed:prod
 ```
 
-Each command loads the deployment-specific key before starting Convex. It works
-when the Convex CLI is logged out and prevents the production command from
-silently using the development deployment.
+Each command uses `scripts/convex-key.mjs` to read the selected ignored file and
+pass its key directly to the Convex subprocess. It works when the Convex CLI is
+logged out and prevents the production command from silently using the
+development deployment.
 
 ## Vercel
 
