@@ -8,7 +8,6 @@ import { RouteChrome } from "@/components/site/route-chrome"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { getToken } from "@/lib/auth-server"
 import { cn } from "@/lib/utils"
 
 const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" })
@@ -27,10 +26,9 @@ export const metadata: Metadata = {
     "Global Solidarity Summit for Bangladeshi Hindus, 3–4 October 2026 in Paris, France.",
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const initialToken = await getToken()
   return (
     <html
       lang="en"
@@ -42,7 +40,7 @@ export default async function RootLayout({
       )}
     >
       <body>
-        <ConvexClientProvider initialToken={initialToken}>
+        <ConvexClientProvider>
           <ThemeProvider>
             <TooltipProvider>
               <RouteChrome>{children}</RouteChrome>

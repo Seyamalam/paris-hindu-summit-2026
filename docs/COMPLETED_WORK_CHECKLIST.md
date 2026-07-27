@@ -20,6 +20,8 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Responsive layouts from compact phones through wide desktop screens.
 - ✅ Product specification maintained as a living checklist.
 - ✅ README includes setup, architecture, deployment, and administrator guidance.
+- ✅ Global public rendering no longer waits for an admin authentication token.
+- ✅ Better Auth and Convex authentication initialize client-side after the site or admin shell has loaded.
 
 ## Visual system and responsive design
 

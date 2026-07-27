@@ -36,6 +36,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Working delivery decision: retain “Paris Assembly” as the short public brand while preserving the formal forum name in settings.
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 - [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
+- [x] Public-page rendering is independent from admin authentication lookups, so an auth delay cannot block the entire website.
 
 ## Public website
 
