@@ -44,6 +44,8 @@ The detailed record of delivered work is maintained in
 ## Functional prototype flows
 
 - Responsive desktop and mobile navigation
+- Visual Page Studio admin with a live page canvas, page-specific inspector, and desktop/tablet/mobile preview controls
+- Page-oriented website navigation separated from forms, donations, media, users, and audit operations
 - Admin-date-driven animated flip countdown in the landing-page hero
 - Live Global Site Settings across hero copy, event facts, availability controls, donation messaging, contact details, and footer
 - Day-specific Programme session editors with automatic, locked day assignment

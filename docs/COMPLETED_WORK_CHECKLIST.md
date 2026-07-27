@@ -193,6 +193,14 @@ for incomplete work, approvals, and launch dependencies.
 
 ## Admin panel and editable content
 
+- ✅ Full visual Page Studio redesign based on the selected Page Canvas Studio direction.
+- ✅ Public-page rail for Home, About, Programme, Speakers, Regional, Partners, Media, Engage, Support, Evidence, extended pages, and shared settings.
+- ✅ Live page canvas with desktop, tablet, and mobile preview modes.
+- ✅ Selected-page editorial frame and contextual inspector.
+- ✅ Page-specific editors shown beside the page they affect.
+- ✅ One-action Home-page publishing with saved feedback and live-preview refresh.
+- ✅ Website editing separated from Overview, Forms Inbox, Donations, Media Library, Team Access, and Activity operations.
+- ✅ Compact responsive admin rail, stacked small-screen workspace, keyboard-visible controls, and reduced-motion handling.
 - ✅ Protected editorial dashboard and Global Site Settings.
 - ✅ Structured Page Content editor.
 - ✅ Programme and Evidence Chart editors.
@@ -204,7 +212,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Draft, publication, feature, and order controls.
 - ✅ Destructive-action confirmation dialogs.
 - ✅ Success and failure notifications.
-- ✅ Public-site preview link.
+- ✅ Public-site preview canvas and direct live-site link.
 - ✅ Editable identity, dates, timezone, venue, address, format, delegates, and languages.
 - ✅ Editable announcement, contact details, social links, hero, and footer.
 - ✅ Editable Overview, Agenda, Resolution, Strategy, and Partnership records.

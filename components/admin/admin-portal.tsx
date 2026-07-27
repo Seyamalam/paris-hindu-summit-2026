@@ -12,20 +12,27 @@ import {
   Globe2Icon,
   EyeIcon,
   EyeOffIcon,
+  ExternalLinkIcon,
+  HandshakeIcon,
+  HomeIcon,
   ImageIcon,
   InboxIcon,
   LayoutDashboardIcon,
   CalendarRangeIcon,
   Loader2Icon,
   LogOutIcon,
+  MonitorIcon,
+  RefreshCwIcon,
   SaveIcon,
   Settings2Icon,
   ShieldCheckIcon,
+  SmartphoneIcon,
   SparklesIcon,
+  TabletIcon,
   UserCogIcon,
   Users2Icon,
 } from "lucide-react"
-import { FormEvent, useEffect, useMemo, useState } from "react"
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { api } from "@/convex/_generated/api"
@@ -40,22 +47,33 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
-const panels = [
+const websitePages = [
+  ["home", "Home", "/", HomeIcon],
+  ["about", "About", "/about", FileTextIcon],
+  ["programme", "Programme", "/programme", CalendarRangeIcon],
+  ["speakers", "Speakers", "/speakers", Users2Icon],
+  ["regional", "Regional", "/regional", Globe2Icon],
+  ["partners", "Partners", "/partners", HandshakeIcon],
+  ["media", "Media", "/media", ImageIcon],
+  ["engage", "Engage", "/engage", SparklesIcon],
+  ["support", "Support", "/support", InboxIcon],
+  ["evidence", "Evidence", "/context", BarChart3Icon],
+  ["content", "More pages", "/resolution", FileTextIcon],
+  ["settings", "Site settings", "/", Settings2Icon],
+] as const
+
+const operationPanels = [
   ["dashboard", "Overview", LayoutDashboardIcon],
-  ["team", "Team access", UserCogIcon],
-  ["settings", "Site settings", Settings2Icon],
-  ["content", "Page content", FileTextIcon],
-  ["programme", "Programme", CalendarRangeIcon],
-  ["charts", "Charts", BarChart3Icon],
-  ["regional", "Regional", Globe2Icon],
-  ["partners", "Partners", Users2Icon],
   ["inbox", "Forms inbox", InboxIcon],
   ["donations", "Donations", CircleDollarSignIcon],
   ["assets", "Media library", ImageIcon],
+  ["team", "Team access", UserCogIcon],
   ["audit", "Activity", ArchiveIcon],
 ] as const
 
-type Panel = (typeof panels)[number][0]
+type StudioPage = (typeof websitePages)[number][0]
+type OperationPanel = (typeof operationPanels)[number][0]
+type DevicePreview = "desktop" | "tablet" | "mobile"
 
 const categories = [
   "overview",
@@ -241,17 +259,27 @@ function AuthGate() {
 }
 
 function Workspace({ admin }: { admin: { name: string; email: string; role: "administrator" | "editor" } }) {
-  const [panel, setPanel] = useState<Panel>("dashboard")
+  const [page, setPage] = useState<StudioPage>("home")
+  const [operation, setOperation] = useState<OperationPanel | null>(null)
+  const pageTitle = websitePages.find(([id]) => id === page)?.[1] ?? "Home"
+  const operationTitle = operationPanels.find(([id]) => id === operation)?.[1]
   return (
     <div className="admin-shell">
       <aside className="admin-rail">
         <div className="admin-wordmark">
           <span>PA</span>
-          <div><b>Control room</b><small>Paris · 2026</small></div>
+          <div><b>Page studio</b><small>Paris · 2026</small></div>
         </div>
-        <nav>
-          {panels.map(([id, label, Icon]) => (
-            <button key={id} data-active={panel === id} onClick={() => setPanel(id)}>
+        <nav className="admin-primary-nav" aria-label="Admin workspace">
+          <p>Website</p>
+          {websitePages.map(([id, label, , Icon]) => (
+            <button key={id} data-active={!operation && page === id} onClick={() => { setPage(id); setOperation(null) }}>
+              <Icon /><span>{label}</span>
+            </button>
+          ))}
+          <p>Operations</p>
+          {operationPanels.map(([id, label, Icon]) => (
+            <button key={id} data-active={operation === id} onClick={() => setOperation(id)}>
               <Icon /><span>{label}</span>
             </button>
           ))}
@@ -262,28 +290,130 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
         </div>
       </aside>
       <main className="admin-stage">
-        <header className="admin-topbar">
-          <div>
-            <p className="admin-kicker">Editorial control room</p>
-            <h1>{panels.find(([id]) => id === panel)?.[1]}</h1>
-          </div>
-          <a href="/" target="_blank" rel="noreferrer">View live site ↗</a>
-        </header>
-        {panel === "dashboard" && <Dashboard />}
-        {panel === "team" && <TeamAccessPanel canManage={admin.role === "administrator"} />}
-        {panel === "settings" && <SettingsPanel />}
-        {panel === "content" && <ContentPanel />}
-        {panel === "programme" && <ProgrammeAdmin />}
-        {panel === "charts" && <ChartsAdmin />}
-        {panel === "regional" && <RegionalPanel />}
-        {panel === "partners" && <PartnersPanel />}
-        {panel === "inbox" && <InboxPanel />}
-        {panel === "donations" && <DonationsPanel />}
-        {panel === "assets" && <AssetsPanel />}
-        {panel === "audit" && <AuditPanel />}
+        {operation ? (
+          <>
+            <header className="admin-topbar">
+              <div>
+                <p className="admin-kicker">Operations</p>
+                <h1>{operationTitle}</h1>
+              </div>
+              <button onClick={() => setOperation(null)}><HomeIcon /> Return to {pageTitle}</button>
+            </header>
+            <div className="admin-operation-stage">
+              {operation === "dashboard" && <Dashboard />}
+              {operation === "team" && <TeamAccessPanel canManage={admin.role === "administrator"} />}
+              {operation === "inbox" && <InboxPanel />}
+              {operation === "donations" && <DonationsPanel />}
+              {operation === "assets" && <AssetsPanel />}
+              {operation === "audit" && <AuditPanel />}
+            </div>
+          </>
+        ) : (
+          <PageStudio page={page} />
+        )}
       </main>
     </div>
   )
+}
+
+function PageStudio({ page }: { page:StudioPage }) {
+  const selectedPage = websitePages.find(([id]) => id === page) ?? websitePages[0]
+  const [, label, path] = selectedPage
+  const [device, setDevice] = useState<DevicePreview>("desktop")
+  const [reloadKey, setReloadKey] = useState(0)
+  const [previewReady, setPreviewReady] = useState(false)
+  const [publishSignal, setPublishSignal] = useState(0)
+  const [canvasWidth, setCanvasWidth] = useState(900)
+  const canvasRef = useRef<HTMLElement | null>(null)
+  const canPublishPage = page === "home" || page === "settings"
+  const previewWidth = device === "desktop" ? 1440 : device === "tablet" ? 834 : 390
+  const previewHeight = device === "desktop" ? 900 : device === "tablet" ? 1112 : 844
+  const previewScale = Math.min(1, Math.max(0.28, (canvasWidth - 72) / previewWidth))
+  useEffect(() => {
+    const element = canvasRef.current
+    if (!element) return
+    const observer = new ResizeObserver(([entry]) => setCanvasWidth(entry.contentRect.width))
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div className="page-studio">
+      <header className="studio-topbar">
+        <div className="studio-page-title">
+          <span>Editing</span>
+          <strong>{label}</strong>
+          <small><i data-ready={previewReady} /> {previewReady ? "Live preview ready" : "Loading preview…"}</small>
+        </div>
+        <div className="studio-device-switcher" aria-label="Preview size">
+          {([
+            ["desktop", "Desktop", MonitorIcon],
+            ["tablet", "Tablet", TabletIcon],
+            ["mobile", "Mobile", SmartphoneIcon],
+          ] as const).map(([id, text, Icon]) => (
+            <button key={id} aria-pressed={device === id} onClick={() => setDevice(id)}>
+              <Icon /><span>{text}</span>
+            </button>
+          ))}
+        </div>
+        <div className="studio-actions">
+          <button aria-label="Refresh preview" onClick={() => { setPreviewReady(false); setReloadKey((value) => value + 1) }}><RefreshCwIcon /></button>
+          <a href={path} target="_blank" rel="noreferrer">Open live site <ExternalLinkIcon /></a>
+          <Button onClick={() => {
+            if (canPublishPage) setPublishSignal((value) => value + 1)
+            else {
+              document.querySelector(".studio-inspector")?.scrollTo({ top:0, behavior:"smooth" })
+              toast.info("Save the selected section in the inspector to publish it.")
+            }
+          }}><SaveIcon /> Publish changes</Button>
+        </div>
+      </header>
+      <div className="studio-workspace">
+        <section ref={canvasRef} className="studio-canvas" aria-label={`${label} page preview`}>
+          <div className="studio-canvas-ruler">
+            <span>{device}</span>
+            <b>{device === "desktop" ? "1440" : device === "tablet" ? "834" : "390"} px</b>
+          </div>
+          <div className="studio-preview-stage" style={{ height:previewHeight * previewScale }}>
+            <div
+              className="studio-preview-shell"
+              data-device={device}
+              style={{ width:previewWidth, height:previewHeight, transform:`scale(${previewScale})` }}
+            >
+              <div className="studio-selection-frame" aria-hidden="true"><span>{page === "home" ? "Hero" : label}</span></div>
+              <iframe
+                key={reloadKey}
+                src={path}
+                title={`${label} live website preview`}
+                onLoad={() => setPreviewReady(true)}
+              />
+            </div>
+          </div>
+        </section>
+        <aside className="studio-inspector">
+          <StudioInspector page={page} publishSignal={publishSignal} onSaved={() => {
+            setReloadKey((value) => value + 1)
+            setPreviewReady(false)
+          }} />
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; publishSignal:number; onSaved:()=>void }) {
+  if (page === "home") return <SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} />
+  if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
+  if (page === "about") return <ContentPanel compact initialCategory="overview" />
+  if (page === "programme") return <ProgrammeAdmin />
+  if (page === "speakers") return <ContentPanel compact initialCategory="speaker" />
+  if (page === "regional") return <RegionalPanel />
+  if (page === "partners") return <PartnersPanel />
+  if (page === "media") return <ContentPanel compact initialCategory="media" />
+  if (page === "engage") return <ContentPanel compact initialCategory="engage" />
+  if (page === "support") return <ContentPanel compact initialCategory="faq" />
+  if (page === "evidence") return <ChartsAdmin />
+  return <ContentPanel compact initialCategory="resolution" />
 }
 
 function TeamAccessPanel({ canManage }: { canManage:boolean }) {
@@ -455,13 +585,13 @@ function Dashboard() {
   )
 }
 
-function SettingsPanel() {
+function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: { compact?:boolean; focus?:"home"; publishSignal?:number; onSaved?:()=>void }) {
   const settings = useQuery(api.settings.get)
   const save = useMutation(api.settings.save)
   const [draft, setDraft] = useState<Record<string, string | boolean> | null>(null)
+  const lastPublishSignal = useRef(0)
   useEffect(() => { if (settings) setDraft(settings) }, [settings])
-  if (!draft) return <PanelLoading />
-  const groups = [
+  const allGroups = [
     ["Identity & dates", ["eventName", "shortName", "theme", "eventStartIso", "eventEndIso", "timezone"]],
     ["Venue & scale", ["venue", "address", "cityCountry", "format", "delegateInfo", "languages"]],
     ["Contact desk", ["contactEmail", "registrationEmail", "pressEmail", "phone", "whatsapp"]],
@@ -472,9 +602,33 @@ function SettingsPanel() {
     ["Footer", ["footerTitle", "footerBody"]],
     ["Announcement", ["announcement"]],
   ] as const
+  const groups = focus === "home"
+    ? allGroups.filter(([title]) => ["Hero", "Why this summit", "Donation invitation", "Footer", "Announcement"].includes(title))
+    : allGroups
+  const publish = useCallback(async () => {
+    if (!draft) return
+    try {
+      await save(draft as Parameters<typeof save>[0])
+      toast.success("Page changes published.")
+      onSaved?.()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Changes could not be published.")
+    }
+  }, [draft, onSaved, save])
+  useEffect(() => {
+    if (publishSignal > lastPublishSignal.current) {
+      lastPublishSignal.current = publishSignal
+      void publish()
+    }
+  }, [publish, publishSignal])
+  if (!draft) return <PanelLoading />
   return (
-    <section className="admin-panel">
-      <PanelTitle eyebrow="Global controls" title="Every word, number and contact point." copy="Changes publish to Convex immediately. Use the switches to control public availability." />
+    <section className="admin-panel" data-compact={compact}>
+      <PanelTitle
+        eyebrow={focus === "home" ? "Page inspector" : "Global controls"}
+        title={focus === "home" ? "Home sections" : "Site-wide details"}
+        copy={focus === "home" ? "Edit the words visitors see on the Home page, then publish and watch the preview refresh." : "Identity, dates, contact details, availability and shared footer content."}
+      />
       <div className="admin-switches">
         {["announcementEnabled", "registrationOpen", "donationsEnabled"].map((key) => (
           <label key={key}><Switch checked={Boolean(draft[key])} onCheckedChange={(value) => setDraft({ ...draft, [key]: value })} /><span>{humanize(key)}</span></label>
@@ -490,15 +644,15 @@ function SettingsPanel() {
           </div>
         </fieldset>
       ))}
-      <Button className="admin-save" onClick={async () => { await save(draft as Parameters<typeof save>[0]); toast.success("Site settings published.") }}>
-        <SaveIcon /> Save all settings
+      <Button className="admin-save" onClick={publish}>
+        <SaveIcon /> Publish {focus === "home" ? "Home page" : "site settings"}
       </Button>
     </section>
   )
 }
 
-function ContentPanel() {
-  const [category, setCategory] = useState<(typeof categories)[number]>("engage")
+function ContentPanel({ compact = false, initialCategory = "engage" }: { compact?:boolean; initialCategory?:(typeof categories)[number] }) {
+  const [category, setCategory] = useState<(typeof categories)[number]>(initialCategory)
   const entries = useQuery(api.cms.listForAdmin, { category })
   const save = useMutation(api.cms.save)
   const remove = useMutation(api.cms.remove)
@@ -507,6 +661,7 @@ function ContentPanel() {
   const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | undefined>()
   const existing = entries?.find((item) => item._id === selected)
   const [draft, setDraft] = useState<ContentDraft>({ ...blankContent })
+  useEffect(() => { setCategory(initialCategory); setSelected("new") }, [initialCategory])
   useEffect(() => {
     if (existing) {
       const { _id, category: _category, imageStorageId: _image, imageUrl: _url, ...fields } = existing
@@ -516,8 +671,8 @@ function ContentPanel() {
     } else { setDraft({ ...blankContent }); setImageStorageId(undefined) }
   }, [existing, category, selected])
   return (
-    <section className="admin-panel">
-      <PanelTitle eyebrow="Structured publishing" title="Build every page from reusable records." copy="Agenda, speakers, teams, FAQs, media, strategy, engagement and more share one flexible editor." />
+    <section className="admin-panel" data-compact={compact}>
+      <PanelTitle eyebrow="Page inspector" title={`Edit ${humanize(category)}`} copy="Choose an item, edit the public copy, and save it as a draft or published section." />
       <div className="admin-content-layout">
         <aside className="admin-records">
           <select value={category} onChange={(event) => { setCategory(event.target.value as typeof category); setSelected("new") }}>

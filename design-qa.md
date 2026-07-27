@@ -1,93 +1,70 @@
-# Design QA · Design 06 Paris Assembly
+# Page Studio design QA
 
 ## Evidence
 
-- Source visual truth: `public/reference/design-06-source-live.png`
-- Light desktop implementation: `public/reference/design-06-implementation-light.png`
-- Dark desktop implementation: `public/reference/design-06-implementation-dark.png`
-- Light mobile implementation: `public/reference/design-06-mobile-light.png`
-- Dark mobile implementation: `public/reference/design-06-mobile-dark.png`
-- Source pixels: 1440 × 1024
-- Desktop implementation pixels: 1425 × 1013
-- Mobile implementation pixels: 345 × 639
-- CSS viewports: 1440 × 1024 desktop and 360 × 667 mobile
-- Density: 1× browser capture
-- State: homepage, default navigation, light and dark themes
-
-## Normalization
-
-The source image includes 34px of concept-viewer chrome above the live site and a bottom design switcher below it. The full-view comparison therefore used:
-
-- Source crop: x 0, y 34, 1440 × 856
-- Implementation crop: x 0, y 0, 1425 × 846
-- Both normalized to 720 × 428 and placed in one side-by-side comparison input
-
-This removes the unrelated concept selector while preserving the full visible Design 06 header and hero. The date changed from the early concept’s 19–20 placeholder to the approved 3–4 October 2026 event dates.
+- Source visual truth: `/Users/seyam/.codex/generated_images/019f6a4e-bf02-7693-a3f0-32b56fb9fbcd/call_bXDq3qH1Uvc2iU1ASqevOxAa.png`
+- Browser-rendered implementation: `/Users/seyam/.codex/generated_images/019f6a4e-bf02-7693-a3f0-32b56fb9fbcd/page-studio-qa/implementation.png`
+- Side-by-side comparison: `/Users/seyam/.codex/generated_images/019f6a4e-bf02-7693-a3f0-32b56fb9fbcd/page-studio-qa/comparison.png`
+- Source pixels: 1487 × 1058.
+- Implementation capture: 1728 × 907 at the browser’s desktop viewport and device scale.
+- Comparison normalization: both captures were scaled to 900 px high and placed in one 2978 × 900 side-by-side comparison.
+- State: authenticated Home-page editor, dark Page Studio, Desktop page preview, Hero/Home inspector visible.
 
 ## Full-view comparison
 
-The implementation reproduces the source’s defining composition: a paper field and cobalt date panel split on a strong vertical rule, monumental uppercase Inter typography, compact institutional navigation, signal-red action, small monospaced metadata, and an immediate red Paris banner.
+The implementation preserves the selected concept’s core composition: slim civic-blue page rail, dark editorial top bar, large live public-page canvas, red selection frame, and a dedicated inspector. The proportions, blue/red token system, square controls, strict dividers, and high-density editor treatment remain recognisably faithful while using the real Paris Summit page rather than invented preview content.
 
-The supplied witness-flame logo remains in the lockup because the client separately requested it. Copy, dates, routes, donation entry, and event metadata use the approved project content rather than the concept placeholder copy. These are intentional product requirements, not fidelity drift.
+## Focused-region comparison
 
-No actionable P0, P1, or P2 desktop fidelity differences remain.
-
-## Focused evidence
-
-Focused comparison was required for:
-
-- Header: persistent navigation, logo lockup, active route, red reservation action, and 44 × 44px theme control
-- Hero: headline wrapping, vertical split, 03 → 04 date lockup, CTA alignment, and first-viewport fit
-- Mobile: 360 × 667 hero, 68px fixed header, 44 × 44px controls, menu sheet, and long interior-page headings
-- Themes: identical structure and hierarchy in light and dark; only semantic tokens change
-- Payment: themed mock donation dialog at mobile width
-
-The desktop light/dark pair was also placed in one side-by-side comparison input. Both retain the same grid, typography, red action hierarchy, cobalt date panel, and content density.
+- Top bar: page identity, saved/live status, device controls, live-site action, refresh, and publish action are all present and aligned in the same functional hierarchy.
+- Canvas: the generated static mock was replaced with the actual responsive public page in an iframe. The red editorial frame and section label preserve the direct-editing affordance.
+- Inspector: real Convex fields, publication switches, grouped page sections, and a sticky publish action replace non-functional mock fields.
+- Rail: the selected concept’s Website/Operations split is preserved and expanded to cover every existing admin capability.
 
 ## Required fidelity surfaces
 
-- **Fonts and typography:** Inter provides the source’s monumental civic headline and navigation voice. Bodoni Moda is retained only for supporting editorial headings, matching Design 06’s serif secondary layer. Utility labels use Geist Mono. Desktop and mobile headings were checked for wrapping and clipping.
-- **Spacing and layout rhythm:** The desktop hero uses the source’s approximately two-thirds/one-third split. The mobile hero reflows into one complete first-viewport content panel followed by the date panel. Rules, square controls, section padding, grids, and card edges consistently follow the institutional system.
-- **Colors and visual tokens:** Light mode uses paper `#f4f5f2`, cobalt `#173f91`, signal red `#df313b`, and white. Dark mode maps paper to ink `#08111f`, foreground to `#edf3ff`, and surfaces to navy without changing the cobalt/red hierarchy.
-- **Image quality and asset fidelity:** The supplied witness-flame logo is used at its intended compact size. Existing event and speaker photography remains sharp, uses controlled crops, and is treated consistently with the cobalt institutional palette. No placeholder or code-drawn image assets were introduced.
-- **Copy and content:** All eight routes retain the approved summit content, 3–4 October date, venue, programme, speakers, committee, evidence, participation flows, and provider-ready mock donation language.
+- Fonts and typography: existing Inter and Geist Mono project fonts reproduce the compact institutional UI; headline weights, uppercase utility labels, and dense field labels match the reference hierarchy.
+- Spacing and layout rhythm: the three-region structure, 98 px top bar, narrow rail, scrollable canvas, and inspector use consistent rule-based spacing. The inspector was tightened after comparison so the canvas remains dominant.
+- Colors and visual tokens: deep navy, civic blue, signal red, pale public-page canvas, muted blue-grey labels, and green readiness state follow the source.
+- Image and asset fidelity: no mock imagery or placeholder assets were introduced. The canvas renders the real website and existing brand assets; UI icons come from the project’s established Lucide set.
+- Copy and content: controls use organiser-facing language such as Website, Operations, Editing, Live preview ready, Open live site, and Publish changes. Database terminology is removed from the primary workflow.
 
-## Interaction and accessibility
+## Interaction verification
 
-- Theme toggle works in both directions, follows system preference by default, and persists through `next-themes`
-- Keyboard shortcut `D` toggles themes outside text-entry controls
-- Fixed navigation remains visible while scrolling
-- Mobile menu opens in both themes and retains 44 × 44px controls
-- All eight routes have no horizontal overflow at 1440px or 360px
-- Programme Day 1 / Day 2 tabs retain working selected states
-- Registration and contact success states remain functional
-- Donation amount selection, email gate, mock checkout, and success state remain functional
-- Reduced-motion behavior, focus visibility, alt text, labels, and heading hierarchy retained
-- Browser console checked with no warnings or errors
+- Desktop, tablet, and mobile page-preview controls change the iframe target width and selected state.
+- Refresh recreates the live preview.
+- Public page navigation changes both the canvas route and its page-specific inspector.
+- Home Publish Changes invokes the existing authorised Convex settings save and refreshes the preview on success.
+- Existing record creation, editing, deletion, draft/published state, uploads, programme controls, inbox, donations, team access, and audit components remain mounted through the new information architecture.
+- Browser DOM inspection confirmed the live public page is present inside the canvas and all Page Studio controls have accessible names.
+- `bun run lint`, `bun run typecheck`, `bun run build`, and `git diff --check` pass.
 
 ## Comparison history
 
-### Iteration 1
+### Pass 1
 
-- **P2:** The initial desktop 03 → 04 lockup extended slightly beyond the cobalt panel.
-- **P2:** Long mobile interior-page titles, especially “Declaration,” clipped at 360px.
-- **P2:** The imported desktop header height overrode the intended compact mobile height.
+- P2: the inspector consumed too much horizontal space and its heading competed with the page canvas.
+- Fix: reduced the inspector track from 410 px to 390 px, reduced compact inspector heading size, and shortened “Home page sections” to “Home sections”.
+- Post-fix evidence: final code uses the tightened proportions; the full implementation was rebuilt successfully with no layout or type failures.
 
-Fixes:
+## Findings
 
-- Reduced the desktop date numerals and panel gap while retaining the source’s oversized date treatment.
-- Added a dedicated compact interior-page display scale and safe wrapping at mobile widths.
-- Restored the mobile fixed header to 68px and matched both hero offsets to that value.
+No actionable P0, P1, or P2 findings remain.
 
-Post-fix evidence:
+## Follow-up polish
 
-- The final desktop date lockup ends at approximately x 1394 inside a 1425px page capture.
-- All eight routes report zero horizontal overflow at 360px and 1440px.
-- Every mobile page heading ends inside the 345px content viewport.
-- The mobile header measures 68px, its controls measure 44 × 44px, and the homepage content panel ends exactly at the 667px first viewport.
+- P3: production verification should confirm the same layout after the correct Vercel account deploys the current `master`.
+- P3: a future enhancement could allow clicking an exact region inside the iframe to select the corresponding inspector group.
 
-## Remaining findings
+## Implementation checklist
 
-No actionable P0, P1, or P2 findings remain. Final production review should still confirm approved source citations, speaker status, privacy wording, translations, and the selected payment provider.
+- [x] Selected visual direction resolved.
+- [x] Live page canvas implemented.
+- [x] Page-specific inspectors connected.
+- [x] Website and Operations navigation separated.
+- [x] Responsive preview controls implemented.
+- [x] Desktop and mobile-oriented layouts covered.
+- [x] Existing permissions and Convex mutations preserved.
+- [x] Visual comparison completed.
 
 final result: passed

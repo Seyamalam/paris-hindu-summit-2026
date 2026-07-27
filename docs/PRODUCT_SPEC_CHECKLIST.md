@@ -121,7 +121,12 @@ For the full delivered-feature inventory, see
 - [x] Draft/published status for public content.
 - [x] Audit events and update timestamps for editorial operations.
 - [x] Destructive content actions require confirmation; referenced files cannot be deleted until detached.
-- [x] Public-site preview is available from Admin. `Partial`: side-by-side record preview remains a polish item.
+- [x] Admin opens into a visual Page Studio with a live public-page canvas and adjacent page-specific inspector.
+- [x] Desktop, tablet, and mobile canvas controls render the selected public page at its target viewport width.
+- [x] Website pages and operational tools are separated into clear navigation groups.
+- [x] Home-page settings can be published from the inspector or the global Publish Changes action, with automatic preview refresh.
+- [x] Programme, people, regional, partner, media, engagement, support, evidence, and extended content editors are available beside their corresponding live pages.
+- [x] Forms, donations, media storage, team access, dashboard metrics, and activity are retained in a separate Operations workspace.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
 
@@ -184,7 +189,7 @@ For the full delivered-feature inventory, see
 
 - [x] Country fields: slug, name, code, eyebrow, headline, summary, detail, source link, optional Convex image, order, and draft/published state.
 - [x] Seed includes Pakistan, Afghanistan, Myanmar, and Nepal.
-- [x] Admin CRUD, order, draft, and publish controls. `Partial`: preview-before-publish remains.
+- [x] Admin CRUD, order, draft, and publish controls with the public Regional page visible alongside the editor.
 - [ ] Approved source/citation URLs for every published country. `Partial`: the field is editable, but existing supplied country records do not yet include approved sources and remain publishable while citations are prepared.
 
 ## Convex content and file architecture
