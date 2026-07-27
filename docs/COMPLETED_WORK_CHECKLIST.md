@@ -22,6 +22,11 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ README includes setup, architecture, deployment, and administrator guidance.
 - ✅ Global public rendering no longer waits for an admin authentication token.
 - ✅ Better Auth and Convex authentication initialize client-side after the site or admin shell has loaded.
+- ✅ Replaced the heavyweight homepage chart runtime with accessible native HTML/CSS charts.
+- ✅ Stabilized the initial announcement/header layout while live settings connect.
+- ✅ Paused countdown work in hidden tabs and reduced its active polling rate.
+- ✅ Shared one intersection observer across reveal animations and deferred off-screen rendering work.
+- ✅ Removed mobile fixed-header backdrop blur to keep scrolling responsive on lower-powered devices.
 
 ## Visual system and responsive design
 

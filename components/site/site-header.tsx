@@ -41,7 +41,6 @@ function Brand({ name = "Paris Assembly" }: { name?: string }) {
         alt=""
         width={44}
         height={44}
-        priority
         aria-hidden="true"
       />
       <span>
@@ -76,8 +75,8 @@ export function SiteHeader() {
 
   return (
     <>
-    {settings?.announcementEnabled && <div className="announcement-strip"><span>{settings.announcement}</span>{settings.registrationOpen && <Link href="/participate">Register now</Link>}</div>}
-    <header className={cn("site-header", settings?.announcementEnabled && "has-announcement")}>
+    {settings?.announcementEnabled !== false && <div className="announcement-strip"><span>{settings?.announcement || "Registration is open now."}</span>{settings?.registrationOpen !== false && <Link href="/participate">Register now</Link>}</div>}
+    <header className={cn("site-header", settings?.announcementEnabled !== false && "has-announcement")}>
       <Link href="/" aria-label="Paris Assembly home">
         <Brand name={settings?.shortName} />
       </Link>

@@ -1,9 +1,14 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { usePathname } from "next/navigation"
 
-import { SiteFooter } from "@/components/site/site-footer"
-import { SiteHeader } from "@/components/site/site-header"
+const SiteFooter = dynamic(() =>
+  import("@/components/site/site-footer").then((module) => module.SiteFooter)
+)
+const SiteHeader = dynamic(() =>
+  import("@/components/site/site-header").then((module) => module.SiteHeader)
+)
 
 export function RouteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

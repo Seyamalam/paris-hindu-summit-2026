@@ -238,12 +238,36 @@ export default function FlipClock({
       });
     };
 
-    updateTime();
+    let timer: number | undefined;
+    let alignmentTimer: number | undefined;
 
-    // Run a faster heartbeat (250ms) to catch the second rollover immediately
-    const timer = setInterval(updateTime, 250); // 4fps check is plenty
+    const start = () => {
+      updateTime();
+      window.clearTimeout(alignmentTimer);
+      window.clearInterval(timer);
+      alignmentTimer = window.setTimeout(() => {
+        updateTime();
+        timer = window.setInterval(updateTime, 1000);
+      }, 1000 - (Date.now() % 1000));
+    };
 
-    return () => clearInterval(timer);
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        window.clearTimeout(alignmentTimer);
+        window.clearInterval(timer);
+      } else {
+        start();
+      }
+    };
+
+    start();
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      window.clearTimeout(alignmentTimer);
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [countdown, targetDate]);
 
   const daysStr = String(time.days).padStart(3, "0");

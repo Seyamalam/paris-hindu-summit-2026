@@ -37,6 +37,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 - [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
 - [x] Public-page rendering is independent from admin authentication lookups, so an auth delay cannot block the entire website.
+- [x] Performance pass covers stable initial layout, reduced homepage JavaScript, off-screen rendering containment, efficient reveal observers, and visibility-aware countdown timers.
 
 ## Public website
 
