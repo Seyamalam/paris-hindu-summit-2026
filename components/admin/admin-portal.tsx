@@ -707,17 +707,26 @@ function ProgrammeAdmin() {
   const data = useQuery(api.programme.listForAdmin)
   const saveDay = useMutation(api.programme.saveDay)
   const saveSession = useMutation(api.programme.saveSession)
+  const publishAllDrafts = useMutation(api.programme.publishAllDrafts)
   const removeDay = useMutation(api.programme.removeDay)
   const removeSession = useMutation(api.programme.removeSession)
   return <section className="admin-panel">
-    <PanelTitle eyebrow="Purpose-built schedule" title="Days, sessions and public navigation." copy="Changes update the programme tabs and navigation menu without a frontend deployment." />
-    <RecordCards title="Programme days" copy="Control day labels, dates, summaries, order and publication." rows={data?.days.map((row) => ({ ...row, name:row.tabLabel }))} fields={["slug","tabLabel","navigationLabel","dateLabel","summary","order","status"]} blank={{ slug:"",tabLabel:"",navigationLabel:"",dateLabel:"",summary:"",order:50,status:"draft" }} onSave={saveDay} onRemove={removeDay} />
+    <PanelTitle eyebrow="Purpose-built schedule" title="Days, sessions and public navigation." copy="Changes update the programme tabs and navigation menu without a frontend deployment. Only records marked published appear on the public site." />
+    <Button className="admin-publish-programme" variant="outline" onClick={async () => {
+      try {
+        const result = await publishAllDrafts()
+        toast.success(`Published ${result.daysPublished} days and ${result.sessionsPublished} sessions.`)
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "The programme could not be published.")
+      }
+    }}><CheckCircle2Icon /> Publish all programme drafts</Button>
+    <RecordCards title="Programme days" copy="Control day labels, dates, summaries, order and publication. Draft days remain private." rows={data?.days.map((row) => ({ ...row, name:row.tabLabel }))} fields={["slug","tabLabel","navigationLabel","dateLabel","summary","order","status"]} blank={{ slug:"",tabLabel:"",navigationLabel:"",dateLabel:"",summary:"",order:50,status:"draft" }} onSave={saveDay} onRemove={removeDay} />
     {data?.days.length === 0 && <EmptyCopy text="Create a programme day before adding sessions." />}
     {data?.days.map((day) => (
       <RecordCards
         key={day._id}
         title={`${day.tabLabel} sessions`}
-        copy={`Only sessions assigned to ${day.tabLabel} · ${day.dateLabel} appear here. The day assignment is locked automatically.`}
+        copy={`Only sessions assigned to ${day.tabLabel} · ${day.dateLabel} appear here. The day assignment is locked automatically; draft sessions remain private.`}
         rows={data.sessions
           .filter((row) => row.daySlug === day.slug)
           .map((row) => ({ ...row, name:row.title }))}

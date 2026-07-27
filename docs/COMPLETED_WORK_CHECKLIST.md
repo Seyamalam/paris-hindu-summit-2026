@@ -259,6 +259,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #5 resolved: the formal event name is placed beneath the short footer title instead of competing with it inline.
 - ✅ GitHub issue #6 resolved: partner and sponsor editors support direct Convex logo upload, managed-logo selection, replacement, and removal.
 - ✅ Partner and sponsor cards display the organisation name together with its attached logo.
+- ✅ GitHub issue #7 resolved: the programme editor clearly identifies draft visibility and can publish all prepared days and sessions in one action.
 - ✅ Directory-editor mutation failures now remain on screen and show an actionable error instead of appearing to revert.
 - ✅ Animated flip-clock countdown added to the landing-page hero.
 - ✅ Hero countdown reads its target date and timezone from editable Global Site Settings.

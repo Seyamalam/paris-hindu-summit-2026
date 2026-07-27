@@ -140,6 +140,7 @@ For the full delivered-feature inventory, see
 - [x] Add, edit, remove, reorder, draft, and publish day tabs.
 - [x] Day fields include tab label, navigation label, date, summary, and order.
 - [x] Add, edit, remove, reorder, draft, and publish sessions per day.
+- [x] Admin can publish every prepared programme draft in one explicit action; public queries continue to exclude drafts.
 - [x] Admin session editors are grouped by programme day; each editor has a locked day assignment and cannot display another day’s sessions.
 - [x] Session fields include start/end time, title, description, tag, speakers, location, and order.
 

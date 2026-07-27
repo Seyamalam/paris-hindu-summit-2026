@@ -92,6 +92,30 @@ export const saveSession = mutation({
   },
 })
 
+export const publishAllDrafts = mutation({
+  args: {},
+  returns: v.object({ daysPublished: v.number(), sessionsPublished: v.number() }),
+  handler: async (ctx) => {
+    const actor = await getAdmin(ctx)
+    const [days, sessions] = await Promise.all([
+      ctx.db.query("programmeDays").withIndex("by_status_and_order", (q) => q.eq("status", "draft")).take(50),
+      ctx.db.query("programmeSessions").withIndex("by_day_slug_and_order").take(500),
+    ])
+    const draftSessions = sessions.filter((session) => session.status === "draft")
+    await Promise.all([
+      ...days.map((day) => ctx.db.patch(day._id, { status:"published", updatedAt:Date.now() })),
+      ...draftSessions.map((session) => ctx.db.patch(session._id, { status:"published", updatedAt:Date.now() })),
+    ])
+    await writeAudit(ctx, actor, {
+      action: "publish",
+      entityType: "programme",
+      entityId: "all-drafts",
+      summary: `Published ${days.length} programme days and ${draftSessions.length} sessions`,
+    })
+    return { daysPublished:days.length, sessionsPublished:draftSessions.length }
+  },
+})
+
 export const removeDay = mutation({
   args: { id: v.id("programmeDays") },
   returns: v.null(),
