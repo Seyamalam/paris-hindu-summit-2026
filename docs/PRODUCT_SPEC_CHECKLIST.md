@@ -263,5 +263,8 @@ Never make these editable as plain content:
 - [ ] Production backup/export and restore drill before launch.
 - [x] Automated and manual accessibility pass covers keyboard navigation, focus, contrast, reduced motion, form errors and chart data-table alternatives. `Partial`: final third-party audit remains a launch-day check.
 - [x] Responsive QA covers compact mobile, tablet and desktop layouts. `Partial`: final physical-device and Safari/Firefox sign-off remains.
+- [x] All 20 public routes are browser-verified without horizontal overflow at 320px, 390px, 768px, 1024px, and 1280px.
+- [x] Mobile navigation fits a 320px viewport, scrolls vertically, wraps long labels, preserves touch targets, and exposes Programme and Partners.
+- [x] Support forms, public document layouts, long editorial headings, shared footer content, and homepage record grids have explicit compact and tablet treatments.
 - [x] Visitor-facing placeholder sweep completed; empty states are neutral and operational “coming soon” messages remain intentionally tied to availability settings.
 - [ ] Content approval, legal/privacy approval, Stripe live-mode test, analytics/consent decision, and launch checklist.

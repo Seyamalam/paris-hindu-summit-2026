@@ -284,6 +284,16 @@ for incomplete work, approvals, and launch dependencies.
 
 ## Production, verification, and source control
 
+- ✅ Completed a route-by-route responsive audit of all 20 public pages at 320px, 390px, 768px, 1024px, and 1280px.
+- ✅ Removed horizontal overflow from compact-phone and tablet layouts.
+- ✅ Rebuilt the mobile navigation drawer to remain within the viewport, scroll vertically, wrap long destinations, and retain accessible touch targets.
+- ✅ Added the previously missing Programme and Partners destinations to mobile navigation.
+- ✅ Made Support page columns, pathways, fields, and form padding safe at 320px.
+- ✅ Added resilient wrapping and compact sizing for long public editorial headings.
+- ✅ Collapsed dense agenda, resolution, strategy, committee, and document layouts for compact screens.
+- ✅ Corrected shared footer callout and contact wrapping on narrow devices.
+- ✅ Corrected homepage record-grid min-content overflow at the 768px tablet breakpoint.
+- ✅ Recorded the browser QA findings and verification matrix in `dogfood-output/mobile-responsive/report.md`.
 - ✅ GitHub issue #1 resolved: public Global Site Settings now reactively reflect admin changes without a Vercel redeployment or cache purge.
 - ✅ GitHub issue #2 resolved: Programme sessions are grouped into day-specific admin editors with locked day assignments.
 - ✅ GitHub issue #3 resolved: Beyond Bangladesh edits persist even when legacy published records do not yet have citation URLs.

@@ -124,9 +124,12 @@ export function SiteHeader() {
           <nav aria-label="Mobile navigation">
             {[
               { href: "/", label: "Home" },
-              ...aboutLinks.map(([href,label]) => ({ href,label })),
+              { href:"/about", label:"Overview" },
+              { href:"/programme", label:"Programme" },
+              ...aboutLinks.slice(1).map(([href,label]) => ({ href,label })),
               { href:"/speakers",label:"Speakers" },
               { href:"/regional",label:"Regional" },
+              { href:"/partners",label:"Partners" },
               { href:"/media",label:"Media & Publication" },
               { href:"/engage",label:"Engage" },
               { href:"/support",label:"Support" },

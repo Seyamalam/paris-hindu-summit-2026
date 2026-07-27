@@ -12,6 +12,8 @@
 /coverage
 /tmp/
 /tmp-*.png
+/dogfood-output/**/screenshots/
+/dogfood-output/**/videos/
 
 # next.js
 /.next/

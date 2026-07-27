@@ -2055,7 +2055,7 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
 .home-info-bar div:last-child { border-right: 0; }
 .home-info-bar span { color: var(--assembly-red); font: 750 8px var(--font-mono); letter-spacing: .15em; text-transform: uppercase; }
 .home-info-bar b { max-width: 280px; font-size: 13px; line-height: 1.45; }
-.why-record-grid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--assembly-rule); }
+.why-record-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--assembly-rule); }
 .why-record-grid > div { border-right: 1px solid var(--assembly-rule); }
 .why-record-grid > div:last-child { border-right: 0; }
 .why-record-grid article { min-height: 390px; display: flex; flex-direction: column; padding: 32px; }
@@ -2065,7 +2065,7 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
 .why-record-grid article>p:last-child { margin-top: auto; color: var(--ash); line-height: 1.65; }
 .challenge-record { padding: clamp(75px,9vw,130px) clamp(24px,6vw,96px); color: #fff; background: #07152d; }
 .challenge-record .section-heading h2 { color: #fff; }
-.challenge-record-grid { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid #6e87b5; }
+.challenge-record-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid #6e87b5; }
 .challenge-record-grid article { min-height: 330px; display: flex; flex-direction: column; padding: 32px; border-right: 1px solid #6e87b5; border-bottom: 1px solid #6e87b5; }
 .challenge-record-grid>div:last-child article { border-right: 0; }
 .challenge-record-grid span { color: #ff5c65; font: 750 9px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
@@ -2125,6 +2125,12 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   .document-collection { grid-template-columns:1fr; }
   .document-collection>header { position:static; }
 }
+@media(max-width:900px){
+  .why-record-grid,.challenge-record-grid { grid-template-columns:minmax(0,1fr); }
+  .why-record-grid>div{border-right:0;border-bottom:1px solid var(--assembly-rule)}
+  .why-record-grid>div:last-child{border-bottom:0}
+  .challenge-record-grid article{border-right:0}
+}
 @media(max-width:720px){
   .announcement-strip { justify-content:space-between; font-size:7px; }
   .site-header.has-announcement { top:35px; }
@@ -2141,4 +2147,277 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   .advisor-grid{grid-template-columns:1fr}
   .advisor-grid>div{border-right:0}
   .document-collection h2{font-size:40px}
+}
+
+/* Public mobile resilience pass — compact navigation, type and content tracks */
+@media (max-width: 720px) {
+  html,
+  body,
+  main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  main > *,
+  .section-shell,
+  .section-heading,
+  .section-heading > *,
+  .support-desk,
+  .support-desk > *,
+  .support-form,
+  .support-fields,
+  .context-chapters,
+  .context-chapters > *,
+  .speaker-list,
+  .speaker-list > *,
+  .nomination-cta,
+  .document-collection,
+  .document-collection > *,
+  .document-collection article,
+  .document-collection article > *,
+  .strategy-vision,
+  .strategy-timeline,
+  .resolution-outcomes,
+  .footer-callout,
+  .footer-callout > *,
+  .footer-grid,
+  .footer-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .site-header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 10px;
+  }
+
+  .site-header > a,
+  .brand-lockup,
+  .brand-lockup > span:last-child {
+    min-width: 0;
+  }
+
+  .brand-lockup b,
+  .brand-lockup small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .announcement-strip {
+    gap: 10px;
+  }
+
+  .announcement-strip > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .announcement-strip > a {
+    flex: 0 0 auto;
+  }
+
+  .mobile-sheet {
+    width: min(92vw, 380px) !important;
+    max-width: none !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-sheet [data-slot="sheet-header"],
+  .mobile-sheet nav {
+    min-width: 0;
+    padding-inline: 16px;
+  }
+
+  .mobile-sheet nav a {
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    padding-block: 13px;
+    font-size: clamp(20px, 7vw, 26px);
+    line-height: 0.98;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .support-desk {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .support-form {
+    width: 100%;
+    padding: 22px;
+  }
+
+  .support-pathways button {
+    min-height: 44px;
+    flex: 1 1 calc(50% - 3px);
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+
+  .support-fields input,
+  .support-fields textarea,
+  .support-fields button,
+  .registration-form input,
+  .registration-form textarea {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .context-chapters,
+  .advisor-grid,
+  .responsibilities,
+  .roster-grid,
+  .document-collection,
+  .resolution-outcomes > div,
+  .strategy-timeline > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .context-chapters article,
+  .responsibilities article,
+  .advisor-grid article,
+  .roster-grid article {
+    overflow: hidden;
+  }
+
+  .page-hero h1,
+  .section-heading h2,
+  .context-chapters h2,
+  .nomination-cta h2,
+  .managed-overview h2,
+  .document-collection h2,
+  .strategy-vision h2,
+  .strategy-timeline h2,
+  .resolution-outcomes h2,
+  .publication-section h2,
+  .publication-empty h2,
+  .support-intro h2,
+  .checkout-demo h2,
+  .footer-callout h2,
+  .footer-grid b {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .footer-callout {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer-callout h2,
+  .footer-callout .kicker {
+    width: auto;
+  }
+
+  .footer-brand,
+  .footer-contact span,
+  .footer-contact a {
+    min-width: 0;
+  }
+
+  .footer-contact span,
+  .footer-contact a,
+  .footer-legal span {
+    overflow-wrap: anywhere;
+  }
+
+  [data-slot="button"],
+  .theme-toggle,
+  .mobile-menu {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-shell {
+    padding-block: 60px;
+  }
+
+  .page-hero-inner {
+    min-height: 500px;
+  }
+
+  .section-heading h2,
+  .split-intro h2,
+  .nomination-cta h2,
+  .support-intro h2,
+  .checkout-demo h2,
+  .managed-overview h2,
+  .document-collection h2,
+  .strategy-vision h2,
+  .strategy-timeline h2,
+  .resolution-outcomes h2,
+  .publication-section h2,
+  .publication-empty h2 {
+    font-size: clamp(34px, 11vw, 44px);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+  }
+
+  .context-chapters h2,
+  .advisor-grid h3,
+  .roster-grid h3,
+  .strategy-timeline article h3 {
+    font-size: clamp(30px, 9.5vw, 38px);
+    line-height: 0.98;
+    overflow-wrap: anywhere;
+  }
+
+  .regional-intro h2 {
+    font-size: clamp(40px, 12.5vw, 54px);
+    line-height: 0.86;
+    overflow-wrap: anywhere;
+  }
+
+  .footer-callout h2 {
+    font-size: clamp(38px, 12vw, 50px);
+    line-height: 0.94;
+  }
+
+  .document-collection article {
+    gap: 14px;
+    padding-block: 34px;
+  }
+
+  .document-collection aside,
+  .managed-overview aside {
+    padding: 15px 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .strategy-vision,
+  .strategy-timeline,
+  .resolution-outcomes {
+    padding-inline: 18px;
+  }
+
+  .strategy-timeline article,
+  .resolution-outcomes article {
+    min-height: 0;
+    padding: 24px 20px;
+  }
+
+  .strategy-timeline article p,
+  .resolution-outcomes article p {
+    margin-top: 30px;
+  }
+
+  .publication-section-empty,
+  .publication-empty {
+    padding: 28px 22px;
+  }
+
+  .support-form {
+    padding: 18px;
+  }
 }
