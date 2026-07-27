@@ -170,6 +170,13 @@ interface TimeLeft {
   seconds: number;
 }
 
+const INITIAL_TIME: TimeLeft = {
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0
+};
+
 type FlipClockSize = NonNullable<
   VariantProps<typeof flipClockVariants>["size"]
 >;
@@ -208,18 +215,16 @@ export default function FlipClock({
   className,
   ...props
 }: FlipClockProps) {
-  const [time, setTime] = useState<TimeLeft>(() =>
-    getTime(countdown, targetDate)
-  );
+  const [time, setTime] = useState<TimeLeft>(INITIAL_TIME);
 
   useEffect(() => {
-    // Run a faster heartbeat (250ms) to catch the second rollover immediately
-    const timer = setInterval(() => {
+    const updateTime = () => {
       const nextTime = getTime(countdown, targetDate);
 
-      // Only update state if the seconds actually changed to prevent unnecessary re-renders
       setTime((prev) => {
         if (
+          prev.days === nextTime.days &&
+          prev.hours === nextTime.hours &&
           prev.seconds === nextTime.seconds &&
           prev.minutes === nextTime.minutes
         ) {
@@ -227,7 +232,12 @@ export default function FlipClock({
         }
         return nextTime;
       });
-    }, 250); // 4fps check is plenty
+    };
+
+    updateTime();
+
+    // Run a faster heartbeat (250ms) to catch the second rollover immediately
+    const timer = setInterval(updateTime, 250); // 4fps check is plenty
 
     return () => clearInterval(timer);
   }, [countdown, targetDate]);
@@ -312,48 +322,6 @@ export default function FlipClock({
           />
         ))}
       </DigitGroup>
-
-      {/* Injected Keyframes (The Shadcn "Cheat Code") */}
-      <style jsx global>{`
-        /* Use the same duration for both to keep them in sync */
-        .animate-flip-top {
-          animation: flip-top-anim 0.6s ease-in forwards;
-        }
-        .animate-flip-bottom {
-          animation: flip-bottom-anim 0.6s ease-out forwards;
-        }
-
-        @keyframes flip-top-anim {
-          0% {
-            transform: rotateX(0deg);
-            z-index: 30;
-          }
-          50%,
-          100% {
-            transform: rotateX(-90deg);
-            z-index: 10;
-          }
-        }
-
-        @keyframes flip-bottom-anim {
-          0%,
-          50% {
-            transform: rotateX(90deg);
-            z-index: 10;
-          }
-          100% {
-            transform: rotateX(0deg);
-            z-index: 30;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .animate-flip-top,
-          .animate-flip-bottom {
-            animation: none;
-          }
-        }
-      `}</style>
     </div>
   );
 }

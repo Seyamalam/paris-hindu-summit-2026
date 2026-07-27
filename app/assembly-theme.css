@@ -2421,3 +2421,43 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
     padding: 18px;
   }
 }
+
+/* Flip clock animation lives in the global stylesheet to keep hydration markup stable. */
+.animate-flip-top {
+  animation: flip-top-anim 0.6s ease-in forwards;
+}
+
+.animate-flip-bottom {
+  animation: flip-bottom-anim 0.6s ease-out forwards;
+}
+
+@keyframes flip-top-anim {
+  0% {
+    transform: rotateX(0deg);
+    z-index: 30;
+  }
+  50%,
+  100% {
+    transform: rotateX(-90deg);
+    z-index: 10;
+  }
+}
+
+@keyframes flip-bottom-anim {
+  0%,
+  50% {
+    transform: rotateX(90deg);
+    z-index: 10;
+  }
+  100% {
+    transform: rotateX(0deg);
+    z-index: 30;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-flip-top,
+  .animate-flip-bottom {
+    animation: none;
+  }
+}
