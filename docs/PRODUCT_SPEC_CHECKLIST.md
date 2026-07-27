@@ -163,8 +163,8 @@ For the full delivered-feature inventory, see
 
 - [x] Data model supports partner/sponsor type, tier, description, order, draft/published state, optional website, and optional Convex logo storage ID.
 - [x] Admin CRUD, order, and publish controls.
-- [x] Authenticated Convex media upload exists. `Partial`: one-click logo attachment from the partner editor remains.
-- [x] Public presentation is a stable tiered institutional wall, not a slider.
+- [x] Authenticated Convex media upload exists, with direct logo upload and managed-logo selection inside the partner editor.
+- [x] Public presentation is a stable tiered institutional wall, not a slider, and displays both an attached logo and the organisation name.
 
 ### Media & Publications tab — dynamic
 

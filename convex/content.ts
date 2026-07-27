@@ -198,6 +198,7 @@ export const listOrganizationsForAdmin = query({
       ),
       description: v.string(),
       websiteUrl: v.string(),
+      logoStorageId: v.optional(v.id("_storage")),
       order: v.number(),
       status: v.union(v.literal("draft"), v.literal("published")),
     })
@@ -216,6 +217,7 @@ export const listOrganizationsForAdmin = query({
       tier: item.tier,
       description: item.description,
       websiteUrl: item.websiteUrl ?? "",
+      logoStorageId: item.logoStorageId,
       order: item.order,
       status: item.status,
     }))
@@ -236,16 +238,18 @@ export const saveOrganization = mutation({
     ),
     description: v.string(),
     websiteUrl: v.string(),
+    logoStorageId: v.optional(v.id("_storage")),
     order: v.number(),
     status: v.union(v.literal("draft"), v.literal("published")),
   },
   returns: v.id("organizations"),
   handler: async (ctx, args) => {
     const actor = await getAdmin(ctx)
-    const { id, websiteUrl, ...rest } = args
+    const { id, websiteUrl, logoStorageId, ...rest } = args
     const value = {
       ...rest,
       websiteUrl: websiteUrl.trim() || undefined,
+      logoStorageId,
       updatedAt: Date.now(),
     }
     const entityId = id

@@ -32,16 +32,15 @@ export function PartnerWall() {
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
             <div className="partner-identity">
-              {organization.logoUrl ? (
+              {organization.logoUrl && (
                 <Image
                   src={organization.logoUrl}
                   alt={`${organization.name} logo`}
                   width={180}
                   height={80}
                 />
-              ) : (
-                <b>{organization.name}</b>
               )}
+              <b>{organization.name}</b>
             </div>
             <p>{organization.description}</p>
             <small>
@@ -54,21 +53,23 @@ export function PartnerWall() {
   )
 }
 
-export function RegionalSection() {
+export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
   const liveCountries = useQuery(api.content.listRegionalCountries)
   const countries = liveCountries ?? regionalFallback
 
   return (
     <section className="regional-section" id="beyond-bangladesh">
-      <div className="regional-intro section-shell">
-        <p className="kicker">Beyond Bangladesh · regional forum</p>
-        <h2>Solidarity without borders means listening across them.</h2>
-        <p>
-          Pakistan, Afghanistan, Myanmar, and now Nepal form the starting
-          regional group. Organisers can add, edit, reorder, draft, or publish
-          further countries through the admin panel without a code deployment.
-        </p>
-      </div>
+      {showIntro && (
+        <div className="regional-intro section-shell">
+          <p className="kicker">Beyond Bangladesh · regional forum</p>
+          <h2>Solidarity without borders means listening across them.</h2>
+          <p>
+            Pakistan, Afghanistan, Myanmar, and now Nepal form the starting
+            regional group. Organisers can add, edit, reorder, draft, or publish
+            further countries through the admin panel without a code deployment.
+          </p>
+        </div>
+      )}
       <div className="regional-grid">
         {countries.map((country, index) => (
           <article key={country.slug}>

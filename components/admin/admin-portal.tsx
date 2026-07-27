@@ -558,15 +558,56 @@ function RegionalPanel() {
 
 function PartnersPanel() {
   const rows = useQuery(api.content.listOrganizationsForAdmin)
+  const assets = useQuery(api.assets.list)
   const save = useMutation(api.content.saveOrganization)
   const remove = useMutation(api.content.removeOrganization)
-  return <RecordCards title="Partner constellation" copy="A grouped institutional wall replaces the slider. Partners and sponsors can be ordered, classified and published independently." rows={rows} fields={["slug","name","kind","tier","description","websiteUrl","order","status"]} blank={{ slug:"",name:"",kind:"partner",tier:"community",description:"",websiteUrl:"",order:50,status:"draft" }} onSave={save} onRemove={remove} />
+  const uploadUrl = useMutation(api.assets.generateUploadUrl)
+  const register = useMutation(api.assets.register)
+  async function uploadLogo(file: File) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"]
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
+    if (!allowedTypes.includes(file.type) || !allowedExtensions.some((extension) => file.name.toLowerCase().endsWith(extension))) {
+      throw new Error("Choose a JPEG, PNG, WebP, or AVIF logo.")
+    }
+    if (file.size > 20_000_000) throw new Error("Logo files must be smaller than 20 MB.")
+    const bitmap = await createImageBitmap(file)
+    if (bitmap.width < 320 || bitmap.height < 180) {
+      bitmap.close()
+      throw new Error("Logos must be at least 320 × 180 pixels.")
+    }
+    bitmap.close()
+    const url = await uploadUrl()
+    const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
+    if (!response.ok) throw new Error("The logo could not be uploaded to Convex.")
+    const result = await response.json() as { storageId: Id<"_storage"> }
+    const plainName = file.name.replace(/\.[^.]+$/, "").trim()
+    await register({
+      storageId: result.storageId,
+      fileName: file.name,
+      mimeType: file.type,
+      byteSize: file.size,
+      altText: plainName.length >= 3 ? plainName : `Partner logo ${plainName}`,
+      category: "logo",
+    })
+    return result.storageId
+  }
+  return <RecordCards title="Partner constellation" copy="A grouped institutional wall replaces the slider. Partners and sponsors can be ordered, classified, branded and published independently." rows={rows} fields={["slug","name","kind","tier","description","websiteUrl","order","status"]} blank={{ slug:"",name:"",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }} assetPicker={{ field:"logoStorageId", label:"Partner or sponsor logo", assets, onUpload:uploadLogo }} onSave={save} onRemove={remove} />
 }
 
-function RecordCards({ title, copy, rows, fields, blank, onSave, onRemove }: { title:string; copy:string; rows: any[] | undefined; fields:string[]; blank:Record<string,any>; onSave:(args:any)=>Promise<any>; onRemove:(args:any)=>Promise<any> }) {
+type RecordAssetPicker = {
+  field: string
+  label: string
+  assets: Array<{ _id: string; storageId: Id<"_storage">; fileName: string; mimeType: string; altText: string; url: string | null }> | undefined
+  onUpload: (file: File) => Promise<Id<"_storage">>
+}
+
+function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, onRemove }: { title:string; copy:string; rows: any[] | undefined; fields:string[]; blank:Record<string,any>; assetPicker?:RecordAssetPicker; onSave:(args:any)=>Promise<any>; onRemove:(args:any)=>Promise<any> }) {
   const [draft, setDraft] = useState<Record<string,any>>(blank)
   const [selected, setSelected] = useState<string>("new")
+  const [assetBusy, setAssetBusy] = useState(false)
   useEffect(() => { setDraft(selected === "new" ? blank : rows?.find((row) => row._id === selected) ?? blank) }, [selected, rows, blank])
+  const imageAssets = assetPicker?.assets?.filter((asset) => asset.mimeType.startsWith("image/"))
+  const selectedAsset = imageAssets?.find((asset) => asset.storageId === draft[assetPicker?.field ?? ""])
   return (
     <section className="admin-panel">
       <PanelTitle eyebrow="Directory editor" title={title} copy={copy} />
@@ -580,6 +621,44 @@ function RecordCards({ title, copy, rows, fields, blank, onSave, onRemove }: { t
               {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{value}</option>)}
             </select></label>
           : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
+        {assetPicker && (
+          <div className="admin-asset-picker">
+            <label className="admin-field">
+              <span>{assetPicker.label}</span>
+              <select value={draft[assetPicker.field] ?? ""} onChange={(event) => setDraft({ ...draft, [assetPicker.field]:event.target.value ? event.target.value as Id<"_storage"> : undefined })}>
+                <option value="">No logo attached</option>
+                {imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}
+              </select>
+            </label>
+            <div className="admin-asset-preview">
+              {selectedAsset?.url ? <img src={selectedAsset.url} alt={selectedAsset.altText} /> : <div><ImageIcon /><span>No logo selected</span></div>}
+              <label className="admin-logo-upload">
+                {assetBusy ? <Spinner /> : <ImageIcon />}
+                <span>{assetBusy ? "Uploading…" : "Upload a new logo"}</span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  disabled={assetBusy}
+                  onChange={async (event) => {
+                    const file = event.target.files?.[0]
+                    if (!file) return
+                    setAssetBusy(true)
+                    try {
+                      const storageId = await assetPicker.onUpload(file)
+                      setDraft((current) => ({ ...current, [assetPicker.field]:storageId }))
+                      toast.success("Logo uploaded and selected. Save the partner to publish it.")
+                    } catch (error) {
+                      toast.error(error instanceof Error ? error.message : "Logo upload failed.")
+                    } finally {
+                      setAssetBusy(false)
+                      event.target.value = ""
+                    }
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+        )}
       </div>
       <div className="admin-editor-actions">
         <Button onClick={async () => {

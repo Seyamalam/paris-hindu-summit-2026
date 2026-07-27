@@ -550,7 +550,9 @@ main {
 }
 .partner-identity {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
 }
 .partner-identity img {
   width: min(180px, 80%);
@@ -564,6 +566,9 @@ main {
   font: 850 clamp(27px, 3vw, 48px)/0.92 var(--font-body);
   letter-spacing: -0.055em;
   text-transform: uppercase;
+}
+.partner-identity img + b {
+  font-size: clamp(22px, 2.4vw, 36px);
 }
 .partner-card:first-child .partner-identity b {
   color: #fff;
@@ -1093,6 +1098,24 @@ main {
 .footer-callout h2,
 .footer-grid > div:first-child b {
   color: #fff;
+}
+.footer-brand > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.footer-brand > div > small {
+  display: block;
+  max-width: 360px;
+  margin: 5px 0 9px;
+  color: #aebfdd;
+  font: 700 8px/1.55 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.footer-brand p {
+  margin: 0;
 }
 .site-footer [data-slot="separator"],
 .footer-legal {
