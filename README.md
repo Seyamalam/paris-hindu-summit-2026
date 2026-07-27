@@ -107,8 +107,12 @@ duplicated into `NEXT_PUBLIC_*` values.
 Convex workflow:
 
 ```bash
-bunx convex dev
+bun run convex:dev
 ```
+
+Development and production use separate ignored deploy-key files, so backend
+commands continue to work after changing Convex accounts or logging the CLI
+out. See [`docs/CONVEX_DEPLOY_KEYS.md`](docs/CONVEX_DEPLOY_KEYS.md).
 
 ### Initial administrator
 
@@ -139,12 +143,17 @@ frontend origin.
 Every commit must be followed by a production backend deploy:
 
 ```bash
-bunx convex deploy
+bun run convex:deploy:prod
 ```
 
 When seed content changes, run the idempotent seed in both environments and
 verify the resulting row counts. Never seed personal, donor, registration, or
 credential data.
+
+```bash
+bun run convex:seed:dev
+bun run convex:seed:prod
+```
 
 ## Source material
 

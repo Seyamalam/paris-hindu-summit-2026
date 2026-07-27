@@ -238,9 +238,13 @@ Never make these editable as plain content:
 
 - [x] `.env.local` is ignored by Git.
 - [x] Development and production Convex deployments are configured.
+- [x] Separate ignored development and production deploy-key files allow
+  Convex commands to run without the active CLI account session.
+- [x] Package scripts explicitly select the intended deployment and prevent a
+  production deploy from accidentally targeting development.
 - [x] Every schema/function change passes `bun run typecheck`.
 - [x] Every app change passes `bun run lint` and `bun run build`.
-- [x] After every Git commit, run `bunx convex deploy`.
+- [x] After every Git commit, run `bun run convex:deploy:prod`.
 - [x] If fixture/seed data changes in development, run the same idempotent seed in production and verify counts.
 - [x] Production seeds contain no registrations, donor data, credentials, tokens, or personal accounts.
 - [ ] Production backup/export and restore drill before launch.

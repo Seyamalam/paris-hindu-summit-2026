@@ -9,7 +9,13 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "convex:dev": "bun --env-file=.env.convex.development x convex dev",
+    "convex:dev:once": "bun --env-file=.env.convex.development x convex dev --once",
+    "convex:codegen": "bun --env-file=.env.convex.development x convex codegen",
+    "convex:deploy:prod": "bun --env-file=.env.convex.production x convex deploy",
+    "convex:seed:dev": "bun --env-file=.env.convex.development x convex run seed:seedInitialContent",
+    "convex:seed:prod": "bun --env-file=.env.convex.production x convex run seed:seedInitialContent"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

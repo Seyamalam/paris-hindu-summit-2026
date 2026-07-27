@@ -280,6 +280,10 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Hero countdown reads its target date and timezone from editable Global Site Settings.
 - ✅ Countdown includes responsive compact-phone treatment and reduced-motion behaviour.
 - ✅ Latest Convex schema and functions deployed to production.
+- ✅ Durable, deployment-scoped Convex deploy keys created separately for
+  development and production.
+- ✅ Convex deployment commands no longer depend on the currently logged-in
+  CLI account.
 - ✅ Production chart, programme, and storage-reference indexes deployed.
 - ✅ Production content seed completed.
 - ✅ Ninety-three CMS records seeded.

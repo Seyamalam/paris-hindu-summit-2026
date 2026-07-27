@@ -15,6 +15,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
   URLs when reading.
 - Never expose an unauthenticated admin write, upload, seed, or destructive
   function.
-- After every Git commit, run `bunx convex deploy`.
+- After every Git commit, run `bun run convex:deploy:prod`. This uses the
+  ignored production deploy-key file and does not depend on a logged-in Convex
+  CLI session.
 - If development seed/fixture content changes, run the same idempotent seed in
   production and verify both environments. Never seed personal or secret data.
