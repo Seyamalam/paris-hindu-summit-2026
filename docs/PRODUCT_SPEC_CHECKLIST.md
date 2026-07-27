@@ -184,7 +184,7 @@ For the full delivered-feature inventory, see
 - [x] Country fields: slug, name, code, eyebrow, headline, summary, detail, source link, optional Convex image, order, and draft/published state.
 - [x] Seed includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Admin CRUD, order, draft, and publish controls. `Partial`: preview-before-publish remains.
-- [x] A source/citation URL is required before a country can be published.
+- [ ] Approved source/citation URLs for every published country. `Partial`: the field is editable, but existing supplied country records do not yet include approved sources and remain publishable while citations are prepared.
 
 ## Convex content and file architecture
 

@@ -582,7 +582,17 @@ function RecordCards({ title, copy, rows, fields, blank, onSave, onRemove }: { t
           : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
       </div>
       <div className="admin-editor-actions">
-        <Button onClick={async () => { const { _id, ...value } = draft; if (!fields.includes("name")) delete value.name; await onSave({ ...(selected === "new" ? {} : { id:_id }), ...value }); setSelected("new"); toast.success(`${title} updated.`) }}><SaveIcon /> Save</Button>
+        <Button onClick={async () => {
+          const { _id, ...value } = draft
+          if (!fields.includes("name")) delete value.name
+          try {
+            await onSave({ ...(selected === "new" ? {} : { id:_id }), ...value })
+            setSelected("new")
+            toast.success(`${title} updated.`)
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : `${title} could not be saved.`)
+          }
+        }}><SaveIcon /> Save</Button>
         {selected !== "new" && <ConfirmDelete label={String(draft.name ?? draft.title ?? "record")} onConfirm={async () => { await onRemove({ id:selected }); setSelected("new") }} />}
       </div>
     </section>

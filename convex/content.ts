@@ -1,4 +1,4 @@
-import { ConvexError, v } from "convex/values"
+import { v } from "convex/values"
 
 import { mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
@@ -146,9 +146,6 @@ export const saveRegional = mutation({
   returns: v.id("regionalCountries"),
   handler: async (ctx, args) => {
     const actor = await getAdmin(ctx)
-    if (args.status === "published" && !args.sourceUrl.trim()) {
-      throw new ConvexError("Add a source URL before publishing a regional country.")
-    }
     const { id, sourceUrl, ...rest } = args
     const value = {
       ...rest,

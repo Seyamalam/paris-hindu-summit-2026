@@ -254,6 +254,8 @@ for incomplete work, approvals, and launch dependencies.
 
 - ✅ GitHub issue #1 resolved: public Global Site Settings now reactively reflect admin changes without a Vercel redeployment or cache purge.
 - ✅ GitHub issue #2 resolved: Programme sessions are grouped into day-specific admin editors with locked day assignments.
+- ✅ GitHub issue #3 resolved: Beyond Bangladesh edits persist even when legacy published records do not yet have citation URLs.
+- ✅ Directory-editor mutation failures now remain on screen and show an actionable error instead of appearing to revert.
 - ✅ Animated flip-clock countdown added to the landing-page hero.
 - ✅ Hero countdown reads its target date and timezone from editable Global Site Settings.
 - ✅ Countdown includes responsive compact-phone treatment and reduced-motion behaviour.
