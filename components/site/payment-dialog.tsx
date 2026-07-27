@@ -31,14 +31,14 @@ export function PaymentDialog({ disabled = false }: { disabled?: boolean }) {
           <span className="dialog-icon"><CreditCardIcon /></span>
           <DialogTitle>Support the work behind the testimony</DialogTitle>
           <DialogDescription>
-            This is a demonstration checkout. No real payment is processed.
+            Preview the contribution pathway. No payment will be taken.
           </DialogDescription>
         </DialogHeader>
         {complete ? (
           <div className="payment-success" role="status">
             <CheckIcon />
             <h3>Donation intent recorded</h3>
-            <p>€{amount} would be processed for {email} when the payment provider is connected.</p>
+            <p>Your intention to contribute €{amount} has been recorded for {email}. No payment was taken.</p>
           </div>
         ) : (
           <FieldGroup>
@@ -64,14 +64,14 @@ export function PaymentDialog({ disabled = false }: { disabled?: boolean }) {
             </Field>
             <div className="mock-card">
               <ShieldCheckIcon />
-              <span><b>Provider-ready mock checkout</b><small>Card, PayPal or bank transfer can be connected later.</small></span>
+              <span><b>Contribution preview</b><small>Secure online payments will open at a later date.</small></span>
             </div>
           </FieldGroup>
         )}
         {!complete && (
           <DialogFooter>
             <Button disabled={!email} onClick={() => setComplete(true)}>
-              Pay €{amount} in test mode <ArrowRightIcon data-icon="inline-end" />
+              Record €{amount} contribution intent <ArrowRightIcon data-icon="inline-end" />
             </Button>
           </DialogFooter>
         )}

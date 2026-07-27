@@ -73,6 +73,7 @@ export default defineSchema({
       v.literal("partnership"),
       v.literal("why"),
       v.literal("challenge"),
+      v.literal("presentMoment"),
       v.literal("engage"),
       v.literal("speaker"),
       v.literal("team"),

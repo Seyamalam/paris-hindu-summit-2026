@@ -72,19 +72,19 @@ export function DonationExperience() {
       <Reveal className="checkout-demo">
         <div>
           <p className="kicker">Secure contribution desk</p>
-          <h2>{selected ? "Complete the demonstration." : "Select a level to begin."}</h2>
-          <p>The end-to-end contribution workflow is ready. It records demo transactions now and automatically redirects to hosted Stripe Checkout once live keys are added.</p>
-          <div className="payment-readiness"><span><CheckCircle2Icon /> Convex ledger</span><span><CheckCircle2Icon /> Signed webhooks</span><span><LockKeyholeIcon /> Stripe-ready</span></div>
+          <h2>{selected ? "Record your intention to contribute." : "Select a level to begin."}</h2>
+          <p>Online payments are not yet open. For now, this form securely records your contribution intention without taking payment.</p>
+          <div className="payment-readiness"><span><CheckCircle2Icon /> Secure record</span><span><CheckCircle2Icon /> Email reference</span><span><LockKeyholeIcon /> No charge today</span></div>
         </div>
         <form onSubmit={submit}>
           {tier?.customAmount && <label><span>Amount in euros</span><Input type="number" min="5" max="100000" value={custom} onChange={(event) => setCustom(event.target.value)} /></label>}
           <label><span>Name</span><Input name="name" required /></label>
           <label><span>Email for receipt</span><Input name="email" type="email" required /></label>
           <Button disabled={!selected || busy} type="submit">{busy && <Loader2Icon className="animate-spin" />} Continue to payment</Button>
-          <small>No payment is taken while the site is in demonstration mode.</small>
+          <small>No payment is taken through this form.</small>
         </form>
       </Reveal>
-      {result && <Alert className="donation-result"><CheckCircle2Icon /><AlertTitle>Demonstration recorded</AlertTitle><AlertDescription>Reference {result.reference}. Live payment will be enabled when the organiser’s Stripe keys are connected.</AlertDescription></Alert>}
+      {result && <Alert className="donation-result"><CheckCircle2Icon /><AlertTitle>Contribution intention recorded</AlertTitle><AlertDescription>Reference {result.reference}. Keep this reference for your records; no payment was taken.</AlertDescription></Alert>}
         </>
       )}
     </section>

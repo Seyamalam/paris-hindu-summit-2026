@@ -1574,13 +1574,24 @@
 .media-publication-admin > .admin-panel {
   margin: 22px 0 34px;
   padding: 22px;
-  background: var(--admin-paper);
-  border: 1px solid var(--admin-line);
+  color: #eef4ff;
+  background: #0b203d;
+  border: 1px solid #365d91;
   box-shadow: none;
 }
 
 .media-publication-admin > .admin-panel .admin-panel-heading h2 {
+  color: #ffffff;
   font-size: 22px;
+}
+
+.media-publication-admin > .admin-panel .admin-panel-heading p:last-child {
+  color: #a8b9d2;
+}
+
+.media-publication-admin > .admin-panel .admin-field > span,
+.media-publication-admin > .admin-panel .admin-fieldset legend {
+  color: #dbe6f7;
 }
 
 .admin-subpanel {

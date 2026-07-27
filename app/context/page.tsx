@@ -16,7 +16,7 @@ export default function ContextPage() {
       />
       <section className="evidence-band light">
         <div className="evidence-grid">{evidence.map((item) => <article key={item.value}><b>{item.value}</b><p>{item.label}</p></article>)}</div>
-        <p className="source-note">Figures are drawn from the supplied concept note and cited organisations. Production publication requires final source verification and links.</p>
+        <p className="source-note">Source: summit concept note and cited organisations. Detailed citations and methodology will accompany the evidence archive.</p>
       </section>
       <section className="context-chapters section-shell">
         {[

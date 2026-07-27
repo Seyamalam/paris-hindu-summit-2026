@@ -90,6 +90,7 @@ const categories = [
   "partnership",
   "why",
   "challenge",
+  "presentMoment",
   "engage",
   "speaker",
   "team",
@@ -411,7 +412,7 @@ function PageStudio({ page }: { page:StudioPage }) {
 function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; publishSignal:number; onSaved:()=>void }) {
   if (page === "home") return <SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} />
   if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
-  if (page === "about") return <ContentPanel compact initialCategory="overview" />
+  if (page === "about") return <AboutEditor />
   if (page === "programme") return <ProgrammeAdmin />
   if (page === "speakers") return <PeopleEditor mode="speaker" />
   if (page === "teamBoard") return <PeopleEditor mode="team" />
@@ -664,6 +665,95 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
 }
 
 type StructuredCategory = "agenda" | "resolution" | "strategy" | "partnership"
+
+function AboutEditor() {
+  const [category, setCategory] = useState<"overview" | "presentMoment">("overview")
+  const entries = useQuery(api.cms.listForAdmin, { category })
+  const save = useMutation(api.cms.save)
+  const remove = useMutation(api.cms.remove)
+  const [selected, setSelected] = useState<string>("new")
+  const [draft, setDraft] = useState<ContentDraft>({ ...blankContent })
+  const existing = entries?.find((entry) => entry._id === selected)
+  useEffect(() => { setSelected("new") }, [category])
+  useEffect(() => {
+    if (existing) {
+      const { _id, category: _category, imageStorageId: _image, imageUrl: _url, ...fields } = existing
+      void _id; void _category; void _image; void _url
+      setDraft(fields)
+    } else {
+      setDraft({ ...blankContent })
+    }
+  }, [category, existing, selected])
+  const update = (key:keyof ContentDraft, value:string | number) =>
+    setDraft((current) => ({ ...current, [key]:value }))
+  const label = category === "overview" ? "About sections" : "Present moment cards"
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle
+        eyebrow="About page"
+        title={label}
+        copy={category === "overview"
+          ? "Edit the meaningful headings and copy on the About page."
+          : "Edit the six public-interest cards in The present moment."}
+      />
+      <div className="admin-record-chips">
+        <button data-active={category === "overview"} onClick={() => setCategory("overview")}>About sections</button>
+        <button data-active={category === "presentMoment"} onClick={() => setCategory("presentMoment")}>Present moment</button>
+      </div>
+      <div className="admin-record-chips">
+        <button data-active={selected === "new"} onClick={() => setSelected("new")}>+ New</button>
+        {entries?.map((entry) => (
+          <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}>
+            {entry.title}
+          </button>
+        ))}
+      </div>
+      <div className="admin-form-grid">
+        {category === "overview" && (
+          <Field label="Section label" value={draft.eyebrow} onValueChange={(value) => update("eyebrow", value)} />
+        )}
+        <Field label={category === "overview" ? "Heading" : "Card heading"} value={draft.title} onValueChange={(value) => update("title", value)} />
+        <Field label={category === "overview" ? "Introduction" : "Card text"} multiline value={draft.summary} onValueChange={(value) => update("summary", value)} />
+        {category === "overview" && (
+          <Field label="Detailed copy" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
+        )}
+        <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
+        <label className="admin-field">
+          <span>Publication status</span>
+          <select value={draft.status} onChange={(event) => setDraft({ ...draft, status:event.target.value as "draft" | "published" })}>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </label>
+      </div>
+      <div className="admin-editor-actions">
+        <Button onClick={async () => {
+          const slug = draft.slug || draft.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+          if (!slug || !draft.title.trim()) {
+            toast.error("Add a heading before saving.")
+            return
+          }
+          try {
+            await save({
+              ...(existing ? { id:existing._id } : {}),
+              category,
+              ...draft,
+              slug,
+              body:category === "presentMoment" ? (draft.body || draft.summary) : draft.body,
+              featured:false,
+            })
+            toast.success(`${label} updated.`)
+            setSelected("new")
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "The section could not be saved.")
+          }
+        }}><SaveIcon /> Save</Button>
+        {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await remove({ id:existing._id }); setSelected("new") }} />}
+      </div>
+    </section>
+  )
+}
 
 function StructuredDocumentPanel({ category }: { category:StructuredCategory }) {
   const entries = useQuery(api.cms.listForAdmin, { category })

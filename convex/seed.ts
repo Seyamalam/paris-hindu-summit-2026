@@ -256,6 +256,78 @@ const cmsEntries = [
     featured: true,
   },
   {
+    category: "presentMoment" as const,
+    slug: "present-moment-property-seizure",
+    title: "Land & property seizure",
+    eyebrow: "Property rights",
+    summary:
+      "The legacy of the Vested Property Act continues to strip Hindu families of ancestral land despite a formal return process on paper.",
+    body:
+      "The legacy of the Vested Property Act continues to strip Hindu families of ancestral land despite a formal return process on paper.",
+    order: 1,
+    featured: true,
+  },
+  {
+    category: "presentMoment" as const,
+    slug: "present-moment-temple-attacks",
+    title: "Temple & property attacks",
+    eyebrow: "Freedom of worship",
+    summary:
+      "Vandalism and arson targeting temples, homes and businesses spike around elections and periods of political transition.",
+    body:
+      "Vandalism and arson targeting temples, homes and businesses spike around elections and periods of political transition.",
+    order: 2,
+    featured: true,
+  },
+  {
+    category: "presentMoment" as const,
+    slug: "present-moment-impunity",
+    title: "Impunity for perpetrators",
+    eyebrow: "Access to justice",
+    summary:
+      "Cases are frequently under-investigated or unresolved, leaving communities without confidence that justice will follow an attack.",
+    body:
+      "Cases are frequently under-investigated or unresolved, leaving communities without confidence that justice will follow an attack.",
+    order: 3,
+    featured: true,
+  },
+  {
+    category: "presentMoment" as const,
+    slug: "present-moment-underrepresentation",
+    title: "Underrepresentation",
+    eyebrow: "Equal citizenship",
+    summary:
+      "Hindus remain underrepresented in the civil service, judiciary, security forces and elected office relative to their population share.",
+    body:
+      "Hindus remain underrepresented in the civil service, judiciary, security forces and elected office relative to their population share.",
+    order: 4,
+    featured: true,
+  },
+  {
+    category: "presentMoment" as const,
+    slug: "present-moment-election-intimidation",
+    title: "Election-cycle intimidation",
+    eyebrow: "Political participation",
+    summary:
+      "Minority voters and candidates report intimidation intended to suppress turnout or political participation around national polls.",
+    body:
+      "Minority voters and candidates report intimidation intended to suppress turnout or political participation around national polls.",
+    order: 5,
+    featured: true,
+  },
+  {
+    category: "presentMoment" as const,
+    slug: "present-moment-emigration",
+    title: "Continued emigration",
+    eyebrow: "Community continuity",
+    summary:
+      "Insecurity and limited economic opportunity keep pushing younger generations to leave, accelerating the community’s demographic decline.",
+    body:
+      "Insecurity and limited economic opportunity keep pushing younger generations to leave, accelerating the community’s demographic decline.",
+    order: 6,
+    featured: true,
+  },
+  {
     category: "engage" as const,
     slug: "attend-in-paris",
     title: "Attend in Paris",
@@ -273,7 +345,7 @@ const cmsEntries = [
     title: "Support the record",
     eyebrow: "Donate",
     summary: "Help testimony, translation, research, and delegate access travel further.",
-    body: "The Stripe-ready donation experience runs in demo mode until the organisers add live credentials.",
+    body: "Preview the contribution pathway and record an intention to support the summit without being charged.",
     linkLabel: "Support the summit",
     linkUrl: "/donate",
     order: 2,
@@ -428,7 +500,7 @@ const seminarEntries = [
     body:
       "The forum treats demographic decline as a human record rather than an abstract trend. Behind every percentage are families deciding whether it is safe to remain, places of worship damaged or abandoned, property lost, and children learning how visible it is safe to be.",
     secondaryText:
-      "The supplied seminar paper also places Bangladesh within a regional pattern affecting Hindu and Sikh communities in Pakistan and Afghanistan. All public statistics remain subject to final source approval.",
+      "The forum also places Bangladesh within a regional pattern affecting Hindu and Sikh communities in Pakistan and Afghanistan, connecting local testimony with a wider human-rights record.",
     order: 1,
     featured: true,
   },
@@ -703,8 +775,8 @@ const programmeSessions = [
   { daySlug: "day-two", slug: "paris-declaration", startTime: "16:00", endTime: "17:30", title: "Paris Declaration and Agni Sakshi", description: "Adoption of the shared declaration followed by the witnessed closing pledge.", tag: "Closing", speakers: "Summit delegates", location: "Main assembly hall", order: 2 },
 ] as const
 const chartSeries = [
-  { slug: "population-share", title: "A shrinking share of the nation.", eyebrow: "Demographic crisis", description: "Historic census markers show a long decline in the Hindu share of the population.", sourceLabel: "Supplied summit concept note — source approval pending", sourceUrl: "", unit: "%", order: 1 },
-  { slug: "displacement", title: "Displacement accumulates across generations.", eyebrow: "Forced movement", description: "Editable period markers keep the human scale visible alongside the historical record.", sourceLabel: "Supplied summit concept note — methodology approval pending", sourceUrl: "", unit: "M", order: 2 },
+  { slug: "population-share", title: "A shrinking share of the nation.", eyebrow: "Demographic crisis", description: "Historic census markers show a long decline in the Hindu share of the population.", sourceLabel: "Summit concept note and cited census records", sourceUrl: "", unit: "%", order: 1 },
+  { slug: "displacement", title: "Displacement accumulates across generations.", eyebrow: "Forced movement", description: "Period markers keep the human scale visible alongside the historical record.", sourceLabel: "Summit concept note and cited research", sourceUrl: "", unit: "M", order: 2 },
 ] as const
 const chartPoints = [
   { seriesSlug: "population-share", label: "1941", sublabel: "Pre-partition census", value: 28, order: 1 },
@@ -734,9 +806,9 @@ export const seedInitialContent = internalMutation({
   handler: async (ctx) => {
     const now = Date.now()
     let countriesInserted = 0
-    let countriesUpdated = 0
+    const countriesUpdated = 0
     let organizationsInserted = 0
-    let organizationsUpdated = 0
+    const organizationsUpdated = 0
     let mediaSectionsUpserted = 0
     let settingsUpserted = 0
     let tiersUpserted = 0
@@ -754,8 +826,7 @@ export const seedInitialContent = internalMutation({
       const value = { ...country, status: "published" as const, updatedAt: now }
 
       if (existing) {
-        await ctx.db.patch(existing._id, value)
-        countriesUpdated += 1
+        // Seed defaults must never overwrite content edited in the admin panel.
       } else {
         await ctx.db.insert("regionalCountries", value)
         countriesInserted += 1
@@ -774,8 +845,7 @@ export const seedInitialContent = internalMutation({
       }
 
       if (existing) {
-        await ctx.db.patch(existing._id, value)
-        organizationsUpdated += 1
+        // Preserve the live record and any media selected by an administrator.
       } else {
         await ctx.db.insert("organizations", value)
         organizationsInserted += 1
@@ -792,8 +862,7 @@ export const seedInitialContent = internalMutation({
         status: "published" as const,
         updatedAt: now,
       }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("mediaSections", value)
+      if (!existing) await ctx.db.insert("mediaSections", value)
       mediaSectionsUpserted += 1
     }
 
@@ -806,9 +875,7 @@ export const seedInitialContent = internalMutation({
       key: "primary",
       updatedAt: now,
     }
-    if (existingSettings) {
-      await ctx.db.replace(existingSettings._id, settingsValue)
-    } else {
+    if (!existingSettings) {
       await ctx.db.insert("siteSettings", settingsValue)
     }
     settingsUpserted = 1
@@ -823,8 +890,7 @@ export const seedInitialContent = internalMutation({
         status: "published" as const,
         updatedAt: now,
       }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("donationTiers", value)
+      if (!existing) await ctx.db.insert("donationTiers", value)
       tiersUpserted += 1
     }
 
@@ -865,39 +931,64 @@ export const seedInitialContent = internalMutation({
         featured: entry.featured,
         updatedAt: now,
       }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("cmsEntries", value)
+      if (!existing) {
+        await ctx.db.insert("cmsEntries", value)
+      } else if (
+        existing.slug === "overview-community-erasure" &&
+        existing.secondaryText ===
+          "The supplied seminar paper also places Bangladesh within a regional pattern affecting Hindu and Sikh communities in Pakistan and Afghanistan. All public statistics remain subject to final source approval."
+      ) {
+        await ctx.db.patch(existing._id, {
+          secondaryText: value.secondaryText,
+          updatedAt: now,
+        })
+      } else if (
+        existing.slug === "support-the-record" &&
+        existing.body ===
+          "The Stripe-ready donation experience runs in demo mode until the organisers add live credentials."
+      ) {
+        await ctx.db.patch(existing._id, { body: value.body, updatedAt: now })
+      }
       cmsEntriesUpserted += 1
     }
 
     for (const item of programmeDays) {
       const existing = await ctx.db.query("programmeDays").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
       const value = { ...item, status: "published" as const, updatedAt: now }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("programmeDays", value)
+      if (!existing) await ctx.db.insert("programmeDays", value)
       programmeDaysUpserted += 1
     }
     for (const item of programmeSessions) {
       const rows = await ctx.db.query("programmeSessions").withIndex("by_day_slug_and_order", (q) => q.eq("daySlug", item.daySlug)).take(50)
       const existing = rows.find((row) => row.slug === item.slug)
       const value = { ...item, status: "published" as const, updatedAt: now }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("programmeSessions", value)
+      if (!existing) await ctx.db.insert("programmeSessions", value)
       programmeSessionsUpserted += 1
     }
     for (const item of chartSeries) {
       const existing = await ctx.db.query("chartSeries").withIndex("by_slug", (q) => q.eq("slug", item.slug)).unique()
       const value = { ...item, status: "published" as const, updatedAt: now }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("chartSeries", value)
+      if (!existing) {
+        await ctx.db.insert("chartSeries", value)
+      } else if (
+        (existing.sourceLabel ===
+          "Supplied summit concept note — source approval pending" ||
+          existing.sourceLabel ===
+            "Supplied summit concept note — methodology approval pending")
+      ) {
+        await ctx.db.patch(existing._id, {
+          sourceLabel: value.sourceLabel,
+          description: value.description,
+          updatedAt: now,
+        })
+      }
       chartSeriesUpserted += 1
     }
     for (const item of chartPoints) {
       const rows = await ctx.db.query("chartPoints").withIndex("by_series_slug_and_order", (q) => q.eq("seriesSlug", item.seriesSlug)).take(100)
       const existing = rows.find((row) => row.label === item.label)
       const value = { ...item, updatedAt: now }
-      if (existing) await ctx.db.patch(existing._id, value)
-      else await ctx.db.insert("chartPoints", value)
+      if (!existing) await ctx.db.insert("chartPoints", value)
       chartPointsUpserted += 1
     }
 

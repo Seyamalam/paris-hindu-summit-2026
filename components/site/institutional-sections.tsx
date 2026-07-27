@@ -18,9 +18,8 @@ export function PartnerWall() {
         <div>
           <h2>Institutions standing in the record.</h2>
           <p>
-            A permanent, tiered wall keeps every partner visible. Confirmed
-            organisations, logos, tiers, links, and display order will be
-            managed from the admin panel.
+            Organisations contributing policy reach, research, community
+            networks, access, and practical support remain visible together.
           </p>
         </div>
       </div>
@@ -64,9 +63,9 @@ export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
           <p className="kicker">Beyond Bangladesh · regional forum</p>
           <h2>Solidarity without borders means listening across them.</h2>
           <p>
-            Pakistan, Afghanistan, Myanmar, and now Nepal form the starting
-            regional group. Organisers can add, edit, reorder, draft, or publish
-            further countries through the admin panel without a code deployment.
+            Pakistan, Afghanistan, Myanmar, and Nepal form the starting regional
+            group—a shared record of citizenship, security, heritage,
+            displacement, and the right to remain.
           </p>
         </div>
       )}

@@ -7,7 +7,6 @@ import { ArrowRightIcon } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { api } from "@/convex/_generated/api"
-import { speakers as fallbackSpeakers } from "@/lib/content"
 import { Button } from "@/components/ui/button"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Reveal } from "@/components/site/reveal"
@@ -62,24 +61,16 @@ export function EvidenceCharts() {
 
 export function FeaturedSpeakers() {
   const managedSpeakers = useQuery(api.cms.listPublished, { category: "speaker" })
-  const featured = managedSpeakers
-    ?.filter((speaker) => speaker.featured)
+  const available = managedSpeakers ?? []
+  const featured = available.filter((speaker) => speaker.featured)
+  const speakers = (featured.length > 0 ? featured : available)
     .slice(0, 3)
-  const speakers =
-    featured && featured.length > 0
-      ? featured.map((speaker) => ({
+    .map((speaker) => ({
           key: speaker._id,
           name: speaker.title,
           country: speaker.country,
           role: speaker.role || speaker.summary,
           image: speaker.imageUrl,
-        }))
-      : fallbackSpeakers.slice(0, 3).map((speaker) => ({
-          key: speaker.name,
-          name: speaker.name,
-          country: speaker.country,
-          role: speaker.role,
-          image: speaker.image,
         }))
 
   return (

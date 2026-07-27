@@ -1,6 +1,6 @@
 # Completed Work Checklist
 
-Last verified: 26 July 2026
+Last verified: 27 July 2026
 
 This is the detailed delivery record for the Paris Hindu Summit 2026 website.
 It complements `PRODUCT_SPEC_CHECKLIST.md`, which remains the source of truth
@@ -93,7 +93,8 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Two-day programme preview.
 - ✅ Admin-controlled featured-speaker teaser.
 - ✅ Backend maximum of three featured homepage speakers.
-- ✅ Safe fallback speaker presentation.
+- ✅ Homepage uses the first published admin speakers when none is explicitly featured.
+- ✅ Full Speakers page has no stale code-data fallback.
 - ✅ Stable non-carousel partner and sponsor wall.
 - ✅ Dynamic Beyond Bangladesh section including Nepal.
 - ✅ Countdown driven by the admin-managed event start time.
@@ -228,6 +229,21 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ “Advisory Council” public navigation renamed to “Advisory Board”.
 - ✅ Editable Programme, Media, FAQ, and Legal records.
 - ✅ Featured speaker records connected to the homepage.
+- ✅ About editor simplified to only Overview and Present Moment content fields.
+- ✅ Media & Publication editor contrast corrected for its nested section editor.
+- ✅ Public implementation notes removed from partner, regional, evidence, document, media, and contribution sections.
+- ✅ Obsolete About and Programme principle sections removed at the client’s request.
+- ✅ New dark-blue Present Moment section with six editable pressure cards.
+- ✅ Revised About hero copy and “A standing platform, not a single event” headline.
+
+## GitHub issue resolution pass · 27 July 2026
+
+- ✅ Issue #8 — Page Content reorganised into the visual Page Studio with contextual page editors.
+- ✅ Issue #9 — obsolete Programme principles and About prelude/purpose sections removed; About hero content replaced.
+- ✅ Issue #10 — old shared-principle section removed and the six-card Present Moment section added.
+- ✅ Issue #11 — About controls simplified and Media editor readability corrected.
+- ✅ Issue #12 — full public-site sweep removed visitor-facing implementation and placeholder notes.
+- ✅ Issue #13 — public speaker views now follow the published Convex records instead of showing stale fallback speakers.
 
 ## Media and Convex storage
 

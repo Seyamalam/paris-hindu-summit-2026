@@ -1,8 +1,8 @@
 # Product specification checklist
 
-Last reviewed: 26 July 2026  
-Source of truth: `Paris_Website_Spec.pdf`, supplied 26 July 2026  
-Target launch: August 2026  
+Last reviewed: 27 July 2026
+Source of truth: `Paris_Website_Spec.pdf`, supplied 26 July 2026
+Target launch: August 2026
 Event: 3–4 October 2026
 
 This is the living delivery checklist for the public website, admin panel, content
@@ -58,6 +58,7 @@ For the full delivered-feature inventory, see
 - [x] Dynamic hero information bar: Venue, Format, Delegates, Languages.
 - [x] Admin-managed “Why This Summit” rationale cards.
 - [x] Featured-speaker teaser is driven by the admin Featured flag and enforces a maximum of three published records.
+- [x] When no speaker is marked Featured, the homepage shows up to the first three published speaker records instead of stale code fixtures.
 - [x] Partners & Sponsors institutional wall; no slider.
 - [x] Editable demographic chart, source note, tooltip, and accessible data table. `Partial`: approved citations remain.
 - [x] Editable displacement chart, note, tooltip, and accessible data table.
@@ -72,6 +73,7 @@ For the full delivered-feature inventory, see
 ### Detailed content
 
 - [x] Overview is editable from Admin.
+- [x] About includes the client-approved hero copy and an editable six-card “Present Moment” section.
 - [x] Organizing Team is editable from Admin.
 - [x] Advisory Board is editable from Admin and published on the Committee page.
 - [x] Proposed Agenda is editable from Admin and published on `/agenda`.
@@ -160,6 +162,7 @@ For the full delivered-feature inventory, see
 - [x] Purpose-built speaker editor uses client-facing fields: name, short introduction shown below the name, country, biography, direct profile-picture upload/selection, order, and publication state.
 - [x] The public Speakers page now reads published speaker records from Convex instead of a code-only list.
 - [x] Featured toggle drives the homepage teaser and the backend enforces the approved maximum of three.
+- [x] Speaker views do not substitute removed or unpublished records with hard-coded fallback people.
 
 ### Organizing Team and Advisory Board tabs — dynamic
 
@@ -185,6 +188,8 @@ For the full delivered-feature inventory, see
 
 ### Purpose-built About document editors
 
+- [x] About inspector exposes only Overview and Present Moment records, with page-relevant labels and without unrelated contact, date, link, and parent fields.
+- [x] Present Moment cards support heading, body, order, draft, and publication state.
 - [x] Proposed Agenda editor exposes agenda number, title, discussion points, and expected outcome.
 - [x] Paris Resolution editor exposes resolution number, title, summary, and expected outcomes; published outcomes appear after the resolution list.
 - [x] 5-Year Strategic Plan editor supports a Vision above all goals, numbered strategic goals, key actions, expected outcomes, and year-based “Implementation Timeline” cards.

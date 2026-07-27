@@ -139,8 +139,8 @@ export default function HomePage() {
           ))}
         </div>
         <p className="source-note">
-          Statistics reproduced from the supplied summit concept note; final
-          publication should include approved source links and methodology.
+          Source: summit concept note and cited organisations. Detailed
+          citations and methodology will accompany the evidence archive.
         </p>
       </section>
       <EvidenceCharts />

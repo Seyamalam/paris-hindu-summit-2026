@@ -846,6 +846,7 @@ main {
   border: 1px solid var(--assembly-rule);
 }
 .outcomes {
+  background: var(--assembly-surface);
   border-color: var(--assembly-rule);
 }
 .outcomes li {
@@ -856,6 +857,73 @@ main {
 }
 .outcomes li p {
   color: var(--assembly-ink);
+}
+.present-moment {
+  padding: clamp(80px, 9vw, 140px) 0;
+  color: #fff;
+  background: #09294b;
+}
+.present-moment > header {
+  padding-bottom: clamp(48px, 6vw, 88px);
+  text-align: center;
+}
+.present-moment > header .kicker {
+  color: #efad3d;
+}
+.present-moment > header > p:last-child {
+  max-width: 780px;
+  margin: 22px auto 0;
+  color: #d9e4f2;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.55;
+}
+.present-moment-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgb(255 255 255 / 28%);
+  border-left: 1px solid rgb(255 255 255 / 28%);
+}
+.present-moment-grid article {
+  min-height: 310px;
+  padding: clamp(30px, 4vw, 62px);
+  border-right: 1px solid rgb(255 255 255 / 28%);
+  border-bottom: 1px solid rgb(255 255 255 / 28%);
+}
+.present-moment-grid svg {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 58px;
+  color: #efad3d;
+  stroke-width: 1.5;
+}
+.present-moment-grid h2 {
+  max-width: 280px;
+  margin-bottom: 18px;
+  color: #fff;
+  font-size: clamp(21px, 2.2vw, 32px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.present-moment-grid p {
+  max-width: 340px;
+  color: #c9d7e9;
+  line-height: 1.65;
+}
+@media (max-width: 1050px) {
+  .present-moment-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .present-moment-grid {
+    grid-template-columns: 1fr;
+  }
+  .present-moment-grid article {
+    min-height: 0;
+  }
+  .present-moment-grid svg {
+    margin-bottom: 40px;
+  }
 }
 .evidence-band.light {
   color: #fff;

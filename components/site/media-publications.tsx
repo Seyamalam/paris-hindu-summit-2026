@@ -83,7 +83,7 @@ export function MediaPublications() {
             </div>
           ) : (
             <p className="publication-section-empty">
-              This section is ready. Its first publication is being prepared.
+              No publications have been released in this section yet.
             </p>
           )}
         </section>

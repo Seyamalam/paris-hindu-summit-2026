@@ -2,7 +2,15 @@
 
 import Image from "next/image"
 import { useQuery } from "convex/react"
-import { ArrowRightIcon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  BriefcaseBusinessIcon,
+  ChurchIcon,
+  HouseIcon,
+  LogOutIcon,
+  ShieldAlertIcon,
+  TriangleAlertIcon,
+} from "lucide-react"
 import Link from "next/link"
 
 import { api } from "@/convex/_generated/api"
@@ -11,7 +19,6 @@ import { Button } from "@/components/ui/button"
 import { PageHero } from "@/components/site/page-hero"
 import { Reveal } from "@/components/site/reveal"
 import { committee as fallbackCommittee } from "@/lib/content"
-import { speakers as fallbackSpeakers } from "@/lib/content"
 
 type DocumentCategory =
   | "agenda"
@@ -38,6 +45,42 @@ export function ManagedOverview() {
           </article>
         </Reveal>
       ))}
+    </section>
+  )
+}
+
+export function PresentMoment() {
+  const entries = useQuery(api.cms.listPublished, { category:"presentMoment" })
+  const icons = [
+    HouseIcon,
+    ChurchIcon,
+    ShieldAlertIcon,
+    BriefcaseBusinessIcon,
+    TriangleAlertIcon,
+    LogOutIcon,
+  ]
+
+  return (
+    <section className="present-moment">
+      <header className="section-shell">
+        <p className="kicker">The present moment</p>
+        <p>
+          Fifty-six years after independence, structural and everyday pressures
+          still shape daily life for Bangladesh&apos;s Hindu community.
+        </p>
+      </header>
+      <div className="present-moment-grid">
+        {entries?.map((entry, index) => {
+          const Icon = icons[index % icons.length]
+          return (
+            <article key={entry._id}>
+              <Icon aria-hidden="true" />
+              <h2>{entry.title}</h2>
+              <p>{entry.summary || entry.body}</p>
+            </article>
+          )
+        })}
+      </div>
     </section>
   )
 }
@@ -127,23 +170,13 @@ export function ManagedCommittee() {
 
 export function ManagedSpeakers() {
   const managed = useQuery(api.cms.listPublished, { category: "speaker" })
-  const speakers =
-    managed && managed.length > 0
-      ? managed.map((speaker) => ({
+  const speakers = (managed ?? []).map((speaker) => ({
           key: speaker._id,
           name: speaker.title,
           intro: speaker.role || speaker.summary,
           country: speaker.country,
           bio: speaker.body || speaker.summary,
           image: speaker.imageUrl,
-        }))
-      : fallbackSpeakers.map((speaker) => ({
-          key: speaker.name,
-          name: speaker.name,
-          intro: speaker.role,
-          country: speaker.country,
-          bio: speaker.bio,
-          image: speaker.image,
         }))
 
   return (
@@ -211,13 +244,6 @@ export function CmsDocumentPage({
         </section>
       )}
       <section className="document-collection section-shell">
-        <header>
-          <p className="kicker">{mainRecords.length} published sections</p>
-          <p>
-            This working document is managed in the protected page editor.
-            Published changes appear here immediately.
-          </p>
-        </header>
         <div className={category === "partnership" ? "partnership-document-grid" : undefined}>
           {mainRecords.map((entry, index) => (
             <Reveal key={entry._id} delay={(index % 4) * 60}>

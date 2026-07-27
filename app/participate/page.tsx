@@ -53,7 +53,7 @@ export default function ParticipatePage() {
         </Accordion>
         <div className="donation-panel">
           <MailIcon />
-          <div><p className="kicker">Fund the work</p><h2>Help evidence reach institutions capable of acting.</h2><p>Mock checkout only; the production payment provider will be integrated later.</p></div>
+          <div><p className="kicker">Fund the work</p><h2>Help evidence reach institutions capable of acting.</h2><p>Online payments are not yet open. You can preview the contribution pathway without being charged.</p></div>
           <PaymentDialog disabled={!donationsEnabled} />
         </div>
       </section>

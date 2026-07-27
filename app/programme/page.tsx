@@ -12,11 +12,6 @@ export default function ProgrammePage() {
       <section className="section-shell programme-page">
         <ProgrammeTabs />
       </section>
-      <section className="programme-principles section-shell">
-        {["Evidence before assertion", "Dignity before spectacle", "Commitment beyond attendance"].map((item, index) => (
-          <article key={item}><span>0{index + 1}</span><h3>{item}</h3></article>
-        ))}
-      </section>
     </>
   )
 }
