@@ -69,7 +69,7 @@ export function SiteHeader() {
 
   return (
     <>
-    {settings?.announcementEnabled && <div className="announcement-strip"><span>{settings.announcement}</span><Link href="/participate">Register now</Link></div>}
+    {settings?.announcementEnabled && <div className="announcement-strip"><span>{settings.announcement}</span>{settings.registrationOpen && <Link href="/participate">Register now</Link>}</div>}
     <header className={cn("site-header", settings?.announcementEnabled && "has-announcement")}>
       <Link href="/" aria-label="Paris Assembly home">
         <Brand name={settings?.shortName} />
@@ -85,12 +85,16 @@ export function SiteHeader() {
         </NavigationMenuList>
       </NavigationMenu>
       <ThemeToggle />
-      <Button nativeButton={false} variant="outline" render={<Link href="/participate" />} className="header-secondary-action">
-        Register
-      </Button>
-      <Button nativeButton={false} render={<Link href="/donate" />} className="header-action">
-        Donate
-      </Button>
+      {settings?.registrationOpen !== false && (
+        <Button nativeButton={false} variant="outline" render={<Link href="/participate" />} className="header-secondary-action">
+          Register
+        </Button>
+      )}
+      {settings?.donationsEnabled !== false && (
+        <Button nativeButton={false} render={<Link href="/donate" />} className="header-action">
+          Donate
+        </Button>
+      )}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger
           render={
@@ -110,7 +114,16 @@ export function SiteHeader() {
             <SheetDescription>Global Solidarity Summit for Bangladeshi Hindus</SheetDescription>
           </SheetHeader>
           <nav aria-label="Mobile navigation">
-            {[{ href: "/", label: "Home" }, ...aboutLinks.map(([href,label]) => ({ href,label })), { href:"/regional",label:"Regional" }, { href:"/media",label:"Media" }, { href:"/engage",label:"Engage" }, { href:"/support",label:"Support" }, { href: "/participate", label: "Reserve a place" }, { href: "/donate", label: "Donate" }].map((item) => (
+            {[
+              { href: "/", label: "Home" },
+              ...aboutLinks.map(([href,label]) => ({ href,label })),
+              { href:"/regional",label:"Regional" },
+              { href:"/media",label:"Media" },
+              { href:"/engage",label:"Engage" },
+              { href:"/support",label:"Support" },
+              ...(settings?.registrationOpen !== false ? [{ href: "/participate", label: "Reserve a place" }] : []),
+              ...(settings?.donationsEnabled !== false ? [{ href: "/donate", label: "Donate" }] : []),
+            ].map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
                 {item.label}
               </Link>

@@ -252,6 +252,8 @@ for incomplete work, approvals, and launch dependencies.
 
 ## Production, verification, and source control
 
+- ✅ GitHub issue #1 resolved: public Global Site Settings now reactively reflect admin changes without a Vercel redeployment or cache purge.
+- ✅ GitHub issue #2 resolved: Programme sessions are grouped into day-specific admin editors with locked day assignments.
 - ✅ Animated flip-clock countdown added to the landing-page hero.
 - ✅ Hero countdown reads its target date and timezone from editable Global Site Settings.
 - ✅ Countdown includes responsive compact-phone treatment and reduced-motion behaviour.

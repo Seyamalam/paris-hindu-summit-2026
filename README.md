@@ -45,6 +45,8 @@ The detailed record of delivered work is maintained in
 
 - Responsive desktop and mobile navigation
 - Admin-date-driven animated flip countdown in the landing-page hero
+- Live Global Site Settings across hero copy, event facts, availability controls, donation messaging, contact details, and footer
+- Day-specific Programme session editors with automatic, locked day assignment
 - Persistent light/dark mode with a visible theme control
 - Tuned compact-phone, large-phone, tablet, small-laptop, and desktop layouts
 - Two-day programme tabs

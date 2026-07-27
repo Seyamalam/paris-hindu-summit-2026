@@ -1,15 +1,27 @@
 "use client"
 
 import { HandHeartIcon, MailIcon, NewspaperIcon, UsersIcon } from "lucide-react"
+import { useQuery } from "convex/react"
 
+import { api } from "@/convex/_generated/api"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { PageHero } from "@/components/site/page-hero"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { RegisterForm } from "@/components/site/register-form"
 import { SupportForm } from "@/components/site/support-form"
 import { event } from "@/lib/content"
+import { formatEventDateRange } from "@/lib/event-format"
 
 export default function ParticipatePage() {
+  const settings = useQuery(api.settings.get)
+  const registrationOpen = settings?.registrationOpen !== false
+  const donationsEnabled = settings?.donationsEnabled !== false
+  const eventDates = formatEventDateRange(
+    settings?.eventStartIso,
+    settings?.eventEndIso,
+    settings?.timezone,
+    event.dates
+  )
   return (
     <>
       <PageHero
@@ -21,11 +33,11 @@ export default function ParticipatePage() {
       <section className="participate-grid section-shell">
         <div>
           <p className="kicker">Attend in Paris</p>
-          <h2>{event.dates}<br />{event.venue}</h2>
-          <p>{event.address}</p>
-          <p>English · French · Bengali interpretation</p>
+          <h2>{eventDates}<br />{settings?.venue ?? event.venue}</h2>
+          <p>{settings?.address ?? event.address}</p>
+          <p>{settings?.languages ?? "English · French · Bengali interpretation"}</p>
         </div>
-        <RegisterForm />
+        <RegisterForm enabled={registrationOpen} />
       </section>
       <section className="support-options section-shell">
         <div className="section-heading compact"><p className="kicker">Engage and support</p><h2>Choose how you can contribute.</h2></div>
@@ -42,7 +54,7 @@ export default function ParticipatePage() {
         <div className="donation-panel">
           <MailIcon />
           <div><p className="kicker">Fund the work</p><h2>Help evidence reach institutions capable of acting.</h2><p>Mock checkout only; the production payment provider will be integrated later.</p></div>
-          <PaymentDialog />
+          <PaymentDialog disabled={!donationsEnabled} />
         </div>
       </section>
       <section className="contact-section section-shell" id="contact">
@@ -50,6 +62,12 @@ export default function ParticipatePage() {
           <p className="kicker">Contact the summit</p>
           <h2>Start the right conversation.</h2>
           <p>General enquiries · Registration · Media · Donation · Partnership</p>
+          {settings?.contactEmail && (
+            <p>
+              <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a>
+              {settings.phone && <> · <a href={`tel:${settings.phone}`}>{settings.phone}</a></>}
+            </p>
+          )}
         </div>
         <SupportForm />
       </section>

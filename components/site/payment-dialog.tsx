@@ -16,15 +16,15 @@ import {
 import { Field, FieldGroup, FieldLabel, FieldSet, FieldLegend } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-export function PaymentDialog() {
+export function PaymentDialog({ disabled = false }: { disabled?: boolean }) {
   const [amount, setAmount] = useState("100")
   const [email, setEmail] = useState("")
   const [complete, setComplete] = useState(false)
 
   return (
     <Dialog onOpenChange={(open) => !open && setComplete(false)}>
-      <DialogTrigger render={<Button size="lg" />}>
-        Donate to the summit
+      <DialogTrigger render={<Button size="lg" disabled={disabled} />}>
+        {disabled ? "Donations coming soon" : "Donate to the summit"}
       </DialogTrigger>
       <DialogContent className="payment-dialog">
         <DialogHeader>

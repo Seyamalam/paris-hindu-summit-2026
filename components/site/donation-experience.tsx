@@ -13,6 +13,7 @@ import { Reveal } from "@/components/site/reveal"
 
 export function DonationExperience() {
   const tiers = useQuery(api.donations.listTiers)
+  const settings = useQuery(api.settings.get)
   const checkout = useAction(api.stripe.createCheckout)
   const [selected, setSelected] = useState<Id<"donationTiers"> | null>(null)
   const [custom, setCustom] = useState("75")
@@ -40,10 +41,21 @@ export function DonationExperience() {
   return (
     <section className="donation-desk section-shell">
       <Reveal className="donation-heading">
-        <p className="kicker">Choose a contribution</p>
-        <h2>Turn solidarity into practical capacity.</h2>
-        <p>Support documentation, international participation, translation, media work and the continuing rights network after Paris.</p>
+        <p className="kicker">{settings?.donationEyebrow ?? "Choose a contribution"}</p>
+        <h2>{settings?.donationTitle ?? "Turn solidarity into practical capacity."}</h2>
+        <p>{settings?.donationBody ?? "Support documentation, international participation, translation, media work and the continuing rights network after Paris."}</p>
       </Reveal>
+      {settings?.donationsEnabled === false ? (
+        <Alert className="donation-result">
+          <LockKeyholeIcon />
+          <AlertTitle>Contribution desk coming soon</AlertTitle>
+          <AlertDescription>
+            The organisers are preparing this pathway. No contribution can be
+            recorded while donations are disabled in Global Site Settings.
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <>
       <div className="donation-tier-grid">
         {tiers?.map((item, index) => (
           <Reveal key={item._id} delay={index * 70}>
@@ -73,6 +85,8 @@ export function DonationExperience() {
         </form>
       </Reveal>
       {result && <Alert className="donation-result"><CheckCircle2Icon /><AlertTitle>Demonstration recorded</AlertTitle><AlertDescription>Reference {result.reference}. Live payment will be enabled when the organiser’s Stripe keys are connected.</AlertDescription></Alert>}
+        </>
+      )}
     </section>
   )
 }

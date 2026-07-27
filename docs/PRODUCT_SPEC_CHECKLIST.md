@@ -123,6 +123,7 @@ For the full delivered-feature inventory, see
 - [x] Destructive content actions require confirmation; referenced files cannot be deleted until detached.
 - [x] Public-site preview is available from Admin. `Partial`: side-by-side record preview remains a polish item.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
+- [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
 
 ### General tab — dynamic
 
@@ -139,6 +140,7 @@ For the full delivered-feature inventory, see
 - [x] Add, edit, remove, reorder, draft, and publish day tabs.
 - [x] Day fields include tab label, navigation label, date, summary, and order.
 - [x] Add, edit, remove, reorder, draft, and publish sessions per day.
+- [x] Admin session editors are grouped by programme day; each editor has a locked day assignment and cannot display another day’s sessions.
 - [x] Session fields include start/end time, title, description, tag, speakers, location, and order.
 
 ### Engage tab — dynamic

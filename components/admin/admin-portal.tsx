@@ -623,7 +623,21 @@ function ProgrammeAdmin() {
   return <section className="admin-panel">
     <PanelTitle eyebrow="Purpose-built schedule" title="Days, sessions and public navigation." copy="Changes update the programme tabs and navigation menu without a frontend deployment." />
     <RecordCards title="Programme days" copy="Control day labels, dates, summaries, order and publication." rows={data?.days.map((row) => ({ ...row, name:row.tabLabel }))} fields={["slug","tabLabel","navigationLabel","dateLabel","summary","order","status"]} blank={{ slug:"",tabLabel:"",navigationLabel:"",dateLabel:"",summary:"",order:50,status:"draft" }} onSave={saveDay} onRemove={removeDay} />
-    <RecordCards title="Sessions" copy="Schedule time, speakers, location and session copy under a day." rows={data?.sessions.map((row) => ({ ...row, name:row.title }))} fields={["daySlug","slug","startTime","endTime","title","description","tag","speakers","location","order","status"]} blank={{ daySlug:data?.days[0]?.slug ?? "day-one",slug:"",startTime:"",endTime:"",title:"",description:"",tag:"",speakers:"",location:"",order:50,status:"draft" }} onSave={saveSession} onRemove={removeSession} />
+    {data?.days.length === 0 && <EmptyCopy text="Create a programme day before adding sessions." />}
+    {data?.days.map((day) => (
+      <RecordCards
+        key={day._id}
+        title={`${day.tabLabel} sessions`}
+        copy={`Only sessions assigned to ${day.tabLabel} · ${day.dateLabel} appear here. The day assignment is locked automatically.`}
+        rows={data.sessions
+          .filter((row) => row.daySlug === day.slug)
+          .map((row) => ({ ...row, name:row.title }))}
+        fields={["slug","startTime","endTime","title","description","tag","speakers","location","order","status"]}
+        blank={{ daySlug:day.slug,slug:"",startTime:"",endTime:"",title:"",description:"",tag:"",speakers:"",location:"",order:50,status:"draft" }}
+        onSave={(args) => saveSession({ ...args, daySlug:day.slug })}
+        onRemove={removeSession}
+      />
+    ))}
   </section>
 }
 

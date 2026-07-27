@@ -15,12 +15,25 @@ import { Textarea } from "@/components/ui/textarea"
 
 const attendanceOptions = ["Survivor", "Delegate", "Audience", "Researcher-Speaker"] as const
 
-export function RegisterForm() {
+export function RegisterForm({ enabled = true }: { enabled?: boolean }) {
   const submit = useMutation(api.forms.submit)
   const [reference, setReference] = useState("")
   const [attendance, setAttendance] = useState<(typeof attendanceOptions)[number]>("Delegate")
   const [consent, setConsent] = useState(false)
   const [busy, setBusy] = useState(false)
+
+  if (!enabled) {
+    return (
+      <div className="form-success" role="status">
+        <p className="kicker">Registration is currently closed</p>
+        <h2>The delegate desk will open soon.</h2>
+        <p>
+          Event information remains available while the organisers prepare the
+          next registration window.
+        </p>
+      </div>
+    )
+  }
 
   async function register(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

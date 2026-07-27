@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { useQuery } from "convex/react"
 import {
   ArrowRightIcon,
   CalendarDaysIcon,
@@ -8,6 +11,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { api } from "@/convex/_generated/api"
 import { Countdown } from "@/components/site/countdown"
 import { HeroCountdown } from "@/components/site/hero-countdown"
 import {
@@ -22,30 +26,49 @@ import {
 } from "@/components/site/institutional-sections"
 import { PaymentDialog } from "@/components/site/payment-dialog"
 import { event, evidence } from "@/lib/content"
+import { formatEventDateRange } from "@/lib/event-format"
 
 export default function HomePage() {
+  const settings = useQuery(api.settings.get)
+  const programme = useQuery(api.programme.listPublished)
+  const eventDates = formatEventDateRange(
+    settings?.eventStartIso,
+    settings?.eventEndIso,
+    settings?.timezone,
+    event.dates
+  )
+  const registrationOpen = settings?.registrationOpen !== false
+  const donationsEnabled = settings?.donationsEnabled !== false
+
   return (
     <>
       <section className="assembly-home-hero">
         <div className="assembly-home-copy">
-          <p className="kicker">Global summit · October 2026</p>
+          <p className="kicker">
+            {settings?.heroEyebrow ?? "Global summit · October 2026"}
+          </p>
           <h1>
-            <span>We</span> assemble
-            <br />
-            for equality.
+            <span>{settings?.heroTitleLine1 ?? "We assemble"}</span>
+            {settings?.heroTitleLine2 ?? "for equality."}
           </h1>
           <p className="hero-lead">
-            Leaders, researchers, rights defenders, and communities building a
-            practical agenda for the rights and future of Hindus in Bangladesh.
+            {settings?.heroLead ??
+              "Leaders, researchers, rights defenders, and communities building a practical agenda for the rights and future of Hindus in Bangladesh."}
           </p>
           <div className="hero-actions">
-            <Button
-              nativeButton={false}
-              size="lg"
-              render={<Link href="/participate" />}
-            >
-              Reserve a place <ArrowRightIcon data-icon="inline-end" />
-            </Button>
+            {registrationOpen ? (
+              <Button
+                nativeButton={false}
+                size="lg"
+                render={<Link href="/participate" />}
+              >
+                Reserve a place <ArrowRightIcon data-icon="inline-end" />
+              </Button>
+            ) : (
+              <Button size="lg" disabled>
+                Registration coming soon
+              </Button>
+            )}
             <Button
               nativeButton={false}
               size="lg"
@@ -57,10 +80,11 @@ export default function HomePage() {
           </div>
           <div className="hero-meta">
             <span>
-              <CalendarDaysIcon /> {event.dates}
+              <CalendarDaysIcon /> {eventDates}
             </span>
             <span>
-              <MapPinIcon /> {event.venue}, Drancy
+              <MapPinIcon /> {settings?.venue ?? event.venue},{" "}
+              {settings?.cityCountry ?? "Drancy, Paris"}
             </span>
           </div>
         </div>
@@ -74,30 +98,21 @@ export default function HomePage() {
 
       <section className="assembly-banner">
         <strong>PARIS</strong>
-        <p>One room. Many institutions. A shared commitment.</p>
-        <span>{event.dates}</span>
+        <p>
+          {settings?.theme ??
+            "One room. Many institutions. A shared commitment."}
+        </p>
+        <span>{eventDates}</span>
       </section>
       <HomeInfoBar />
 
       <section className="split-intro section-shell">
         <div>
           <p className="kicker">Why Paris · Why now</p>
-          <h2>
-            Justice delayed for half a century cannot be denied indefinitely.
-          </h2>
+          <h2>{settings?.whyTitle ?? "Justice delayed for half a century cannot be denied indefinitely."}</h2>
         </div>
         <div className="body-copy">
-          <p>
-            Since Bangladesh’s founding, Hindu communities have faced repeated
-            cycles of dispossession, displacement, discrimination, and violence.
-            Their testimony has too often remained fragmented or confined to
-            local reporting.
-          </p>
-          <p>
-            This summit unites survivors, researchers, rights defenders,
-            policymakers, diplomats, and diaspora organisations around verified
-            evidence and commitments capable of lasting beyond a single event.
-          </p>
+          <p>{settings?.whyBody ?? "The forum brings verified testimony, research, policy, and international cooperation into one room—and turns them into commitments that continue after Paris."}</p>
           <Button
             nativeButton={false}
             variant="link"
@@ -150,26 +165,15 @@ export default function HomePage() {
           </Button>
         </div>
         <div className="day-preview">
-          <article>
-            <span>Day 01</span>
-            <div>
-              <h3>Evidence enters the public record.</h3>
-              <p>
-                Opening film, keynote, historical context, testimony, legal
-                protection, and the seven-point charter.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span>Day 02</span>
-            <div>
-              <h3>Evidence becomes commitment.</h3>
-              <p>
-                Policy roundtable, international cooperation, the Paris
-                Declaration, and the Agni Sakshi pledge.
-              </p>
-            </div>
-          </article>
+          {(programme?.slice(0, 2) ?? []).map((day, index) => (
+            <article key={day._id}>
+              <span>{day.tabLabel || `Day 0${index + 1}`}</span>
+              <div>
+                <h3>{day.navigationLabel}</h3>
+                <p>{day.summary}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -183,11 +187,11 @@ export default function HomePage() {
         <div>
           <p className="kicker">The room opens in</p>
           <h2>
-            {event.dates}
+            {eventDates}
             <br />
-            Paris, France
+            {settings?.cityCountry ?? "Paris, France"}
           </h2>
-          <p>{event.address}</p>
+          <p>{settings?.address ?? event.address}</p>
         </div>
         <Countdown />
       </section>
@@ -200,13 +204,18 @@ export default function HomePage() {
           sizes="100vw"
         />
         <div>
-          <p className="kicker">Stand with the summit</p>
-          <h2>Help testimony travel further than the room.</h2>
-          <p>
-            Support documentation, international participation, media work,
-            legal advocacy, and the standing network after Paris.
+          <p className="kicker">
+            {settings?.donationEyebrow ?? "Stand with the summit"}
           </p>
-          <PaymentDialog />
+          <h2>
+            {settings?.donationTitle ??
+              "Help testimony travel further than the room."}
+          </h2>
+          <p>
+            {settings?.donationBody ??
+              "Support documentation, international participation, media work, legal advocacy, and the standing network after Paris."}
+          </p>
+          <PaymentDialog disabled={!donationsEnabled} />
         </div>
       </section>
     </>
