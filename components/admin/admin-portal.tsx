@@ -485,7 +485,7 @@ function EvidenceStatsEditor({ onSaved }: { onSaved:()=>void }) {
       <PanelTitle
         eyebrow="Homepage evidence"
         title="Editable number cards"
-        copy="Add, reorder, publish, or remove any number of cards in “Numbers that should stop the room.”"
+        copy="Add, reorder, publish, or remove any number of cards in “The Numbers That Leave the Room Silent.”"
       />
       <AdminRecordSelect
         label="Card to edit"
