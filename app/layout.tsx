@@ -10,12 +10,15 @@ import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" })
+const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body-family" })
 const displayFont = Bodoni_Moda({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-display-family",
 })
-const utilityFont = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
+const utilityFont = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-utility-family",
+})
 
 export const metadata: Metadata = {
   title: {
