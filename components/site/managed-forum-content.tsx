@@ -189,21 +189,21 @@ export function ManagedAdvisoryBoard() {
         <h2>{advisoryHeading.title}</h2>
         <p>{advisoryHeading.summary}</p>
       </div>
-      <div className="advisor-grid">
+      <div className="roster-grid managed-roster">
         {advisors?.map((person, index) => (
-          <Reveal key={person._id} delay={index * 70}>
-            <article>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <PersonPortrait
-                image={person.imageUrl}
-                name={person.title}
-                sizes="(max-width: 720px) 70vw, 32vw"
-              />
-              {person.role && <p className="kicker">{person.role}</p>}
+          <article key={person._id}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <PersonPortrait
+              image={person.imageUrl}
+              name={person.title}
+              sizes="(max-width: 720px) 70vw, 24vw"
+            />
+            <div>
               <h3>{person.title}</h3>
+              {person.role && <Badge variant="outline">{person.role}</Badge>}
               <ExpandableBio bio={person.body} />
-            </article>
-          </Reveal>
+            </div>
+          </article>
         ))}
       </div>
     </section>

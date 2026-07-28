@@ -346,6 +346,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #26 resolved: partner and sponsor cards now use a balanced uniform grid with compact logo plaques and restrained organisation names.
 - ✅ GitHub issue #27 resolved: repeat seeds no longer resurrect chart series or points deleted by an administrator.
 - ✅ GitHub issue #28 resolved: media saves no longer send unsupported undefined values, and replacing an item clears stale optional media fields.
+- ✅ GitHub issue #30 resolved: refined editorial palette, larger hero date, more readable Agenda headings, and a three-column Team-style Advisory Board.
 
 ## Intentionally not activated
 

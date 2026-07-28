@@ -1,77 +1,78 @@
 /*
- * Design 06 · Paris Assembly
- * A civic-institution system built from paper, cobalt, signal red, and rules.
+ * Design 07 · Paris Assembly
+ * A civic editorial system built from warm ivory, deep indigo, antique gold,
+ * charcoal, and archival rules.
  */
 
 :root {
   color-scheme: light;
-  --background: #f4f5f2;
-  --foreground: #123a8d;
-  --card: #ffffff;
-  --card-foreground: #123a8d;
-  --popover: #ffffff;
-  --popover-foreground: #123a8d;
-  --primary: #173f91;
+  --background: #f6f0e4;
+  --foreground: #2b2a28;
+  --card: #fffdf7;
+  --card-foreground: #2b2a28;
+  --popover: #fffdf7;
+  --popover-foreground: #2b2a28;
+  --primary: #27345c;
   --primary-foreground: #ffffff;
-  --secondary: #e8edf6;
-  --secondary-foreground: #123a8d;
-  --muted: #e8ebe7;
-  --muted-foreground: #536b99;
-  --accent: #df313b;
-  --accent-foreground: #ffffff;
-  --destructive: #c92832;
-  --border: #234993;
-  --input: #7890bd;
-  --ring: #df313b;
+  --secondary: #e8e1d4;
+  --secondary-foreground: #27345c;
+  --muted: #ede7db;
+  --muted-foreground: #67635c;
+  --accent: #b08a42;
+  --accent-foreground: #201b13;
+  --destructive: #9f3c35;
+  --border: #968564;
+  --input: #a89b82;
+  --ring: #b08a42;
   --radius: 0rem;
-  --wine: #df313b;
-  --wine-soft: #c52d3a;
-  --amber: #a77a27;
-  --paper: #f4f5f2;
-  --ash: #536b99;
-  --void: #f4f5f2;
-  --panel: #ffffff;
-  --assembly-blue: #173f91;
-  --assembly-red: #df313b;
-  --assembly-paper: #f4f5f2;
-  --assembly-ink: #123a8d;
-  --assembly-surface: #ffffff;
-  --assembly-rule: #234993;
+  --wine: #b08a42;
+  --wine-soft: #967039;
+  --amber: #b08a42;
+  --paper: #f6f0e4;
+  --ash: #67635c;
+  --void: #f6f0e4;
+  --panel: #fffdf7;
+  --assembly-blue: #27345c;
+  --assembly-red: #b08a42;
+  --assembly-paper: #f6f0e4;
+  --assembly-ink: #2b2a28;
+  --assembly-surface: #fffdf7;
+  --assembly-rule: #968564;
 }
 
 .dark {
   color-scheme: dark;
-  --background: #08111f;
-  --foreground: #edf3ff;
-  --card: #0e1b30;
-  --card-foreground: #edf3ff;
-  --popover: #101e34;
-  --popover-foreground: #edf3ff;
-  --primary: #4f78cf;
-  --primary-foreground: #ffffff;
-  --secondary: #172842;
-  --secondary-foreground: #edf3ff;
-  --muted: #142238;
-  --muted-foreground: #aab9d2;
-  --accent: #ff4d58;
-  --accent-foreground: #ffffff;
-  --destructive: #ff5b62;
-  --border: #38588e;
-  --input: #4d6690;
-  --ring: #ff4d58;
-  --wine: #ff4d58;
-  --wine-soft: #ff6670;
-  --amber: #edb852;
-  --paper: #08111f;
-  --ash: #aab9d2;
-  --void: #08111f;
-  --panel: #0e1b30;
-  --assembly-blue: #214a9c;
-  --assembly-red: #e43c46;
-  --assembly-paper: #08111f;
-  --assembly-ink: #edf3ff;
-  --assembly-surface: #0e1b30;
-  --assembly-rule: #38588e;
+  --background: #141722;
+  --foreground: #f5efe3;
+  --card: #1c2233;
+  --card-foreground: #f5efe3;
+  --popover: #20263a;
+  --popover-foreground: #f5efe3;
+  --primary: #91a0c8;
+  --primary-foreground: #111521;
+  --secondary: #292f42;
+  --secondary-foreground: #f5efe3;
+  --muted: #242a3b;
+  --muted-foreground: #beb7aa;
+  --accent: #d5b36a;
+  --accent-foreground: #17130c;
+  --destructive: #d87569;
+  --border: #6e654f;
+  --input: #81765d;
+  --ring: #d5b36a;
+  --wine: #d5b36a;
+  --wine-soft: #e0c17d;
+  --amber: #d5b36a;
+  --paper: #141722;
+  --ash: #beb7aa;
+  --void: #141722;
+  --panel: #1c2233;
+  --assembly-blue: #2a365a;
+  --assembly-red: #d5b36a;
+  --assembly-paper: #141722;
+  --assembly-ink: #f5efe3;
+  --assembly-surface: #1c2233;
+  --assembly-rule: #6e654f;
 }
 
 html {
@@ -320,15 +321,15 @@ main {
 .hero-countdown-topline i {
   width: 7px;
   height: 7px;
-  background: #ff4d58;
+  background: #d5b36a;
   border-radius: 50%;
-  box-shadow: 0 0 0 0 #ff4d5880;
+  box-shadow: 0 0 0 0 #d5b36a80;
   animation: hero-signal 2s ease-out infinite;
 }
 .hero-countdown-topline svg {
   width: 18px;
   height: 18px;
-  color: #ff7d84;
+  color: #e4c884;
 }
 .hero-countdown-copy p {
   margin: 0 0 8px;
@@ -363,7 +364,7 @@ main {
   box-shadow: 0 8px 18px #020b24a8;
 }
 .hero-flip-clock .flip-clock-separator {
-  color: #ff7880;
+  color: #e4c884;
 }
 .hero-clock-labels {
   display: grid;
@@ -380,18 +381,19 @@ main {
   padding-top: 14px;
   color: #dbe5ff;
   border-top: 1px solid #ffffff4a;
-  font-size: 8px;
+  font-size: 9px;
 }
 .hero-countdown-date span:first-child {
   color: #fff;
-  font-size: 11px;
+  font-size: clamp(15px, 1.5vw, 19px);
+  letter-spacing: 0.13em;
 }
 @keyframes hero-signal {
   70% {
-    box-shadow: 0 0 0 9px #ff4d5800;
+    box-shadow: 0 0 0 9px #d5b36a00;
   }
   100% {
-    box-shadow: 0 0 0 0 #ff4d5800;
+    box-shadow: 0 0 0 0 #d5b36a00;
   }
 }
 .assembly-banner {
@@ -435,7 +437,7 @@ main {
   background: var(--assembly-blue);
 }
 .evidence-band .kicker {
-  color: #ff737a;
+  color: #e4c884;
 }
 .evidence-band .section-heading h2 {
   color: #fff;
@@ -607,7 +609,7 @@ main {
   padding-bottom: clamp(58px, 7vw, 90px);
 }
 .regional-intro .kicker {
-  color: #ff7d84;
+  color: #e4c884;
 }
 .regional-intro h2 {
   max-width: 980px;
@@ -654,7 +656,7 @@ main {
   letter-spacing: 0.12em;
 }
 .regional-grid .kicker {
-  color: #ff7d84;
+  color: #e4c884;
 }
 .regional-grid h3 {
   margin: 15px 0 28px;
@@ -697,7 +699,7 @@ main {
 }
 .regional-grid summary svg {
   width: 16px;
-  color: #ff7d84;
+  color: #e4c884;
 }
 .regional-grid details[open] summary svg {
   transform: rotate(90deg);
@@ -870,7 +872,7 @@ main {
   text-align: center;
 }
 .present-moment > header .kicker {
-  color: #efad3d;
+  color: #e4c884;
 }
 .present-moment > header > p:last-child {
   max-width: 780px;
@@ -895,7 +897,7 @@ main {
   width: 34px;
   height: 34px;
   margin-bottom: 58px;
-  color: #efad3d;
+  color: #e4c884;
   stroke-width: 1.5;
 }
 .present-moment-grid h2 {
@@ -958,7 +960,7 @@ main {
   color: #fff;
 }
 .image-band .kicker {
-  color: #ff737a;
+  color: #e4c884;
 }
 
 /* Programme */
@@ -977,7 +979,7 @@ main {
   color: var(--assembly-red);
 }
 .programme-tab-list [data-slot="tabs-trigger"][data-state="active"] span {
-  color: #ff8b91;
+  color: #e4c884;
 }
 .schedule-list,
 .schedule-list article {
@@ -1059,7 +1061,7 @@ main {
 }
 .newsroom .kicker,
 .newsroom article > span {
-  color: #ff8b91;
+  color: #e4c884;
 }
 .newsroom .section-heading h2,
 .newsroom h3,
@@ -1443,7 +1445,7 @@ main {
   background: var(--assembly-blue);
 }
 .form-success .kicker {
-  color: #ff8b91;
+  color: #e4c884;
 }
 .support-options,
 .contact-section {
@@ -1464,7 +1466,7 @@ main {
 }
 .donation-panel > svg,
 .donation-panel .kicker {
-  color: #ff8b91;
+  color: #e4c884;
 }
 .donation-panel h2 {
   color: #fff;
@@ -1512,7 +1514,7 @@ main {
   background: #050c17;
 }
 .site-footer .kicker {
-  color: #ff7d84;
+  color: #e4c884;
 }
 .footer-callout h2,
 .footer-grid > div:first-child b {
@@ -1547,7 +1549,7 @@ main {
   color: #c7d3e9;
 }
 .footer-contact svg {
-  color: #ff7d84;
+  color: #e4c884;
 }
 .footer-callout [data-slot="button"],
 .footer-donate {
@@ -1950,7 +1952,7 @@ main {
 }
 .payment-readiness svg {
   width: 15px;
-  color: #ff6069;
+  color: #e4c884;
 }
 .checkout-demo form {
   align-self: center;
@@ -2048,7 +2050,7 @@ main {
 .support-success > svg {
   width: 42px;
   height: 42px;
-  color: #ff5b64;
+  color: #e4c884;
 }
 .support-success h2 {
   margin: 22px 0;
@@ -2196,7 +2198,7 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
 .challenge-record-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid #6e87b5; }
 .challenge-record-grid article { min-height: 330px; display: flex; flex-direction: column; padding: 32px; border-right: 1px solid #6e87b5; border-bottom: 1px solid #6e87b5; }
 .challenge-record-grid>div:last-child article { border-right: 0; }
-.challenge-record-grid span { color: #ff5c65; font: 750 9px var(--font-mono-stack); letter-spacing: .14em; text-transform: uppercase; }
+.challenge-record-grid span { color: #e4c884; font: 750 9px var(--font-mono-stack); letter-spacing: .14em; text-transform: uppercase; }
 .challenge-record-grid h3 { margin: auto 0 18px; font: 800 clamp(40px,4vw,60px)/.9 var(--font-body-stack); letter-spacing: -.06em; text-transform: uppercase; }
 .challenge-record-grid p { color: #becae1; line-height: 1.65; }
 .evidence-charts { min-width: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
@@ -2715,6 +2717,11 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   text-transform: uppercase;
   overflow-wrap: anywhere;
 }
+.document-accordion details[data-document-category="agenda"] summary h2 {
+  font-size: clamp(28px, 3.3vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
 .document-accordion summary > svg {
   width: 24px;
   color: var(--assembly-red);
@@ -2903,6 +2910,9 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   }
   .document-accordion summary h2 {
     font-size: clamp(28px, 9vw, 40px);
+  }
+  .document-accordion details[data-document-category="agenda"] summary h2 {
+    font-size: clamp(25px, 7.6vw, 34px);
   }
   .document-accordion-body {
     margin-left: 46px;
