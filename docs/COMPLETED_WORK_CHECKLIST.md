@@ -1,6 +1,6 @@
 # Completed Work Checklist
 
-Last verified: 27 July 2026
+Last verified: 28 July 2026
 
 This is the detailed delivery record for the Paris Hindu Summit 2026 website.
 It complements `PRODUCT_SPEC_CHECKLIST.md`, which remains the source of truth
@@ -25,7 +25,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Replaced the heavyweight homepage chart runtime with accessible native HTML/CSS charts.
 - ✅ Stabilized the initial announcement/header layout while live settings connect.
 - ✅ Paused countdown work in hidden tabs and reduced its active polling rate.
-- ✅ Shared one intersection observer across reveal animations and deferred off-screen rendering work.
+- ✅ Applied reduced-motion-safe spring and blur patterns to section reveals and hero text.
 - ✅ Removed mobile fixed-header backdrop blur to keep scrolling responsive on lower-powered devices.
 
 ## Visual system and responsive design
@@ -34,6 +34,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Paper, cobalt, signal-red, and editorial typography system.
 - ✅ Matching dark-mode palette.
 - ✅ Persistent theme switcher on public pages.
+- ✅ Circle-blur theme transition and matching admin theme control.
 - ✅ System-theme preference used on first visit.
 - ✅ Fluid hero typography prevents horizontal overflow.
 - ✅ Long programme headlines wrap cleanly.
@@ -42,6 +43,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Mobile-friendly input and button sizing.
 - ✅ Responsive speaker, partner, regional, chart, and footer grids.
 - ✅ Deliberate reveal and staggered-entry animation.
+- ✅ Animated global toast stack shared by public forms and admin operations.
 - ✅ Reduced-motion alternatives.
 - ✅ Visible keyboard focus treatment.
 - ✅ Generated witness-flame favicon and Apple touch icon.
@@ -85,6 +87,8 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Terms and Conditions.
 - ✅ Protected Admin workspace.
 - ✅ Route-level titles and metadata.
+- ✅ Branded animated 404 route with Home and Programme recovery paths.
+- ✅ Drag/drop upload queues with progress, retry, removal, and inline errors across every admin upload surface.
 
 ## Homepage
 

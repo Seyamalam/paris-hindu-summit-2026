@@ -1,32 +1,15 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
-import { MoonIcon, SunIcon } from "lucide-react"
-import { useTheme } from "next-themes"
+import { ThemeToggle as BeUIThemeToggle } from "@/components/motion/theme-toggle"
+import { cn } from "@/lib/utils"
 
-import { Button } from "@/components/ui/button"
-
-export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  )
-
-  const isDark = mounted && resolvedTheme === "dark"
-
+export function ThemeToggle({ className }: { className?: string }) {
   return (
-    <Button
-      type="button"
-      variant="outline"
-      size="icon"
-      className="theme-toggle"
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-    >
-      {isDark ? <SunIcon /> : <MoonIcon />}
-    </Button>
+    <BeUIThemeToggle
+      variant="circle-blur"
+      start="center"
+      className={cn("theme-toggle", className)}
+      iconClassName="size-4"
+    />
   )
 }

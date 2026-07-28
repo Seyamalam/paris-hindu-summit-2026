@@ -37,8 +37,9 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 - [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
 - [x] Public-page rendering is independent from admin authentication lookups, so an auth delay cannot block the entire website.
-- [x] Performance pass covers stable initial layout, reduced homepage JavaScript, off-screen rendering containment, efficient reveal observers, and visibility-aware countdown timers.
+- [x] Performance pass covers stable initial layout, reduced homepage JavaScript, off-screen rendering containment, reduced-motion-safe spring reveals, and visibility-aware countdown timers.
 - [x] Cross-device typography pass provides explicit font fallbacks, stable browser text scaling, and readable minimum sizes for navigation, captions, metadata, body copy, and compact-phone layouts.
+- [x] BeUI motion patterns are adapted to the square editorial system for uploads, global notifications, theme transitions, hero text, section reveals, and the 404 route.
 
 ## Public website
 
@@ -46,6 +47,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 - [x] Fixed navigation remains available while scrolling.
 - [x] Light/dark theme control is available on all routes and remembers preference.
+- [x] Theme changes use a reduced-motion-safe circle-blur transition, with the same control available in the protected admin workspace.
 - [x] Responsive desktop and mobile navigation.
 - [x] Admin-editable announcement strip is visible above the fixed public header.
 - [x] Event logo/brand links to Home.
@@ -59,6 +61,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 ### Homepage section order and content
 
 - [x] Design 06 hero foundation, event date/location, headline, primary CTAs, and responsive typography.
+- [x] Homepage hero headline uses a restrained word reveal with spring timing, blur, and a reduced-motion fallback.
 - [x] Live countdown prototype.
 - [x] Dynamic hero information bar: Venue, Format, Delegates, Languages.
 - [x] Homepage rationale is retained as concise editable introductory copy; the former rationale card grid was removed by client request.
@@ -74,6 +77,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Full persistent Registration section with required fields, consent, reference, and admin inbox workflow.
 - [x] Footer foundation.
 - [x] Footer navigation, managed email, registration, donate, social and legal links.
+- [x] A summit-branded animated 404 route provides clear Home and Programme recovery actions.
 
 ### Detailed content
 
@@ -141,6 +145,8 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] All remaining visible editorial headings, paragraphs, captions, fixed list items, calls to action, shared header/footer language, and operational content notices are editable through page-grouped Editorial Sections records.
 - [x] Record switching in the right-hand inspector uses labelled dropdowns instead of horizontally scrolling record chips.
 - [x] Privacy and Terms records are reachable through the Other Content inspector.
+- [x] All admin file inputs use a consistent drag/drop queue with file metadata, progress, retry, removal, validation errors, and Convex-backed upload handlers.
+- [x] Animated status notifications are shared by public forms and the protected admin workspace.
 
 ### General tab — dynamic
 

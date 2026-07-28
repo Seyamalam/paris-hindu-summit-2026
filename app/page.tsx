@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { TextReveal } from "@/components/motion/text-reveal"
 import { api } from "@/convex/_generated/api"
 import { Countdown } from "@/components/site/countdown"
 import { HeroCountdown } from "@/components/site/hero-countdown"
@@ -66,10 +67,16 @@ export default function HomePage() {
           <p className="kicker">
             {settings?.heroEyebrow ?? "Global summit · October 2026"}
           </p>
-          <h1>
-            <span>{settings?.heroTitleLine1 ?? "We assemble"}</span>
-            {settings?.heroTitleLine2 ?? "for equality."}
-          </h1>
+          <TextReveal
+            as="h1"
+            text={[
+              settings?.heroTitleLine1 ?? "We assemble",
+              settings?.heroTitleLine2 ?? "for equality.",
+            ]}
+            stagger={0.055}
+            blur={8}
+            yOffset="28%"
+          />
           <p className="hero-lead">
             {settings?.heroLead ??
               "Leaders, researchers, rights defenders, and communities building a practical agenda for the rights and future of Hindus in Bangladesh."}
