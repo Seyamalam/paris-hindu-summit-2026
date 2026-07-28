@@ -4,6 +4,11 @@ import { mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
 
 const status = v.union(v.literal("draft"), v.literal("published"))
+const mediaType = v.union(
+  v.literal("document"),
+  v.literal("photo"),
+  v.literal("video")
+)
 
 const publicItem = v.object({
   _id: v.id("mediaItems"),
@@ -11,10 +16,12 @@ const publicItem = v.object({
   slug: v.string(),
   title: v.string(),
   description: v.string(),
+  mediaType,
   coverUrl: v.union(v.string(), v.null()),
   fileUrl: v.union(v.string(), v.null()),
   fileName: v.string(),
   mimeType: v.string(),
+  youtubeUrl: v.union(v.string(), v.null()),
   order: v.number(),
 })
 
@@ -57,12 +64,18 @@ export const listPublished = query({
               slug: item.slug,
               title: item.title,
               description: item.description,
+              mediaType:
+                item.mediaType ??
+                (item.mimeType.startsWith("image/") ? "photo" : "document"),
               coverUrl: item.coverStorageId
                 ? await ctx.storage.getUrl(item.coverStorageId)
                 : null,
-              fileUrl: await ctx.storage.getUrl(item.fileStorageId),
+              fileUrl: item.fileStorageId
+                ? await ctx.storage.getUrl(item.fileStorageId)
+                : null,
               fileName: item.fileName,
               mimeType: item.mimeType,
+              youtubeUrl: item.youtubeUrl ?? null,
               order: item.order,
             }))
           ),
@@ -92,10 +105,12 @@ export const listForAdmin = query({
         slug: v.string(),
         title: v.string(),
         description: v.string(),
+        mediaType,
         coverStorageId: v.optional(v.id("_storage")),
-        fileStorageId: v.id("_storage"),
+        fileStorageId: v.optional(v.id("_storage")),
         fileName: v.string(),
         mimeType: v.string(),
+        youtubeUrl: v.optional(v.string()),
         order: v.number(),
         status,
       })
@@ -125,10 +140,12 @@ export const listForAdmin = query({
           slug,
           title,
           description,
+          mediaType: itemMediaType,
           coverStorageId,
           fileStorageId,
           fileName,
           mimeType,
+          youtubeUrl,
           order,
           status: itemStatus,
         }) => ({
@@ -137,10 +154,14 @@ export const listForAdmin = query({
           slug,
           title,
           description,
+          mediaType:
+            itemMediaType ??
+            (mimeType.startsWith("image/") ? "photo" : "document"),
           coverStorageId,
           fileStorageId,
           fileName,
           mimeType,
+          youtubeUrl,
           order,
           status: itemStatus,
         })
@@ -228,10 +249,12 @@ export const saveItem = mutation({
     slug: v.string(),
     title: v.string(),
     description: v.string(),
+    mediaType,
     coverStorageId: v.optional(v.id("_storage")),
-    fileStorageId: v.id("_storage"),
+    fileStorageId: v.optional(v.id("_storage")),
     fileName: v.string(),
     mimeType: v.string(),
+    youtubeUrl: v.optional(v.string()),
     order: v.number(),
     status,
   },
@@ -243,6 +266,7 @@ export const saveItem = mutation({
       throw new ConvexError("Section, title, and slug are required.")
     }
     const coverStorageId = fields.coverStorageId
+    const fileStorageId = fields.fileStorageId
     const [section, conflictingItem, fileAsset, coverAsset] = await Promise.all([
       ctx.db
         .query("mediaSections")
@@ -252,12 +276,14 @@ export const saveItem = mutation({
         .query("mediaItems")
         .withIndex("by_slug", (q) => q.eq("slug", fields.slug.trim()))
         .first(),
-      ctx.db
-        .query("assets")
-        .withIndex("by_storage_id", (q) =>
-          q.eq("storageId", fields.fileStorageId)
-        )
-        .first(),
+      fileStorageId
+        ? ctx.db
+            .query("assets")
+            .withIndex("by_storage_id", (q) =>
+              q.eq("storageId", fileStorageId)
+            )
+            .first()
+        : Promise.resolve(null),
       coverStorageId
         ? ctx.db
             .query("assets")
@@ -271,7 +297,32 @@ export const saveItem = mutation({
     if (conflictingItem && conflictingItem._id !== id) {
       throw new ConvexError("That publication slug is already in use.")
     }
-    if (!fileAsset) throw new ConvexError("Choose a file from the managed media library.")
+    if (fields.mediaType !== "video" && !fileAsset) {
+      throw new ConvexError(
+        fields.mediaType === "photo"
+          ? "Choose an image from the managed media library."
+          : "Choose a file from the managed media library."
+      )
+    }
+    if (
+      fields.mediaType === "photo" &&
+      !fileAsset?.mimeType.startsWith("image/")
+    ) {
+      throw new ConvexError("Photo gallery items must use an image file.")
+    }
+    const youtubeUrl = fields.youtubeUrl?.trim()
+    if (fields.mediaType === "video") {
+      let parsedUrl: URL
+      try {
+        parsedUrl = new URL(youtubeUrl ?? "")
+      } catch {
+        throw new ConvexError("Enter a valid YouTube video URL.")
+      }
+      const hostname = parsedUrl.hostname.replace(/^www\./, "")
+      if (!["youtube.com", "youtu.be", "m.youtube.com"].includes(hostname)) {
+        throw new ConvexError("Video gallery items must use a YouTube URL.")
+      }
+    }
     if (fields.coverStorageId && !coverAsset) {
       throw new ConvexError("Choose a cover from the managed media library.")
     }
@@ -280,6 +331,11 @@ export const saveItem = mutation({
       sectionSlug: fields.sectionSlug.trim(),
       slug: fields.slug.trim(),
       title: fields.title.trim(),
+      fileStorageId:
+        fields.mediaType === "video" ? undefined : fields.fileStorageId,
+      fileName: fields.mediaType === "video" ? "" : fields.fileName,
+      mimeType: fields.mediaType === "video" ? "" : fields.mimeType,
+      youtubeUrl: fields.mediaType === "video" ? youtubeUrl : undefined,
       updatedAt: Date.now(),
     }
     const entityId = id
