@@ -76,6 +76,27 @@ export function SiteHeader() {
       link.href = settings.faviconUrl || link.href
     })
   }, [settings?.faviconUrl])
+  const chromeLoading =
+    settings === undefined ||
+    programme === undefined ||
+    engage === undefined ||
+    media === undefined ||
+    brandCopy.isLoading
+
+  if (chromeLoading) {
+    return (
+      <>
+        <div className="announcement-strip chrome-loading" aria-hidden="true">
+          <span className="content-skeleton" />
+        </div>
+        <header className="site-header has-announcement chrome-loading" aria-busy="true">
+          <span className="content-skeleton chrome-loading-brand" />
+          <span className="content-skeleton chrome-loading-nav" />
+          <span className="content-skeleton chrome-loading-action" />
+        </header>
+      </>
+    )
+  }
   const aboutLinks = [
     ["/about", "Overview"], ["/committee", "Organising Committee"],
     ["/advisory-board", "Advisory Board"],

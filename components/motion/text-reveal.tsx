@@ -63,7 +63,7 @@ export function TextReveal({
           );
 
         return (
-          <span key={`${line}-${lineIndex}`} className="block">
+          <span key={`${line}-${lineIndex}`} className="text-reveal-line block">
             {units.map((unit, i) => {
               const d = delay + (precedingUnits + i) * stagger;
               const initial = reduce

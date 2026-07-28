@@ -33,6 +33,10 @@ import { formatEventDateRange } from "@/lib/event-format"
 export default function HomePage() {
   const settings = useQuery(api.settings.get)
   const programme = useQuery(api.programme.listPublished)
+  const charts = useQuery(api.charts.listPublished)
+  const speakers = useQuery(api.cms.listPublished, { category:"speaker" })
+  const organizations = useQuery(api.content.listOrganizations)
+  const countries = useQuery(api.content.listRegionalCountries)
   const heroActions = useEditorialRecord("home-hero-actions", {
     title:"Reserve a place",
     secondaryText:"View programme schedule",
@@ -59,6 +63,20 @@ export default function HomePage() {
   )
   const registrationOpen = settings?.registrationOpen !== false
   const donationsEnabled = settings?.donationsEnabled !== false
+  const contentReady =
+    settings !== undefined &&
+    programme !== undefined &&
+    charts !== undefined &&
+    speakers !== undefined &&
+    organizations !== undefined &&
+    countries !== undefined &&
+    !heroActions.isLoading &&
+    !whyIntro.isLoading &&
+    !programmeHeading.isLoading
+
+  if (!contentReady) {
+    return <HomePageLoading />
+  }
 
   return (
     <>
@@ -235,5 +253,32 @@ export default function HomePage() {
         </div>
       </section>
     </>
+  )
+}
+
+function HomePageLoading() {
+  return (
+    <section
+      className="assembly-home-hero home-page-loading"
+      aria-busy="true"
+      aria-label="Loading summit content"
+    >
+      <div className="assembly-home-copy">
+        <span className="content-skeleton content-skeleton-kicker" />
+        <div className="content-skeleton-title">
+          <span className="content-skeleton" />
+          <span className="content-skeleton" />
+        </div>
+        <span className="content-skeleton content-skeleton-copy" />
+        <span className="content-skeleton content-skeleton-copy short" />
+        <div className="content-skeleton-actions">
+          <span className="content-skeleton" />
+          <span className="content-skeleton" />
+        </div>
+      </div>
+      <div className="assembly-home-date">
+        <span className="content-skeleton content-skeleton-countdown" />
+      </div>
+    </section>
   )
 }

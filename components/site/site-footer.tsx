@@ -22,6 +22,15 @@ export function SiteFooter() {
   const legal = useEditorialRecord("global-footer-legal", {
     title:"Human rights · dignity · equal citizenship",
   })
+  if (settings === undefined || callout.isLoading || legal.isLoading) {
+    return (
+      <footer className="site-footer footer-loading" aria-busy="true">
+        <span className="content-skeleton footer-loading-title" />
+        <span className="content-skeleton footer-loading-rule" />
+        <span className="content-skeleton footer-loading-copy" />
+      </footer>
+    )
+  }
   return (
     <footer className="site-footer">
       <div className="footer-callout">

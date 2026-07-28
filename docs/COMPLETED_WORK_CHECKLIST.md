@@ -26,6 +26,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Stabilized the initial announcement/header layout while live settings connect.
 - ✅ Paused countdown work in hidden tabs and reduced its active polling rate.
 - ✅ Applied reduced-motion-safe spring and blur patterns to section reveals and hero text.
+- ✅ Replaced fallback-copy flashes with stable loading silhouettes while managed Convex content resolves.
 - ✅ Removed mobile fixed-header backdrop blur to keep scrolling responsive on lower-powered devices.
 
 ## Visual system and responsive design
@@ -37,6 +38,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Circle-blur theme transition and matching admin theme control.
 - ✅ System-theme preference used on first visit.
 - ✅ Fluid hero typography prevents horizontal overflow.
+- ✅ Mobile-first hero headline stays in two compact lines without animated word gaps.
 - ✅ Long programme headlines wrap cleanly.
 - ✅ Day 01 and Day 02 content reflowed for narrow screens.
 - ✅ Compact-phone, large-phone, tablet, small-laptop, desktop, and wide-screen passes.
