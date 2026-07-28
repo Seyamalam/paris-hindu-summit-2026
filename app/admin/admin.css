@@ -236,6 +236,20 @@
   flex-direction: column;
 }
 
+.admin-global-theme-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 70;
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  color: #d5deed;
+  border: 1px solid var(--admin-line);
+  background: #071526e8;
+  backdrop-filter: blur(10px);
+}
+
 .admin-profile b {
   font-size: 11px;
 }

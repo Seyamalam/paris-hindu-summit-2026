@@ -30,18 +30,19 @@ import {
   SmartphoneIcon,
   SparklesIcon,
   TabletIcon,
-  UploadIcon,
   UserCogIcon,
   Users2Icon,
 } from "lucide-react"
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { toast } from "sonner"
+import { toast } from "@/components/motion/animated-toast-provider"
 
 import { api } from "@/convex/_generated/api"
 import type { Id } from "@/convex/_generated/dataModel"
 import { authClient } from "@/lib/auth-client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { AdminFileUpload } from "@/components/admin/admin-file-upload"
+import { ThemeToggle } from "@/components/site/theme-toggle"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
@@ -846,45 +847,31 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
                         <span>Built-in mark</span>
                       </div>
                     )}
-                    <label className="admin-logo-upload">
-                      {assetBusy === key ? <Spinner /> : <UploadIcon />}
-                      <span>
-                        {assetBusy === key ? "Uploading…" : uploadLabel}
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/avif"
-                        disabled={assetBusy !== null}
-                        onChange={async (event) => {
-                          const file = event.target.files?.[0]
-                          if (!file) return
-                          setAssetBusy(key)
-                          try {
-                            const storageId = await uploadAdminAsset({
-                              file,
-                              category: "logo",
-                              uploadUrl: generateUploadUrl,
-                              register,
-                            })
-                            setDraft((current) =>
-                              current ? { ...current, [key]: storageId } : current
-                            )
-                            toast.success(
-                              `${label} uploaded and selected. Publish site settings to apply it.`
-                            )
-                          } catch (error) {
-                            toast.error(
-                              error instanceof Error
-                                ? error.message
-                                : `${label} upload failed.`
-                            )
-                          } finally {
-                            setAssetBusy(null)
-                            event.target.value = ""
-                          }
-                        }}
-                      />
-                    </label>
+                    <AdminFileUpload
+                      accept="image/jpeg,image/png,image/webp,image/avif"
+                      title={uploadLabel}
+                      description="JPEG, PNG, WebP or AVIF · maximum 20 MB"
+                      disabled={assetBusy !== null}
+                      onUpload={async (file) => {
+                        setAssetBusy(key)
+                        try {
+                          const storageId = await uploadAdminAsset({
+                            file,
+                            category: "logo",
+                            uploadUrl: generateUploadUrl,
+                            register,
+                          })
+                          setDraft((current) =>
+                            current ? { ...current, [key]: storageId } : current
+                          )
+                          toast.success(
+                            `${label} uploaded and selected. Publish site settings to apply it.`
+                          )
+                        } finally {
+                          setAssetBusy(null)
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               )
@@ -1361,25 +1348,23 @@ function PeopleEditor({ mode }: { mode:"speaker" | "team" | "advisory" }) {
         {category === "speaker" && <Field label="Country" value={draft.country} onValueChange={(value) => update("country", value)} />}
         <Field label="Full biography (leave blank to show no biography)" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
         <label className="admin-field"><span>Profile picture</span><select value={imageStorageId ?? ""} onChange={(event) => setImageStorageId((event.target.value || undefined) as Id<"_storage"> | undefined)}><option value="">No picture selected</option>{portraits?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
-        <label className="admin-logo-upload">
-          {uploading ? <Spinner /> : <UploadIcon />}<span>{uploading ? "Uploading…" : "Upload profile picture"}</span>
-          <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={uploading} onChange={async (event) => {
-            const file = event.target.files?.[0]
-            if (!file) return
-            if (!file.type.startsWith("image/")) { toast.error("Choose an image file."); return }
+        <AdminFileUpload
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          title="Upload profile picture"
+          description="JPEG, PNG, WebP or AVIF · maximum 20 MB"
+          disabled={uploading}
+          onUpload={async (file) => {
+            if (!file.type.startsWith("image/")) throw new Error("Choose an image file.")
             setUploading(true)
             try {
               const storageId = await uploadAdminAsset({ file, category:"portrait", uploadUrl:generateUploadUrl, register })
               setImageStorageId(storageId)
               toast.success("Profile picture uploaded and selected.")
-            } catch (error) {
-              toast.error(error instanceof Error ? error.message : "Upload failed.")
             } finally {
               setUploading(false)
-              event.target.value = ""
             }
-          }} />
-        </label>
+          }}
+        />
         <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => update("order", Number(value))} />
         <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => update("status", event.target.value)}><option value="draft">Draft</option><option value="published">Published</option></select></label>
         {category === "speaker" && <label className="admin-check"><Checkbox checked={draft.featured} onCheckedChange={(value) => update("featured", Boolean(value))} /> Feature on Home page</label>}
@@ -1495,46 +1480,42 @@ function MediaPublicationPanel() {
           <Field label="Title" value={draft.title} onValueChange={(value) => setDraft({ ...draft, title:value })} />
           <Field label="Description" multiline value={draft.description} onValueChange={(value) => setDraft({ ...draft, description:value })} />
           {draft.mediaType === "document" && <label className="admin-field"><span>Optional cover image</span><select value={draft.coverStorageId ?? ""} onChange={(event) => setDraft({ ...draft, coverStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined })}><option value="">No cover image</option>{imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>}
-          {draft.mediaType === "document" && <label className="admin-logo-upload">
-            {uploading === "cover" ? <Spinner /> : <ImageIcon />}<span>{uploading === "cover" ? "Uploading…" : "Upload cover image"}</span>
-            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={Boolean(uploading)} onChange={async (event) => {
-              const file = event.target.files?.[0]
-              if (!file) return
+          {draft.mediaType === "document" && <AdminFileUpload
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            title="Upload cover image"
+            description="JPEG, PNG, WebP or AVIF · maximum 20 MB"
+            disabled={Boolean(uploading)}
+            onUpload={async (file) => {
               setUploading("cover")
               try {
                 const storageId = await uploadAdminAsset({ file, category:"media", uploadUrl:generateUploadUrl, register })
                 setDraft((current) => ({ ...current, coverStorageId:storageId }))
                 toast.success("Cover uploaded and selected.")
-              } catch (error) {
-                toast.error(error instanceof Error ? error.message : "Cover upload failed.")
               } finally {
                 setUploading(null)
-                event.target.value = ""
               }
-            }} />
-          </label>}
+            }}
+          />}
           {draft.mediaType !== "video" && <label className="admin-field"><span>{draft.mediaType === "photo" ? "Gallery image" : "Publication file"}</span><select value={draft.fileStorageId ?? ""} onChange={(event) => {
             const asset = assets?.find((item) => item.storageId === event.target.value)
             setDraft({ ...draft, fileStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined, fileName:asset?.fileName ?? "", mimeType:asset?.mimeType ?? "" })
           }}><option value="">Choose a file</option>{(draft.mediaType === "photo" ? imageAssets : fileAssets)?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>}
-          {draft.mediaType !== "video" && <label className="admin-logo-upload">
-            {uploading === "file" ? <Spinner /> : draft.mediaType === "photo" ? <ImageIcon /> : <UploadIcon />}<span>{uploading === "file" ? "Uploading…" : draft.mediaType === "photo" ? "Upload gallery image" : "Upload PDF, Word, or PowerPoint file"}</span>
-            <input type="file" accept={draft.mediaType === "photo" ? "image/jpeg,image/png,image/webp,image/avif" : ".pdf,.doc,.docx,.ppt,.pptx,application/pdf"} disabled={Boolean(uploading)} onChange={async (event) => {
-              const file = event.target.files?.[0]
-              if (!file) return
+          {draft.mediaType !== "video" && <AdminFileUpload
+            accept={draft.mediaType === "photo" ? "image/jpeg,image/png,image/webp,image/avif" : ".pdf,.doc,.docx,.ppt,.pptx,application/pdf"}
+            title={draft.mediaType === "photo" ? "Upload gallery image" : "Upload publication file"}
+            description={draft.mediaType === "photo" ? "JPEG, PNG, WebP or AVIF · maximum 20 MB" : "PDF, Word or PowerPoint · maximum 20 MB"}
+            disabled={Boolean(uploading)}
+            onUpload={async (file) => {
               setUploading("file")
               try {
                 const storageId = await uploadAdminAsset({ file, category:draft.mediaType === "photo" ? "media" : "document", uploadUrl:generateUploadUrl, register })
                 setDraft((current) => ({ ...current, fileStorageId:storageId, fileName:file.name, mimeType:file.type }))
                 toast.success(draft.mediaType === "photo" ? "Gallery image uploaded and selected." : "Publication file uploaded and selected.")
-              } catch (error) {
-                toast.error(error instanceof Error ? error.message : "File upload failed.")
               } finally {
                 setUploading(null)
-                event.target.value = ""
               }
-            }} />
-          </label>}
+            }}
+          />}
           {draft.mediaType === "video" && <Field label="YouTube video URL" value={draft.youtubeUrl ?? ""} placeholder="https://www.youtube.com/watch?v=…" onValueChange={(value) => setDraft({ ...draft, youtubeUrl:value })} />}
           <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => setDraft({ ...draft, order:Number(value) })} />
           <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => setDraft({ ...draft, status:event.target.value as "draft" | "published" })}><option value="draft">Draft</option><option value="published">Published</option></select></label>
@@ -1721,30 +1702,22 @@ function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, on
             </label>
             <div className="admin-asset-preview">
               {selectedAsset?.url ? <img src={selectedAsset.url} alt={selectedAsset.altText} /> : <div><ImageIcon /><span>No logo selected</span></div>}
-              <label className="admin-logo-upload">
-                {assetBusy ? <Spinner /> : <ImageIcon />}
-                <span>{assetBusy ? "Uploading…" : "Upload a new logo"}</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/avif"
-                  disabled={assetBusy}
-                  onChange={async (event) => {
-                    const file = event.target.files?.[0]
-                    if (!file) return
-                    setAssetBusy(true)
-                    try {
-                      const storageId = await assetPicker.onUpload(file)
-                      setDraft((current) => ({ ...current, [assetPicker.field]:storageId }))
-                      toast.success("Logo uploaded and selected. Save the partner to publish it.")
-                    } catch (error) {
-                      toast.error(error instanceof Error ? error.message : "Logo upload failed.")
-                    } finally {
-                      setAssetBusy(false)
-                      event.target.value = ""
-                    }
-                  }}
-                />
-              </label>
+              <AdminFileUpload
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                title="Upload a new logo"
+                description="JPEG, PNG, WebP or AVIF · maximum 20 MB"
+                disabled={assetBusy}
+                onUpload={async (file) => {
+                  setAssetBusy(true)
+                  try {
+                    const storageId = await assetPicker.onUpload(file)
+                    setDraft((current) => ({ ...current, [assetPicker.field]:storageId }))
+                    toast.success("Logo uploaded and selected. Save the partner to publish it.")
+                  } finally {
+                    setAssetBusy(false)
+                  }
+                }}
+              />
             </div>
           </div>
         )}
@@ -1880,35 +1853,35 @@ function AssetsPanel() {
   const uploadUrl = useMutation(api.assets.generateUploadUrl)
   const register = useMutation(api.assets.register)
   const remove = useMutation(api.assets.remove)
-  const [busy, setBusy] = useState(false)
   async function upload(file: File) {
-    setBusy(true)
-    try {
-      const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif", ".pdf"]
-      if (!allowedExtensions.some((extension) => file.name.toLowerCase().endsWith(extension))) {
-        throw new Error("Choose a JPEG, PNG, WebP, AVIF, or PDF file.")
-      }
-      if (file.type.startsWith("image/")) {
-        const bitmap = await createImageBitmap(file)
-        if (bitmap.width < 320 || bitmap.height < 180) {
-          bitmap.close()
-          throw new Error("Images must be at least 320 × 180 pixels.")
-        }
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif", ".pdf"]
+    if (!allowedExtensions.some((extension) => file.name.toLowerCase().endsWith(extension))) {
+      throw new Error("Choose a JPEG, PNG, WebP, AVIF, or PDF file.")
+    }
+    if (file.type.startsWith("image/")) {
+      const bitmap = await createImageBitmap(file)
+      if (bitmap.width < 320 || bitmap.height < 180) {
         bitmap.close()
+        throw new Error("Images must be at least 320 × 180 pixels.")
       }
-      const url = await uploadUrl()
-      const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
-      const { storageId } = await response.json()
-      await register({ storageId, fileName:file.name, mimeType:file.type, byteSize:file.size, altText:file.name.replace(/\.[^.]+$/, ""), category:file.type === "application/pdf" ? "document" : "general" })
-      toast.success("Asset uploaded to Convex.")
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Upload failed.")
-    } finally { setBusy(false) }
+      bitmap.close()
+    }
+    const url = await uploadUrl()
+    const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
+    if (!response.ok) throw new Error("Convex rejected the upload. Please try again.")
+    const { storageId } = await response.json()
+    await register({ storageId, fileName:file.name, mimeType:file.type, byteSize:file.size, altText:file.name.replace(/\.[^.]+$/, ""), category:file.type === "application/pdf" ? "document" : "general" })
+    toast.success("Asset uploaded to Convex.")
   }
   return (
     <section className="admin-panel">
       <PanelTitle eyebrow="Convex file storage" title="A single source for images and documents." copy="Upload JPEG, PNG, WebP, AVIF or PDF files up to 20 MB. Managed URLs can be attached to content records." />
-      <label className="asset-drop">{busy ? <Spinner /> : <ImageIcon />}<b>{busy ? "Uploading…" : "Drop or choose an approved file"}</b><span>Images and PDF · maximum 20 MB</span><input type="file" accept="image/jpeg,image/png,image/webp,image/avif,application/pdf" onChange={(event) => event.target.files?.[0] && upload(event.target.files[0])} /></label>
+      <AdminFileUpload
+        accept="image/jpeg,image/png,image/webp,image/avif,application/pdf"
+        title="Drop or choose an approved file"
+        description="Images and PDF · maximum 20 MB"
+        onUpload={upload}
+      />
       <div className="asset-grid">{assets?.map((asset) => <article key={asset._id}>{asset.url && asset.mimeType.startsWith("image/") ? <img src={asset.url} alt={asset.altText} /> : <div><FileTextIcon /></div>}<b>{asset.fileName}</b><small>{(asset.byteSize/1_000_000).toFixed(1)} MB</small><button onClick={() => remove({ id:asset._id })}>Remove</button></article>)}</div>
     </section>
   )
@@ -1997,4 +1970,11 @@ function FullScreenStatus({ label }: { label:string }) { return <main className=
 function EmptyCopy({ text }: { text:string }) { return <div className="admin-empty"><CheckCircle2Icon /><p>{text}</p></div> }
 function humanize(value:string) { return value.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase()) }
 
-export function AdminPortal() { return <AuthGate /> }
+export function AdminPortal() {
+  return (
+    <>
+      <ThemeToggle className="admin-global-theme-toggle" />
+      <AuthGate />
+    </>
+  )
+}

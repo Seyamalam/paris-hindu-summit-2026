@@ -182,6 +182,17 @@ main {
   width: 17px;
   height: 17px;
 }
+
+.summit-not-found {
+  min-height: calc(100svh - 190px);
+  padding-top: clamp(72px, 10vw, 132px);
+  padding-bottom: clamp(72px, 10vw, 132px);
+}
+
+.summit-not-found h1 {
+  font-family: var(--font-display-stack);
+  color: var(--assembly-red);
+}
 .mobile-menu {
   color: var(--assembly-ink);
   background: var(--assembly-paper);

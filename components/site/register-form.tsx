@@ -3,7 +3,7 @@
 import { useMutation } from "convex/react"
 import { CheckIcon, Loader2Icon, SendIcon } from "lucide-react"
 import { FormEvent, useState } from "react"
-import { toast } from "sonner"
+import { toast } from "@/components/motion/animated-toast-provider"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"

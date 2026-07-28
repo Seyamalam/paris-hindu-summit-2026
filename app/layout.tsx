@@ -4,9 +4,9 @@ import { Bodoni_Moda, Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import "./assembly-theme.css"
 import { ConvexClientProvider } from "@/components/convex-client-provider"
+import { AnimatedToastProvider } from "@/components/motion/animated-toast-provider"
 import { RouteChrome } from "@/components/site/route-chrome"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
@@ -47,7 +47,7 @@ export default function RootLayout({
           <ThemeProvider>
             <TooltipProvider>
               <RouteChrome>{children}</RouteChrome>
-              <Toaster position="bottom-right" />
+              <AnimatedToastProvider />
             </TooltipProvider>
           </ThemeProvider>
         </ConvexClientProvider>
