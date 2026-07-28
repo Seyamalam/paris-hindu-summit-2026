@@ -33,7 +33,7 @@ bun run convex:deploy:prod
 bun run convex:backup:dev
 bun run convex:backup:prod
 
-# Idempotent content seeds
+# First-install-only content seed (a no-op after site settings exist)
 bun run convex:seed:dev
 bun run convex:seed:prod
 ```
@@ -47,6 +47,11 @@ development deployment.
 full production snapshot before doing anything else. Snapshots include database
 documents, Better Auth records, and Convex file storage. They are written outside
 the Git repository under `../../convex-backups/automatic/<timestamp>/`.
+
+The seed must not be used as a live-content migration. It exits without writes
+as soon as the primary site settings record exists, preserving all Admin edits
+and intentional deletions. Live migrations must target an exact legacy value
+and run only after a production backup.
 
 Production is always the editorial source of truth. Never copy development data
 into production. When development needs current client content, export

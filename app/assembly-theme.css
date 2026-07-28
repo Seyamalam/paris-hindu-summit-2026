@@ -354,6 +354,46 @@ main {
     opacity: 0.45;
   }
 }
+
+.managed-list-skeleton {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+  width: 100%;
+}
+
+.managed-list-skeleton-card {
+  min-height: 210px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--assembly-border);
+  background: var(--assembly-surface);
+}
+
+.managed-list-skeleton-card > span {
+  display: block;
+}
+
+.managed-list-skeleton-kicker {
+  width: 32%;
+  height: 11px;
+  margin-bottom: 28px;
+}
+
+.managed-list-skeleton-title {
+  width: 78%;
+  height: 28px;
+  margin-bottom: 20px;
+}
+
+.managed-list-skeleton-copy {
+  width: 100%;
+  height: 12px;
+  margin-top: 10px;
+}
+
+.managed-list-skeleton-copy.short {
+  width: 62%;
+}
 .assembly-home-copy .hero-actions [data-variant="outline"] {
   color: var(--assembly-red);
   background: transparent;
@@ -1528,6 +1568,13 @@ main {
 }
 
 @media (max-width: 720px) {
+  .managed-list-skeleton {
+    grid-template-columns: 1fr;
+  }
+
+  .managed-list-skeleton-card {
+    min-height: 176px;
+  }
   .publication-section > header {
     grid-template-columns: 1fr;
   }

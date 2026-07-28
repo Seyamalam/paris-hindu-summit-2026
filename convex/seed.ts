@@ -1403,6 +1403,7 @@ const chartPoints = [
 export const seedInitialContent = internalMutation({
   args: {},
   returns: v.object({
+    skippedExistingContent: v.boolean(),
     countriesInserted: v.number(),
     countriesUpdated: v.number(),
     organizationsInserted: v.number(),
@@ -1430,6 +1431,32 @@ export const seedInitialContent = internalMutation({
     let programmeSessionsUpserted = 0
     let chartSeriesUpserted = 0
     let chartPointsUpserted = 0
+
+    const existingSettings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "primary"))
+      .first()
+
+    // This mutation is only for an entirely new deployment. Once Admin owns the
+    // content, re-running a seed must be a no-op: missing records can represent
+    // intentional deletions and must never be recreated during an update.
+    if (existingSettings) {
+      return {
+        skippedExistingContent: true,
+        countriesInserted: 0,
+        countriesUpdated: 0,
+        organizationsInserted: 0,
+        organizationsUpdated: 0,
+        mediaSectionsUpserted: 0,
+        settingsUpserted: 0,
+        tiersUpserted: 0,
+        cmsEntriesUpserted: 0,
+        programmeDaysUpserted: 0,
+        programmeSessionsUpserted: 0,
+        chartSeriesUpserted: 0,
+        chartPointsUpserted: 0,
+      }
+    }
 
     for (const country of regionalCountries) {
       const existing = await ctx.db
@@ -1479,10 +1506,6 @@ export const seedInitialContent = internalMutation({
       mediaSectionsUpserted += 1
     }
 
-    const existingSettings = await ctx.db
-      .query("siteSettings")
-      .withIndex("by_key", (q) => q.eq("key", "primary"))
-      .first()
     const settingsValue = {
       ...settings,
       key: "primary",
@@ -1612,6 +1635,7 @@ export const seedInitialContent = internalMutation({
     }
 
     return {
+      skippedExistingContent: false,
       countriesInserted,
       countriesUpdated,
       organizationsInserted,

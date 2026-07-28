@@ -4,11 +4,13 @@ import { useQuery } from "convex/react"
 import { ArrowRightIcon } from "lucide-react"
 
 import { api } from "@/convex/_generated/api"
+import { ContentListSkeleton } from "@/components/site/content-list-skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function ProgrammeTabs() {
   const days = useQuery(api.programme.listPublished)
-  if (!days?.length) return <p>No programme days are currently published.</p>
+  if (days === undefined) return <ContentListSkeleton cards={2} />
+  if (days.length === 0) return <p>No programme days are currently published.</p>
   return (
     <Tabs defaultValue={days[0].slug} className="programme-tabs">
       <TabsList variant="line" className="programme-tab-list">
