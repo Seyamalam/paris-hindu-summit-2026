@@ -23,10 +23,11 @@ export function ManagedPageHero({
 
   return (
     <PageHero
-      eyebrow={page?.eyebrow || eyebrow}
-      title={page?.title || title}
-      intro={page?.summary || intro}
+      eyebrow={page?.eyebrow || (entries === undefined ? "" : eyebrow)}
+      title={page?.title || (entries === undefined ? "" : title)}
+      intro={page?.summary || (entries === undefined ? "" : intro)}
       image={image}
+      loading={entries === undefined}
     />
   )
 }

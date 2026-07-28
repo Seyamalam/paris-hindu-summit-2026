@@ -40,6 +40,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Performance pass covers stable initial layout, reduced homepage JavaScript, off-screen rendering containment, reduced-motion-safe spring reveals, and visibility-aware countdown timers.
 - [x] Cross-device typography pass provides explicit font fallbacks, stable browser text scaling, and readable minimum sizes for navigation, captions, metadata, body copy, and compact-phone layouts.
 - [x] BeUI motion patterns are adapted to the square editorial system for uploads, global notifications, theme transitions, hero text, section reveals, and the 404 route.
+- [x] Managed production copy renders only after its Convex records are ready, using layout-preserving loading states instead of briefly showing and replacing code fallbacks.
 
 ## Public website
 
@@ -62,6 +63,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 - [x] Design 06 hero foundation, event date/location, headline, primary CTAs, and responsive typography.
 - [x] Homepage hero headline uses a restrained word reveal with spring timing, blur, and a reduced-motion fallback.
+- [x] Mobile-first hero typography keeps both managed headline lines intact at compact-phone widths and scales without word-level gaps on desktop.
 - [x] Live countdown prototype.
 - [x] Dynamic hero information bar: Venue, Format, Delegates, Languages.
 - [x] Homepage rationale is retained as concise editable introductory copy; the former rationale card grid was removed by client request.

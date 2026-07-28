@@ -24,6 +24,7 @@ export function useEditorialRecord(
   const entries = useQuery(api.cms.listPublished, { category:"sectionCopy" })
   const entry = entries?.find((item) => item.slug === slug)
   return {
+    isLoading:entries === undefined,
     title:entry?.title || fallback.title || "",
     eyebrow:entry?.eyebrow || fallback.eyebrow || "",
     summary:entry?.summary || fallback.summary || "",
