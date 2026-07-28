@@ -277,7 +277,7 @@ main {
   max-width: 960px;
   margin: 24px 0 20px;
   color: var(--assembly-ink);
-  font: 850 clamp(68px, 6.2vw, 92px)/0.86 var(--font-body-stack);
+  font: 850 clamp(64px, 5.05vw, 73px)/0.86 var(--font-body-stack);
   letter-spacing: -0.075em;
   text-transform: uppercase;
 }
@@ -1744,7 +1744,7 @@ main {
     grid-template-columns: minmax(0, 1fr) minmax(430px, 0.9fr);
   }
   .assembly-home-copy h1 {
-    font-size: clamp(62px, 6.2vw, 74px);
+    font-size: clamp(58px, 5.4vw, 65px);
   }
   .assembly-home-date {
     padding-inline: 28px;
@@ -1791,7 +1791,7 @@ main {
     padding-inline: 35px;
   }
   .assembly-home-copy h1 {
-    font-size: clamp(58px, 6.3vw, 68px);
+    font-size: clamp(46px, 5.2vw, 56px);
   }
   .hero-countdown {
     gap: 24px;
@@ -1837,13 +1837,13 @@ main {
   }
   .assembly-home-copy h1 {
     margin-block: 18px;
-    font-size: clamp(39px, 11.6vw, 50px);
+    font-size: clamp(30px, 9.2vw, 39px);
     line-height: 0.88;
     letter-spacing: -0.05em;
     word-spacing: normal;
   }
   .assembly-home-copy h1 > .text-reveal-line:first-child {
-    font-size: 0.84em;
+    font-size: 0.86em;
   }
   .assembly-home-copy .hero-lead {
     font-size: 15px;
@@ -1989,7 +1989,7 @@ main {
     padding-inline: 18px;
   }
   .assembly-home-copy h1 {
-    font-size: clamp(38px, 11.5vw, 45px);
+    font-size: clamp(30px, 9.2vw, 36px);
   }
   .assembly-home-date {
     padding-inline: 16px;
