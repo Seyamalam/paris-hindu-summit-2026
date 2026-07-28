@@ -14,7 +14,6 @@ import type * as auth from "../auth.js";
 import type * as charts from "../charts.js";
 import type * as cms from "../cms.js";
 import type * as content from "../content.js";
-import type * as contentMigrations from "../contentMigrations.js";
 import type * as donations from "../donations.js";
 import type * as forms from "../forms.js";
 import type * as http from "../http.js";
@@ -38,7 +37,6 @@ declare const fullApi: ApiFromModules<{
   charts: typeof charts;
   cms: typeof cms;
   content: typeof content;
-  contentMigrations: typeof contentMigrations;
   donations: typeof donations;
   forms: typeof forms;
   http: typeof http;

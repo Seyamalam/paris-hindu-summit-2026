@@ -352,6 +352,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #26 resolved: partner and sponsor cards now use a balanced uniform grid with compact logo plaques and restrained organisation names.
 - ✅ GitHub issue #27 resolved: repeat seeds no longer resurrect chart series or points deleted by an administrator.
 - ✅ Initial-content seeding is now a site-wide first-install-only operation; existing Admin content and intentional deletions are preserved across deployments and accidental repeat seed commands.
+- ✅ Production content protection is fail-closed: production seed commands are blocked and retired CLI migrations/repair functions are removed from the deployed API.
 - ✅ Programme, Engage, FAQ, legal, and long-form managed content keep stable loading geometry until live Convex records resolve.
 - ✅ GitHub issue #28 resolved: media saves no longer send unsupported undefined values, and replacing an item clears stale optional media fields.
 - ✅ GitHub issue #30 resolved: refined editorial palette, larger hero date, more readable Agenda headings, and a three-column Team-style Advisory Board.

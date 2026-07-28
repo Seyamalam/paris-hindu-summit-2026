@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 
-import { internalMutation, mutation, query } from "./_generated/server"
+import { mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
 
 const status = v.union(v.literal("draft"), v.literal("published"))
@@ -113,38 +113,6 @@ export const publishAllDrafts = mutation({
       summary: `Published ${days.length} programme days and ${draftSessions.length} sessions`,
     })
     return { daysPublished:days.length, sessionsPublished:draftSessions.length }
-  },
-})
-
-export const repairPreparedProgramme = internalMutation({
-  args: {},
-  returns: v.object({ emptySessionsRemoved: v.number(), sessionsPublished: v.number() }),
-  handler: async (ctx) => {
-    const sessions = await ctx.db
-      .query("programmeSessions")
-      .withIndex("by_day_slug_and_order")
-      .take(500)
-    const emptySessions = sessions.filter((session) =>
-      session.title.trim() === "" &&
-      session.slug.trim() === "" &&
-      session.startTime.trim() === "" &&
-      session.endTime.trim() === "" &&
-      session.description.trim() === ""
-    )
-    const preparedDrafts = sessions.filter((session) =>
-      session.status === "draft" && session.title.trim() !== ""
-    )
-    await Promise.all([
-      ...emptySessions.map((session) => ctx.db.delete(session._id)),
-      ...preparedDrafts.map((session) => ctx.db.patch(session._id, {
-        status:"published",
-        updatedAt:Date.now(),
-      })),
-    ])
-    return {
-      emptySessionsRemoved:emptySessions.length,
-      sessionsPublished:preparedDrafts.length,
-    }
   },
 })
 

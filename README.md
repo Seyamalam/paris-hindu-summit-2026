@@ -151,15 +151,14 @@ That command now takes and checksums a complete production snapshot—including
 uploaded files—before deploying backend functions. Production admin content is
 the source of truth and must never be replaced from development.
 
-The seed is a first-install bootstrap only. Once primary site settings exist it
-returns without writing, so deleted or edited Admin content can never be
-recreated by a later release. Do not use seeds to migrate a live site; use a
-narrow, value-guarded migration after taking a production backup. Never seed
-personal, donor, registration, or credential data.
+The seed is a development/bootstrap tool only. Production seeding is disabled
+and all retired repair/content-migration functions are removed from the deployed
+API, so deleted or edited Admin content cannot be recreated by a release. Make
+live editorial changes through authenticated Admin mutations after taking a
+production backup. Never seed personal, donor, registration, or credential data.
 
 ```bash
 bun run convex:seed:dev
-bun run convex:seed:prod
 ```
 
 ## Source material
