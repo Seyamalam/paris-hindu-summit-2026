@@ -1449,8 +1449,11 @@ function MediaPublicationPanel() {
   const imageAssets = assets?.filter((asset) => asset.mimeType.startsWith("image/"))
   const fileAssets = assets?.filter((asset) => !asset.mimeType.startsWith("image/") || asset.category === "document")
   useEffect(() => {
-    if (existing) setDraft(existing)
-    else {
+    if (existing) {
+      const { _id, ...fields } = existing
+      void _id
+      setDraft(fields)
+    } else {
       setDraft({
         sectionSlug:data?.sections[0]?.slug ?? "",
         slug:"",
@@ -1538,7 +1541,19 @@ function MediaPublicationPanel() {
           <Button onClick={async () => {
             if (!draft.fileStorageId) { toast.error("Choose or upload a publication file first."); return }
             try {
-              await saveItem({ ...(existing ? { id:existing._id } : {}), ...draft, fileStorageId:draft.fileStorageId })
+              await saveItem({
+                ...(existing ? { id:existing._id } : {}),
+                sectionSlug:draft.sectionSlug,
+                slug:draft.slug,
+                title:draft.title,
+                description:draft.description,
+                coverStorageId:draft.coverStorageId,
+                fileStorageId:draft.fileStorageId,
+                fileName:draft.fileName,
+                mimeType:draft.mimeType,
+                order:draft.order,
+                status:draft.status,
+              })
               toast.success("Publication saved.")
               setSelected("new")
             } catch (error) {
