@@ -348,6 +348,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #28 resolved: media saves no longer send unsupported undefined values, and replacing an item clears stale optional media fields.
 - ✅ GitHub issue #30 resolved: refined editorial palette, larger hero date, more readable Agenda headings, and a three-column Team-style Advisory Board.
 - ✅ GitHub issue #32 resolved: unified structured-document typography, streamlined Register page, and revised Contact and homepage evidence copy.
+- ✅ Reopened GitHub issue #28 resolved: hardened gallery saves against incomplete slugs, stale section/file selections, irrelevant optional fields, and client-supplied file metadata.
 
 ## Intentionally not activated
 

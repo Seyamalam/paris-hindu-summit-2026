@@ -268,6 +268,7 @@ Never make these editable as plain content:
 - [x] If fixture/seed data changes in development, run the same idempotent seed in production and verify counts.
 - [x] Re-running the seed preserves administrator-deleted chart series and points instead of restoring fixture rows.
 - [x] Media item saves omit absent optional storage and YouTube fields, allowing photo-gallery uploads to persist.
+- [x] Media item saves validate live section and asset selections, generate safe slugs when omitted, and persist canonical registered-file metadata.
 - [x] Partner and sponsor logos use a compact, uniform institutional-card presentation across responsive layouts.
 - [x] The public visual system uses warm ivory, deep indigo, antique gold, and charcoal across light and dark themes.
 - [x] The hero date has stronger visual weight, Proposed Agenda headings use a more readable scale, and the Advisory Board follows the Team’s responsive three-column roster.
