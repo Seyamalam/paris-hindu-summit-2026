@@ -38,6 +38,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
 - [x] Public-page rendering is independent from admin authentication lookups, so an auth delay cannot block the entire website.
 - [x] Performance pass covers stable initial layout, reduced homepage JavaScript, off-screen rendering containment, efficient reveal observers, and visibility-aware countdown timers.
+- [x] Cross-device typography pass provides explicit font fallbacks, stable browser text scaling, and readable minimum sizes for navigation, captions, metadata, body copy, and compact-phone layouts.
 
 ## Public website
 
