@@ -193,6 +193,8 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Every publication belongs to a submenu section and supports title, description, optional cover image, uploaded file, order, and publication state.
 - [x] Direct cover and PDF/Word/PowerPoint upload uses Convex storage; stored IDs, not expiring URLs, are persisted.
 - [x] The public Media & Publication page renders published sections and downloadable files reactively.
+- [x] Images & Videos uses dedicated photo and YouTube video gallery presentations rather than generic document-download cards.
+- [x] Admin media records can be typed as a publication, gallery photo, or YouTube video, with server-side file and URL validation.
 - [x] Media covers and publication files cannot be deleted while referenced.
 
 ### Purpose-built About document editors

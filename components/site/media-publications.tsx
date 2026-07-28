@@ -2,11 +2,38 @@
 
 import Image from "next/image"
 import { useQuery } from "convex/react"
-import { ArrowDownToLineIcon, BookOpenIcon } from "lucide-react"
+import {
+  ArrowDownToLineIcon,
+  BookOpenIcon,
+  ExternalLinkIcon,
+  ImagesIcon,
+  PlayIcon,
+} from "lucide-react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
+
+function getYouTubeEmbedUrl(value: string | null) {
+  if (!value) return null
+  try {
+    const url = new URL(value)
+    const hostname = url.hostname.replace(/^www\./, "")
+    const videoId =
+      hostname === "youtu.be"
+        ? url.pathname.slice(1).split("/")[0]
+        : url.pathname.startsWith("/shorts/")
+          ? url.pathname.split("/")[2]
+          : url.pathname.startsWith("/embed/")
+            ? url.pathname.split("/")[2]
+            : url.searchParams.get("v")
+    return videoId
+      ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+      : null
+  } catch {
+    return null
+  }
+}
 
 export function MediaPublications() {
   const sections = useQuery(api.media.listPublished)
@@ -50,40 +77,165 @@ export function MediaPublications() {
             </div>
           </header>
           {section.items.length > 0 ? (
-            <div className="publication-grid">
-              {section.items.map((item) => (
-                <article key={item._id}>
-                  <div className="publication-cover">
-                    {item.coverUrl ? (
-                      <Image
-                        src={item.coverUrl}
-                        alt=""
-                        fill
-                        sizes="(max-width: 720px) 100vw, 30vw"
-                      />
-                    ) : (
-                      <BookOpenIcon aria-hidden="true" />
-                    )}
+            section.items.some((item) => item.mediaType !== "document") ? (
+              <div className="visual-archive">
+                {section.items.some((item) => item.mediaType === "photo") && (
+                  <div className="photo-gallery">
+                    <div className="gallery-heading">
+                      <ImagesIcon aria-hidden="true" />
+                      <div>
+                        <p className="kicker">Photo gallery</p>
+                        <h3>Latest photographs</h3>
+                      </div>
+                    </div>
+                    <div className="photo-gallery-grid">
+                      {section.items
+                        .filter((item) => item.mediaType === "photo")
+                        .map((item) => (
+                          <a
+                            href={item.fileUrl ?? undefined}
+                            target="_blank"
+                            rel="noreferrer"
+                            key={item._id}
+                            aria-label={`View ${item.title} at full size`}
+                          >
+                            <span className="photo-gallery-image">
+                              {item.fileUrl && (
+                                <Image
+                                  src={item.fileUrl}
+                                  alt={item.title}
+                                  fill
+                                  sizes="(max-width: 720px) 100vw, 33vw"
+                                />
+                              )}
+                            </span>
+                            <span className="photo-gallery-caption">
+                              <strong>{item.title}</strong>
+                              {item.description && <small>{item.description}</small>}
+                              <ExternalLinkIcon aria-hidden="true" />
+                            </span>
+                          </a>
+                        ))}
+                    </div>
                   </div>
-                  <div className="publication-copy">
-                    <p className="kicker">{item.fileName}</p>
-                    <h3>{item.title}</h3>
-                    <p>{item.description}</p>
-                    {item.fileUrl && (
-                      <Button
-                        nativeButton={false}
-                        variant="outline"
-                        render={
-                          <a href={item.fileUrl} target="_blank" rel="noreferrer" />
-                        }
-                      >
-                        Open file <ArrowDownToLineIcon data-icon="inline-end" />
-                      </Button>
-                    )}
+                )}
+                {section.items.some((item) => item.mediaType === "video") && (
+                  <div className="video-gallery">
+                    <div className="gallery-heading">
+                      <PlayIcon aria-hidden="true" />
+                      <div>
+                        <p className="kicker">Video gallery</p>
+                        <h3>Watch on YouTube</h3>
+                      </div>
+                    </div>
+                    <div className="video-gallery-grid">
+                      {section.items
+                        .filter((item) => item.mediaType === "video")
+                        .map((item) => {
+                          const embedUrl = getYouTubeEmbedUrl(item.youtubeUrl)
+                          if (!embedUrl) return null
+                          return (
+                            <article key={item._id}>
+                              <div className="video-gallery-frame">
+                                <iframe
+                                  src={embedUrl}
+                                  title={item.title}
+                                  loading="lazy"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerPolicy="strict-origin-when-cross-origin"
+                                  allowFullScreen
+                                />
+                              </div>
+                              <div>
+                                <h4>{item.title}</h4>
+                                {item.description && <p>{item.description}</p>}
+                              </div>
+                            </article>
+                          )
+                        })}
+                    </div>
                   </div>
-                </article>
-              ))}
-            </div>
+                )}
+                {section.items.some((item) => item.mediaType === "document") && (
+                  <div className="publication-grid">
+                    {section.items
+                      .filter((item) => item.mediaType === "document")
+                      .map((item) => (
+                        <article key={item._id}>
+                          <div className="publication-cover">
+                            {item.coverUrl ? (
+                              <Image
+                                src={item.coverUrl}
+                                alt=""
+                                fill
+                                sizes="(max-width: 720px) 100vw, 30vw"
+                              />
+                            ) : (
+                              <BookOpenIcon aria-hidden="true" />
+                            )}
+                          </div>
+                          <div className="publication-copy">
+                            <p className="kicker">{item.fileName}</p>
+                            <h3>{item.title}</h3>
+                            <p>{item.description}</p>
+                            {item.fileUrl && (
+                              <Button
+                                nativeButton={false}
+                                variant="outline"
+                                render={
+                                  <a
+                                    href={item.fileUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  />
+                                }
+                              >
+                                Open file{" "}
+                                <ArrowDownToLineIcon data-icon="inline-end" />
+                              </Button>
+                            )}
+                          </div>
+                        </article>
+                      ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="publication-grid">
+                {section.items.map((item) => (
+                  <article key={item._id}>
+                    <div className="publication-cover">
+                      {item.coverUrl ? (
+                        <Image
+                          src={item.coverUrl}
+                          alt=""
+                          fill
+                          sizes="(max-width: 720px) 100vw, 30vw"
+                        />
+                      ) : (
+                        <BookOpenIcon aria-hidden="true" />
+                      )}
+                    </div>
+                    <div className="publication-copy">
+                      <p className="kicker">{item.fileName}</p>
+                      <h3>{item.title}</h3>
+                      <p>{item.description}</p>
+                      {item.fileUrl && (
+                        <Button
+                          nativeButton={false}
+                          variant="outline"
+                          render={
+                            <a href={item.fileUrl} target="_blank" rel="noreferrer" />
+                          }
+                        >
+                          Open file <ArrowDownToLineIcon data-icon="inline-end" />
+                        </Button>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )
           ) : (
             <p className="publication-section-empty">
               No publications have been released in this section yet.

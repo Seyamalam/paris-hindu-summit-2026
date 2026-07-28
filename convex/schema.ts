@@ -227,10 +227,18 @@ export default defineSchema({
     slug: v.string(),
     title: v.string(),
     description: v.string(),
+    mediaType: v.optional(
+      v.union(
+        v.literal("document"),
+        v.literal("photo"),
+        v.literal("video")
+      )
+    ),
     coverStorageId: v.optional(v.id("_storage")),
-    fileStorageId: v.id("_storage"),
+    fileStorageId: v.optional(v.id("_storage")),
     fileName: v.string(),
     mimeType: v.string(),
+    youtubeUrl: v.optional(v.string()),
     order: v.number(),
     status: publicationStatus,
     updatedAt: v.number(),

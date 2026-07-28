@@ -1429,10 +1429,12 @@ function MediaPublicationPanel() {
     slug:string
     title:string
     description:string
+    mediaType:"document" | "photo" | "video"
     coverStorageId?:Id<"_storage">
     fileStorageId?:Id<"_storage">
     fileName:string
     mimeType:string
+    youtubeUrl?:string
     order:number
     status:"draft" | "published"
   }>({
@@ -1440,8 +1442,10 @@ function MediaPublicationPanel() {
     slug:"",
     title:"",
     description:"",
+    mediaType:"document",
     fileName:"",
     mimeType:"",
+    youtubeUrl:"",
     order:50,
     status:"draft",
   })
@@ -1459,8 +1463,10 @@ function MediaPublicationPanel() {
         slug:"",
         title:"",
         description:"",
+        mediaType:"document",
         fileName:"",
         mimeType:"",
+        youtubeUrl:"",
         order:50,
         status:"draft",
       })
@@ -1469,7 +1475,7 @@ function MediaPublicationPanel() {
 
   return (
     <section className="admin-panel media-publication-admin" data-compact="true">
-      <PanelTitle eyebrow="Publication editor" title="Media & Publication" copy="Create submenu sections, then add downloadable publications with a title, description, optional cover, and file." />
+      <PanelTitle eyebrow="Publication editor" title="Media & Publication" copy="Create publication sections, photo galleries, and YouTube video galleries from one managed archive." />
       <RecordCards
         title="Publication sections"
         copy="These section names become the Media & Publication submenu."
@@ -1480,7 +1486,7 @@ function MediaPublicationPanel() {
         onRemove={removeSection}
       />
       <div className="admin-subpanel">
-        <PanelTitle eyebrow="Files" title="Publications" copy="Every publication belongs to one of the sections above." />
+        <PanelTitle eyebrow="Archive items" title="Publications, photos & videos" copy="Choose a format for each item. Photos open as a visual gallery; videos play in privacy-enhanced YouTube embeds." />
         <AdminRecordSelect
           label="Publication to edit"
           value={selected}
@@ -1490,11 +1496,12 @@ function MediaPublicationPanel() {
         />
         <div className="admin-form-grid">
           <label className="admin-field"><span>Submenu section</span><select value={draft.sectionSlug} onChange={(event) => setDraft({ ...draft, sectionSlug:event.target.value })}><option value="">Choose a section</option>{data?.sections.map((section) => <option key={section._id} value={section.slug}>{section.name}</option>)}</select></label>
+          <label className="admin-field"><span>Item format</span><select value={draft.mediaType} onChange={(event) => setDraft({ ...draft, mediaType:event.target.value as typeof draft.mediaType, fileStorageId:undefined, fileName:"", mimeType:"", youtubeUrl:"" })}><option value="document">Downloadable publication</option><option value="photo">Photo gallery image</option><option value="video">YouTube video</option></select></label>
           <Field label="URL slug" value={draft.slug} onValueChange={(value) => setDraft({ ...draft, slug:value })} />
           <Field label="Title" value={draft.title} onValueChange={(value) => setDraft({ ...draft, title:value })} />
           <Field label="Description" multiline value={draft.description} onValueChange={(value) => setDraft({ ...draft, description:value })} />
-          <label className="admin-field"><span>Optional cover image</span><select value={draft.coverStorageId ?? ""} onChange={(event) => setDraft({ ...draft, coverStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined })}><option value="">No cover image</option>{imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
-          <label className="admin-logo-upload">
+          {draft.mediaType === "document" && <label className="admin-field"><span>Optional cover image</span><select value={draft.coverStorageId ?? ""} onChange={(event) => setDraft({ ...draft, coverStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined })}><option value="">No cover image</option>{imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>}
+          {draft.mediaType === "document" && <label className="admin-logo-upload">
             {uploading === "cover" ? <Spinner /> : <ImageIcon />}<span>{uploading === "cover" ? "Uploading…" : "Upload cover image"}</span>
             <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={Boolean(uploading)} onChange={async (event) => {
               const file = event.target.files?.[0]
@@ -1511,21 +1518,21 @@ function MediaPublicationPanel() {
                 event.target.value = ""
               }
             }} />
-          </label>
-          <label className="admin-field"><span>Publication file</span><select value={draft.fileStorageId ?? ""} onChange={(event) => {
+          </label>}
+          {draft.mediaType !== "video" && <label className="admin-field"><span>{draft.mediaType === "photo" ? "Gallery image" : "Publication file"}</span><select value={draft.fileStorageId ?? ""} onChange={(event) => {
             const asset = assets?.find((item) => item.storageId === event.target.value)
             setDraft({ ...draft, fileStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined, fileName:asset?.fileName ?? "", mimeType:asset?.mimeType ?? "" })
-          }}><option value="">Choose a file</option>{fileAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
-          <label className="admin-logo-upload">
-            {uploading === "file" ? <Spinner /> : <UploadIcon />}<span>{uploading === "file" ? "Uploading…" : "Upload PDF, Word, or PowerPoint file"}</span>
-            <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,application/pdf" disabled={Boolean(uploading)} onChange={async (event) => {
+          }}><option value="">Choose a file</option>{(draft.mediaType === "photo" ? imageAssets : fileAssets)?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>}
+          {draft.mediaType !== "video" && <label className="admin-logo-upload">
+            {uploading === "file" ? <Spinner /> : draft.mediaType === "photo" ? <ImageIcon /> : <UploadIcon />}<span>{uploading === "file" ? "Uploading…" : draft.mediaType === "photo" ? "Upload gallery image" : "Upload PDF, Word, or PowerPoint file"}</span>
+            <input type="file" accept={draft.mediaType === "photo" ? "image/jpeg,image/png,image/webp,image/avif" : ".pdf,.doc,.docx,.ppt,.pptx,application/pdf"} disabled={Boolean(uploading)} onChange={async (event) => {
               const file = event.target.files?.[0]
               if (!file) return
               setUploading("file")
               try {
-                const storageId = await uploadAdminAsset({ file, category:"document", uploadUrl:generateUploadUrl, register })
+                const storageId = await uploadAdminAsset({ file, category:draft.mediaType === "photo" ? "media" : "document", uploadUrl:generateUploadUrl, register })
                 setDraft((current) => ({ ...current, fileStorageId:storageId, fileName:file.name, mimeType:file.type }))
-                toast.success("Publication file uploaded and selected.")
+                toast.success(draft.mediaType === "photo" ? "Gallery image uploaded and selected." : "Publication file uploaded and selected.")
               } catch (error) {
                 toast.error(error instanceof Error ? error.message : "File upload failed.")
               } finally {
@@ -1533,13 +1540,15 @@ function MediaPublicationPanel() {
                 event.target.value = ""
               }
             }} />
-          </label>
+          </label>}
+          {draft.mediaType === "video" && <Field label="YouTube video URL" value={draft.youtubeUrl ?? ""} placeholder="https://www.youtube.com/watch?v=…" onValueChange={(value) => setDraft({ ...draft, youtubeUrl:value })} />}
           <Field label="Display order" type="number" value={String(draft.order)} onValueChange={(value) => setDraft({ ...draft, order:Number(value) })} />
           <label className="admin-field"><span>Publication status</span><select value={draft.status} onChange={(event) => setDraft({ ...draft, status:event.target.value as "draft" | "published" })}><option value="draft">Draft</option><option value="published">Published</option></select></label>
         </div>
         <div className="admin-editor-actions">
           <Button onClick={async () => {
-            if (!draft.fileStorageId) { toast.error("Choose or upload a publication file first."); return }
+            if (draft.mediaType !== "video" && !draft.fileStorageId) { toast.error(draft.mediaType === "photo" ? "Choose or upload a gallery image first." : "Choose or upload a publication file first."); return }
+            if (draft.mediaType === "video" && !draft.youtubeUrl?.trim()) { toast.error("Enter a YouTube video URL first."); return }
             try {
               await saveItem({
                 ...(existing ? { id:existing._id } : {}),
@@ -1547,19 +1556,21 @@ function MediaPublicationPanel() {
                 slug:draft.slug,
                 title:draft.title,
                 description:draft.description,
+                mediaType:draft.mediaType,
                 coverStorageId:draft.coverStorageId,
                 fileStorageId:draft.fileStorageId,
                 fileName:draft.fileName,
                 mimeType:draft.mimeType,
+                youtubeUrl:draft.youtubeUrl,
                 order:draft.order,
                 status:draft.status,
               })
-              toast.success("Publication saved.")
+              toast.success(draft.mediaType === "photo" ? "Photo saved." : draft.mediaType === "video" ? "Video saved." : "Publication saved.")
               setSelected("new")
             } catch (error) {
               toast.error(error instanceof Error ? error.message : "The publication could not be saved.")
             }
-          }}><SaveIcon /> Save publication</Button>
+          }}><SaveIcon /> Save {draft.mediaType}</Button>
           {existing && <ConfirmDelete label={existing.title} onConfirm={async () => { await removeItem({ id:existing._id }); setSelected("new") }} />}
         </div>
       </div>

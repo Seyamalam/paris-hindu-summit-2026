@@ -113,6 +113,13 @@ const mediaSections = [
       "Research papers, policy briefs, backgrounders, and verified supporting material.",
     order: 3,
   },
+  {
+    slug: "images-and-videos",
+    name: "Images & Videos",
+    description:
+      "Photographs and films documenting the summit, its participants, and the continuing public record.",
+    order: 4,
+  },
 ] as const
 
 const settings = {
