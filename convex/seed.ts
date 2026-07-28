@@ -267,7 +267,7 @@ const sectionCopyEntries = [
     slug:"home-evidence-heading",
     parentSlug:"home",
     eyebrow:"Bangladesh · the record",
-    title:"Numbers that should stop the room.",
+    title:"The Numbers That Leave the Room Silent",
     body:"Source: summit concept note and cited organisations. Detailed citations and methodology will accompany the evidence archive.",
   },
   {
@@ -490,8 +490,8 @@ const sectionCopyEntries = [
   {
     slug:"participate-contact-heading",
     parentSlug:"participate",
-    eyebrow:"Contact the summit",
-    title:"Start the right conversation.",
+    eyebrow:"Contact with us",
+    title:"We will get back to you with answers.",
     summary:"General enquiries · Registration · Media · Donation · Partnership",
   },
   {
@@ -1561,6 +1561,24 @@ export const seedInitialContent = internalMutation({
           "The Stripe-ready donation experience runs in demo mode until the organisers add live credentials."
       ) {
         await ctx.db.patch(existing._id, { body: value.body, updatedAt: now })
+      } else if (
+        existing.slug === "home-evidence-heading" &&
+        existing.title === "Numbers that should stop the room."
+      ) {
+        await ctx.db.patch(existing._id, {
+          title: value.title,
+          updatedAt: now,
+        })
+      } else if (
+        existing.slug === "participate-contact-heading" &&
+        existing.eyebrow === "Contact the summit" &&
+        existing.title === "Start the right conversation."
+      ) {
+        await ctx.db.patch(existing._id, {
+          eyebrow: value.eyebrow,
+          title: value.title,
+          updatedAt: now,
+        })
       }
       cmsEntriesUpserted += 1
     }

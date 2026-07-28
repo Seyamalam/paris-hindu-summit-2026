@@ -2712,15 +2712,10 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   max-width: 1050px;
   margin: 10px 0 0;
   color: var(--assembly-ink);
-  font: 820 clamp(32px, 4.4vw, 64px) / 0.92 var(--font-body-stack);
-  letter-spacing: -0.06em;
+  font: 820 clamp(28px, 3.3vw, 48px) / 1 var(--font-body-stack);
+  letter-spacing: -0.045em;
   text-transform: uppercase;
   overflow-wrap: anywhere;
-}
-.document-accordion details[data-document-category="agenda"] summary h2 {
-  font-size: clamp(28px, 3.3vw, 48px);
-  line-height: 1;
-  letter-spacing: -0.045em;
 }
 .document-accordion summary > svg {
   width: 24px;
@@ -2909,9 +2904,6 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
     gap: 12px;
   }
   .document-accordion summary h2 {
-    font-size: clamp(28px, 9vw, 40px);
-  }
-  .document-accordion details[data-document-category="agenda"] summary h2 {
     font-size: clamp(25px, 7.6vw, 34px);
   }
   .document-accordion-body {

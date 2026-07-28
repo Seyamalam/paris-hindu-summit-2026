@@ -145,7 +145,7 @@ export default function HomePage() {
       <section className="evidence-band">
         <div className="section-heading compact">
           <p className="kicker"><ManagedText slug="home-evidence-heading" field="eyebrow" fallback="Bangladesh · the record" /></p>
-          <h2><ManagedText slug="home-evidence-heading" field="title" fallback="Numbers that should stop the room." /></h2>
+          <h2><ManagedText slug="home-evidence-heading" field="title" fallback="The Numbers That Leave the Room Silent" /></h2>
         </div>
         <EvidenceStats />
         <p className="source-note">
