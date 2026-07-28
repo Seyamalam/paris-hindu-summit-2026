@@ -519,62 +519,69 @@ main {
 }
 .partner-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   border-top: 1px solid var(--assembly-rule);
   border-left: 1px solid var(--assembly-rule);
 }
 .partner-card {
-  min-height: 280px;
+  min-height: 250px;
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  gap: 22px;
-  padding: clamp(24px, 3vw, 42px);
+  grid-template-rows: auto auto 1fr;
+  gap: 24px;
+  padding: clamp(24px, 2.5vw, 34px);
   background: var(--assembly-surface);
   border-right: 1px solid var(--assembly-rule);
   border-bottom: 1px solid var(--assembly-rule);
+  transition: background-color 180ms ease, transform 180ms ease;
 }
-.partner-card:first-child {
-  grid-row: span 2;
-  min-height: 560px;
-  color: #fff;
-  background: var(--assembly-blue);
+.partner-card:hover {
+  background: color-mix(in srgb, var(--assembly-surface) 92%, var(--assembly-blue));
+  transform: translateY(-2px);
 }
-.partner-card > span,
-.partner-card small {
+.partner-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.partner-card-meta span,
+.partner-card-meta small {
   font: 750 9px var(--font-mono-stack);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.partner-card > span {
+.partner-card-meta span {
   color: var(--assembly-red);
 }
-.partner-card:first-child > span {
-  color: #ff7c83;
+.partner-card-meta small {
+  color: var(--ash);
 }
 .partner-identity {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
+  gap: 20px;
 }
-.partner-identity img {
-  width: min(180px, 80%);
-  height: 80px;
+.partner-logo-frame {
+  width: 144px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid var(--assembly-rule);
+}
+.partner-logo-frame img {
+  width: 120px;
+  height: 60px;
   object-fit: contain;
-  object-position: left center;
+  object-position: center;
 }
 .partner-identity b {
-  max-width: 420px;
+  max-width: 320px;
   color: var(--assembly-ink);
-  font: 850 clamp(27px, 3vw, 48px)/0.92 var(--font-body-stack);
-  letter-spacing: -0.055em;
-  text-transform: uppercase;
-}
-.partner-identity img + b {
-  font-size: clamp(22px, 2.4vw, 36px);
-}
-.partner-card:first-child .partner-identity b {
-  color: #fff;
+  font: 800 clamp(20px, 2vw, 28px)/1.05 var(--font-body-stack);
+  letter-spacing: -0.035em;
 }
 .partner-card > p {
   max-width: 370px;
@@ -582,12 +589,6 @@ main {
   color: var(--ash);
   font-size: 13px;
   line-height: 1.65;
-}
-.partner-card:first-child > p {
-  color: #dce6fa;
-}
-.partner-card small {
-  color: var(--assembly-red);
 }
 
 /* Admin-extensible regional forum */
@@ -1609,11 +1610,6 @@ main {
   .partner-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .partner-card:first-child {
-    grid-column: span 2;
-    grid-row: auto;
-    min-height: 360px;
-  }
 }
 
 @media (max-width: 900px) {
@@ -1732,12 +1728,8 @@ main {
   .partner-grid {
     grid-template-columns: 1fr;
   }
-  .partner-card:first-child {
-    grid-column: auto;
-    min-height: 330px;
-  }
   .partner-card {
-    min-height: 250px;
+    min-height: 230px;
     padding: 28px 24px;
   }
   .regional-intro {
