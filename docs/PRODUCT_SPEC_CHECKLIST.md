@@ -275,6 +275,8 @@ Never make these editable as plain content:
 - [x] After every Git commit, run `bun run convex:deploy:prod`.
 - [x] The initial-content seed is first-install-only and becomes a verified no-op once Admin-managed site content exists.
 - [x] Re-running the seed cannot restore administrator-deleted Evidence, Programme, Engage, support, legal, partner, media, or other fixture records.
+- [x] Production seeding fails closed, and retired content migration/repair functions are absent from the deployed API.
+- [x] Releases preserve every production content table and stored file; only authenticated Admin and operational form/payment flows may write live data.
 - [x] Public managed lists use stable loading silhouettes rather than briefly rendering empty or fallback states while Convex resolves.
 - [x] Media item saves omit absent optional storage and YouTube fields, allowing photo-gallery uploads to persist.
 - [x] Media item saves validate live section and asset selections, generate safe slugs when omitted, and persist canonical registered-file metadata.

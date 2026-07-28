@@ -33,9 +33,8 @@ bun run convex:deploy:prod
 bun run convex:backup:dev
 bun run convex:backup:prod
 
-# First-install-only content seed (a no-op after site settings exist)
+# Development/bootstrap content seed
 bun run convex:seed:dev
-bun run convex:seed:prod
 ```
 
 Each command uses `scripts/convex-key.mjs` to read the selected ignored file and
@@ -43,15 +42,15 @@ pass its key directly to the Convex subprocess. It works when the Convex CLI is
 logged out and prevents the production command from silently using the
 development deployment.
 
-`convex:deploy:prod` and `convex:seed:prod` automatically create and checksum a
-full production snapshot before doing anything else. Snapshots include database
-documents, Better Auth records, and Convex file storage. They are written outside
-the Git repository under `../../convex-backups/automatic/<timestamp>/`.
+`convex:deploy:prod` automatically creates and checksums a full production
+snapshot before doing anything else. Snapshots include database documents,
+Better Auth records, and Convex file storage. They are written outside the Git
+repository under `../../convex-backups/automatic/<timestamp>/`.
 
-The seed must not be used as a live-content migration. It exits without writes
-as soon as the primary site settings record exists, preserving all Admin edits
-and intentional deletions. Live migrations must target an exact legacy value
-and run only after a production backup.
+Production seeding fails closed. Retired content migrations and repair mutations
+are removed from the deployed API. Make live editorial changes only through
+authenticated Admin functions; a release must leave every production content
+table and stored file unchanged.
 
 Production is always the editorial source of truth. Never copy development data
 into production. When development needs current client content, export

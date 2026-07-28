@@ -18,5 +18,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - After every Git commit, run `bun run convex:deploy:prod`. This uses the
   ignored production deploy-key file and does not depend on a logged-in Convex
   CLI session.
-- If development seed/fixture content changes, run the same idempotent seed in
-  production and verify both environments. Never seed personal or secret data.
+- Production is established and all live content is Admin-owned. Never run a
+  seed, fixture sync, repair mutation, or reusable content migration against
+  production. Use an authenticated Admin mutation for editorial changes and
+  verify that production content-table fingerprints are unchanged by releases.
