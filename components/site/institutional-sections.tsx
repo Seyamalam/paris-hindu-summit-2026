@@ -39,6 +39,7 @@ export function PartnerWall() {
                   alt={`${organization.name} logo`}
                   width={180}
                   height={80}
+                  style={{ width: "180px", height: "80px" }}
                 />
               )}
               <b>{organization.name}</b>
