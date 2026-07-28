@@ -1491,7 +1491,7 @@ function MediaPublicationPanel() {
         <div className="admin-form-grid">
           <label className="admin-field"><span>Submenu section</span><select value={draft.sectionSlug} onChange={(event) => setDraft({ ...draft, sectionSlug:event.target.value })}><option value="">Choose a section</option>{data?.sections.map((section) => <option key={section._id} value={section.slug}>{section.name}</option>)}</select></label>
           <label className="admin-field"><span>Item format</span><select value={draft.mediaType} onChange={(event) => setDraft({ ...draft, mediaType:event.target.value as typeof draft.mediaType, fileStorageId:undefined, fileName:"", mimeType:"", youtubeUrl:"" })}><option value="document">Downloadable publication</option><option value="photo">Photo gallery image</option><option value="video">YouTube video</option></select></label>
-          <Field label="URL slug" value={draft.slug} onValueChange={(value) => setDraft({ ...draft, slug:value })} />
+          <Field label="URL slug (optional)" value={draft.slug} placeholder="Generated from the title" onValueChange={(value) => setDraft({ ...draft, slug:value })} />
           <Field label="Title" value={draft.title} onValueChange={(value) => setDraft({ ...draft, title:value })} />
           <Field label="Description" multiline value={draft.description} onValueChange={(value) => setDraft({ ...draft, description:value })} />
           {draft.mediaType === "document" && <label className="admin-field"><span>Optional cover image</span><select value={draft.coverStorageId ?? ""} onChange={(event) => setDraft({ ...draft, coverStorageId:(event.target.value || undefined) as Id<"_storage"> | undefined })}><option value="">No cover image</option>{imageAssets?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>}
@@ -1541,21 +1541,31 @@ function MediaPublicationPanel() {
         </div>
         <div className="admin-editor-actions">
           <Button onClick={async () => {
+            const sectionExists = data?.sections.some((section) => section.slug === draft.sectionSlug)
+            const title = draft.title.trim()
+            const slug = (draft.slug || title).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+            const selectedFile = assets?.find((asset) => asset.storageId === draft.fileStorageId)
+            if (!sectionExists) { toast.error("Choose an existing submenu section."); return }
+            if (!title) { toast.error("Enter a title."); return }
+            if (!slug) { toast.error("Enter a URL slug using letters or numbers."); return }
             if (draft.mediaType !== "video" && !draft.fileStorageId) { toast.error(draft.mediaType === "photo" ? "Choose or upload a gallery image first." : "Choose or upload a publication file first."); return }
             if (draft.mediaType === "video" && !draft.youtubeUrl?.trim()) { toast.error("Enter a YouTube video URL first."); return }
             try {
               await saveItem({
                 ...(existing ? { id:existing._id } : {}),
                 sectionSlug:draft.sectionSlug,
-                slug:draft.slug,
-                title:draft.title,
+                slug,
+                title,
                 description:draft.description,
                 mediaType:draft.mediaType,
-                coverStorageId:draft.coverStorageId,
-                fileStorageId:draft.fileStorageId,
-                fileName:draft.fileName,
-                mimeType:draft.mimeType,
-                youtubeUrl:draft.youtubeUrl,
+                ...(draft.mediaType === "document" && draft.coverStorageId ? { coverStorageId:draft.coverStorageId } : {}),
+                ...(draft.mediaType === "video"
+                  ? { fileName:"", mimeType:"", youtubeUrl:draft.youtubeUrl }
+                  : {
+                      fileStorageId:draft.fileStorageId!,
+                      fileName:selectedFile?.fileName ?? draft.fileName,
+                      mimeType:selectedFile?.mimeType ?? draft.mimeType,
+                    }),
                 order:draft.order,
                 status:draft.status,
               })

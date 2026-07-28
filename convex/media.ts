@@ -262,19 +262,32 @@ export const saveItem = mutation({
   handler: async (ctx, args) => {
     const actor = await getAdmin(ctx)
     const { id, ...fields } = args
-    if (!fields.sectionSlug.trim() || !fields.slug.trim() || !fields.title.trim()) {
-      throw new ConvexError("Section, title, and slug are required.")
+    const sectionSlug = fields.sectionSlug.trim()
+    const title = fields.title.trim()
+    const slug =
+      fields.slug.trim() ||
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+    if (!sectionSlug || !title) {
+      throw new ConvexError("Choose a section and enter a title.")
     }
-    const coverStorageId = fields.coverStorageId
-    const fileStorageId = fields.fileStorageId
+    if (!slug) {
+      throw new ConvexError("Enter a URL slug using letters or numbers.")
+    }
+    const coverStorageId =
+      fields.mediaType === "document" ? fields.coverStorageId : undefined
+    const fileStorageId =
+      fields.mediaType === "video" ? undefined : fields.fileStorageId
     const [section, conflictingItem, fileAsset, coverAsset] = await Promise.all([
       ctx.db
         .query("mediaSections")
-        .withIndex("by_slug", (q) => q.eq("slug", fields.sectionSlug.trim()))
+        .withIndex("by_slug", (q) => q.eq("slug", sectionSlug))
         .first(),
       ctx.db
         .query("mediaItems")
-        .withIndex("by_slug", (q) => q.eq("slug", fields.slug.trim()))
+        .withIndex("by_slug", (q) => q.eq("slug", slug))
         .first(),
       fileStorageId
         ? ctx.db
@@ -323,23 +336,21 @@ export const saveItem = mutation({
         throw new ConvexError("Video gallery items must use a YouTube URL.")
       }
     }
-    if (fields.coverStorageId && !coverAsset) {
+    if (coverStorageId && !coverAsset) {
       throw new ConvexError("Choose a cover from the managed media library.")
     }
     const value = {
-      sectionSlug: fields.sectionSlug.trim(),
-      slug: fields.slug.trim(),
-      title: fields.title.trim(),
+      sectionSlug,
+      slug,
+      title,
       description: fields.description,
       mediaType: fields.mediaType,
-      fileName: fields.mediaType === "video" ? "" : fields.fileName,
-      mimeType: fields.mediaType === "video" ? "" : fields.mimeType,
+      fileName: fields.mediaType === "video" ? "" : fileAsset!.fileName,
+      mimeType: fields.mediaType === "video" ? "" : fileAsset!.mimeType,
       ...(fields.mediaType === "video"
         ? { youtubeUrl: youtubeUrl! }
-        : { fileStorageId: fields.fileStorageId! }),
-      ...(fields.coverStorageId
-        ? { coverStorageId: fields.coverStorageId }
-        : {}),
+        : { fileStorageId: fileStorageId! }),
+      ...(coverStorageId ? { coverStorageId } : {}),
       order: fields.order,
       status: fields.status,
       updatedAt: Date.now(),
