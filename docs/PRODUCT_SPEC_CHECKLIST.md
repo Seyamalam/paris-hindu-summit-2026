@@ -269,6 +269,8 @@ Never make these editable as plain content:
 - [x] Re-running the seed preserves administrator-deleted chart series and points instead of restoring fixture rows.
 - [x] Media item saves omit absent optional storage and YouTube fields, allowing photo-gallery uploads to persist.
 - [x] Partner and sponsor logos use a compact, uniform institutional-card presentation across responsive layouts.
+- [x] The public visual system uses warm ivory, deep indigo, antique gold, and charcoal across light and dark themes.
+- [x] The hero date has stronger visual weight, Proposed Agenda headings use a more readable scale, and the Advisory Board follows the Team’s responsive three-column roster.
 - [x] Production seeds contain no registrations, donor data, credentials, tokens, or personal accounts.
 - [x] Every production Convex deploy and production seed automatically creates a checksummed full snapshot, including authentication records and stored files.
 - [x] Production is the editorial source of truth; development may be refreshed from production only after separate backups of both deployments.
