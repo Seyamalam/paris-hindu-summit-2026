@@ -71,7 +71,12 @@ export const applyJuly28IssueContent = internalMutation({
       (entry) => entry.category === "pageCopy"
     )
 
-    if (engagePage) {
+    if (
+      engagePage?.eyebrow === "Join the forum" &&
+      engagePage.title === "Choose how you enter the work." &&
+      engagePage.summary ===
+        "Register as a delegate, volunteer, partner, sponsor, donor, or accredited member of the media."
+    ) {
       await ctx.db.patch(engagePage._id, {
         eyebrow: "Attend and support",
         title: "There is more than one way to enter the work",

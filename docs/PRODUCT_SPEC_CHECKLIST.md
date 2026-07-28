@@ -273,8 +273,9 @@ Never make these editable as plain content:
 - [x] Every schema/function change passes `bun run typecheck`.
 - [x] Every app change passes `bun run lint` and `bun run build`.
 - [x] After every Git commit, run `bun run convex:deploy:prod`.
-- [x] If fixture/seed data changes in development, run the same idempotent seed in production and verify counts.
-- [x] Re-running the seed preserves administrator-deleted chart series and points instead of restoring fixture rows.
+- [x] The initial-content seed is first-install-only and becomes a verified no-op once Admin-managed site content exists.
+- [x] Re-running the seed cannot restore administrator-deleted Evidence, Programme, Engage, support, legal, partner, media, or other fixture records.
+- [x] Public managed lists use stable loading silhouettes rather than briefly rendering empty or fallback states while Convex resolves.
 - [x] Media item saves omit absent optional storage and YouTube fields, allowing photo-gallery uploads to persist.
 - [x] Media item saves validate live section and asset selections, generate safe slugs when omitted, and persist canonical registered-file metadata.
 - [x] Partner and sponsor logos use a compact, uniform institutional-card presentation across responsive layouts.

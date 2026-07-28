@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { ManagedPageHero } from "@/components/site/managed-page-hero"
+import { ContentListSkeleton } from "@/components/site/content-list-skeleton"
 import { Reveal } from "@/components/site/reveal"
 
 type DocumentCategory =
@@ -272,6 +273,22 @@ export function CmsDocumentPage({
     eyebrow:"Five-year delivery",
     title:"Implementation Timeline",
   })
+
+  if (entries === undefined) {
+    return (
+      <>
+        <ManagedPageHero
+          slug={category === "partnership" ? "partnership-framework" : category}
+          eyebrow={eyebrow}
+          title={title}
+          intro={intro}
+        />
+        <section className="document-accordion section-shell">
+          <ContentListSkeleton cards={4} />
+        </section>
+      </>
+    )
+  }
 
   return (
     <>
