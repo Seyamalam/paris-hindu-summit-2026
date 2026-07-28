@@ -79,6 +79,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Overview is editable from Admin.
 - [x] About includes the client-approved hero copy and an editable six-card “Present Moment” section.
 - [x] Organizing Team is editable from Admin.
+- [x] Advisory Board has its own public route and navigation entry, separate from the Organising Committee.
 - [x] Advisory Board is editable from Admin and published on the Committee page.
 - [x] Proposed Agenda is editable from Admin and published on `/agenda`.
 - [x] Paris Resolution 2026 is editable from Admin and published on `/resolution`.
@@ -175,9 +176,9 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 ### Organizing Team and Advisory Board tabs — dynamic
 
-- [x] One purpose-built “Organizing Team and Advisory Board” editor switches between both groups.
+- [x] Organising Committee and Advisory Board have separate Page Studio navigation entries, live previews, and people editors.
 - [x] Team and Advisory Board fields support name, short introduction, biography, direct profile-picture upload/selection, order, and publication state.
-- [x] Published portraits and biographies render on the public committee page.
+- [x] Published committee portraits render on `/committee`; published advisor portraits render separately on `/advisory-board`.
 
 ### Partners & Sponsors tab — dynamic
 

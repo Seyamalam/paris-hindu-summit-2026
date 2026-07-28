@@ -77,7 +77,8 @@ export function SiteHeader() {
     })
   }, [settings?.faviconUrl])
   const aboutLinks = [
-    ["/about", "Overview"], ["/committee", "Organizing Team and Advisory Board"],
+    ["/about", "Overview"], ["/committee", "Organising Committee"],
+    ["/advisory-board", "Advisory Board"],
     ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
     ["/strategy", "Five-year strategy"], ["/partnership-framework", "International partnerships"],
   ]

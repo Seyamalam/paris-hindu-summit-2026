@@ -11,6 +11,8 @@ export const navItems = [
   { href: "/about", label: "About" },
   { href: "/programme", label: "Programme" },
   { href: "/speakers", label: "Speakers" },
+  { href: "/committee", label: "Organising Committee" },
+  { href: "/advisory-board", label: "Advisory Board" },
   { href: "/regional", label: "Regional" },
   { href: "/engage", label: "Attend and Support" },
   { href: "/partners", label: "Partners" },

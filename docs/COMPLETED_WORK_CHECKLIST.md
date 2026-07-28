@@ -73,6 +73,7 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ Programme.
 - ✅ Speakers.
 - ✅ Organizing Committee.
+- ✅ Dedicated Advisory Board page and navigation entry.
 - ✅ Media and Publications.
 - ✅ Participate and Registration.
 - ✅ Engage.
