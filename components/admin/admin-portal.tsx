@@ -54,7 +54,8 @@ const websitePages = [
   ["about", "About", "/about", FileTextIcon],
   ["programme", "Programme", "/programme", CalendarRangeIcon],
   ["speakers", "Speakers", "/speakers", Users2Icon],
-  ["teamBoard", "Organizing Team & Board", "/committee", UserCogIcon],
+  ["organizingTeam", "Organising Committee", "/committee", UserCogIcon],
+  ["advisoryBoard", "Advisory Board", "/advisory-board", UserCogIcon],
   ["agenda", "Proposed Agenda", "/agenda", FileTextIcon],
   ["resolution", "Paris Resolution", "/resolution", FileTextIcon],
   ["strategy", "5-Year Strategic Plan", "/strategy", BarChart3Icon],
@@ -420,7 +421,8 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "about") return <AboutEditor />
   if (page === "programme") return <ProgrammeAdmin />
   if (page === "speakers") return <PeopleEditor mode="speaker" />
-  if (page === "teamBoard") return <PeopleEditor mode="team" />
+  if (page === "organizingTeam") return <PeopleEditor mode="team" />
+  if (page === "advisoryBoard") return <PeopleEditor mode="advisory" />
   if (page === "agenda") return <StructuredDocumentPanel category="agenda" />
   if (page === "resolution") return <StructuredDocumentPanel category="resolution" />
   if (page === "strategy") return <StructuredDocumentPanel category="strategy" />
@@ -1101,7 +1103,8 @@ const editorialPageLabels:Record<string, string> = {
   about:"About",
   context:"Context",
   speakers:"Speakers",
-  committee:"Committee",
+  committee:"Organising Committee",
+  "advisory-board":"Advisory Board",
   participate:"Participate",
   engage:"Attend and Support",
   faq:"FAQ",
@@ -1313,8 +1316,8 @@ async function uploadAdminAsset({
   return result.storageId
 }
 
-function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
-  const [category, setCategory] = useState<"speaker" | "team" | "advisory">(mode === "speaker" ? "speaker" : "team")
+function PeopleEditor({ mode }: { mode:"speaker" | "team" | "advisory" }) {
+  const category = mode
   const entries = useQuery(api.cms.listForAdmin, { category })
   const assets = useQuery(api.assets.list)
   const save = useMutation(api.cms.save)
@@ -1343,16 +1346,7 @@ function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
 
   return (
     <section className="admin-panel" data-compact="true">
-      <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : "Organizing Team and Advisory Board"} copy="Add each person with a name, role, full biography, and profile picture. The public page creates a short preview and a Read more control automatically." />
-      {mode === "team" && (
-        <label className="admin-field admin-record-select">
-          <span>People group</span>
-          <select value={category} onChange={(event) => setCategory(event.target.value as typeof category)}>
-            <option value="team">Organizing Team</option>
-            <option value="advisory">Advisory Board</option>
-          </select>
-        </label>
-      )}
+      <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : mode === "team" ? "Organising Committee" : "Advisory Board"} copy="Add each person with a name, role, full biography, and profile picture. The public page creates a short preview and a Read more control automatically." />
       <AdminRecordSelect
         label="Person to edit"
         value={selected}

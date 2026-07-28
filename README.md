@@ -26,6 +26,7 @@ The complete website includes matching **light and dark modes**. The header cont
 | `/partnership-framework` | International cooperation and future institutional framework             |
 | `/speakers`    | Confirmed and proposed contributors                                                 |
 | `/committee`   | Organising committee and responsibilities                                           |
+| `/advisory-board` | International Advisory Board and strategic guidance                              |
 | `/media`       | Research, publication, documentary, press, and media resources                      |
 | `/participate` | Registration, volunteering, sponsorship, media accreditation, contact, and donation |
 | `/engage`      | Convex-managed ways to attend, support, volunteer, partner, and amplify              |

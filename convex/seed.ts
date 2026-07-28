@@ -666,13 +666,25 @@ const cmsEntries = [
   },
   {
     category: "pageCopy" as const,
+    slug: "advisory-board",
+    title: "Guidance with an international horizon.",
+    eyebrow: "International advisory board",
+    summary:
+      "Independent advisors bring experience in human rights, diplomacy, law, policy, community leadership, and international coordination to the summit’s continuing work.",
+    body: "",
+    linkUrl: "/advisory-board",
+    order: 6,
+    featured: false,
+  },
+  {
+    category: "pageCopy" as const,
     slug: "media",
     title: "The public record must travel.",
     eyebrow: "Media & Publication",
     summary: "Research, reports, interviews, releases, documentary work, and media resources designed to keep verified evidence visible before, during, and after Paris.",
     body: "",
     linkUrl: "/media",
-    order: 6,
+    order: 7,
     featured: false,
   },
   {

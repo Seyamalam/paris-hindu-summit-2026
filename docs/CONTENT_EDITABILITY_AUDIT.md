@@ -41,7 +41,7 @@ are still maintained in code.
 - Every remaining visitor-facing editorial section through the Editorial
   Sections editor, grouped by page. This includes homepage framing and evidence
   statistics, About outcomes, Context chapters and charter points, committee
-  responsibility copy, speaker participation copy, participation pathways,
+  responsibility copy, Advisory Board framing, speaker participation copy, participation pathways,
   partner and regional introductions, donation-state copy, legal notices, and
   shared header/footer language.
 

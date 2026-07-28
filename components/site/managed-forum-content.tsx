@@ -140,69 +140,73 @@ function ExpandableBio({ bio }: { bio?: string }) {
 }
 
 export function ManagedCommittee() {
-  const advisors = useQuery(api.cms.listPublished, { category: "advisory" })
   const managedTeam = useQuery(api.cms.listPublished, { category: "team" })
   const team = managedTeam ?? []
-  const advisoryHeading = useEditorialRecord("committee-advisory-heading", {
-    eyebrow:"Strategic guidance",
-    title:"Advisory Board",
-    summary:"International outreach, partnerships, fundraising, and regional coordination carried by named advisors.",
-  })
   const teamHeading = useEditorialRecord("committee-team-heading", {
     eyebrow:"Organising Committee",
     title:"Working across borders, disciplines, and responsibilities.",
   })
 
   return (
-    <>
-      <section className="committee-roster section-shell" id="advisory">
-        <div className="section-heading compact">
-          <p className="kicker">{advisoryHeading.eyebrow}</p>
-          <h2>{advisoryHeading.title}</h2>
-          <p>{advisoryHeading.summary}</p>
-        </div>
-        <div className="advisor-grid">
-          {advisors?.map((person, index) => (
-            <Reveal key={person._id} delay={index * 70}>
-              <article>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <PersonPortrait
-                  image={person.imageUrl}
-                  name={person.title}
-                  sizes="(max-width: 720px) 70vw, 32vw"
-                />
-                {person.role && <p className="kicker">{person.role}</p>}
-                <h3>{person.title}</h3>
-                <ExpandableBio bio={person.body} />
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-      <section className="committee-roster section-shell" id="organising-team">
-        <div className="section-heading compact">
-          <p className="kicker">{teamHeading.eyebrow}</p>
-          <h2>{teamHeading.title}</h2>
-        </div>
-        <div className="roster-grid managed-roster">
-          {team.map((person, index) => (
-            <article key={person._id}>
+    <section className="committee-roster section-shell" id="organising-team">
+      <div className="section-heading compact">
+        <p className="kicker">{teamHeading.eyebrow}</p>
+        <h2>{teamHeading.title}</h2>
+      </div>
+      <div className="roster-grid managed-roster">
+        {team.map((person, index) => (
+          <article key={person._id}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <PersonPortrait
+              image={"imageUrl" in person ? person.imageUrl : null}
+              name={person.title}
+              sizes="(max-width: 720px) 70vw, 24vw"
+            />
+            <div>
+              <h3>{person.title}</h3>
+              {person.role && <Badge variant="outline">{person.role}</Badge>}
+              <ExpandableBio bio={person.body} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export function ManagedAdvisoryBoard() {
+  const advisors = useQuery(api.cms.listPublished, { category: "advisory" })
+  const advisoryHeading = useEditorialRecord("committee-advisory-heading", {
+    eyebrow:"Strategic guidance",
+    title:"Advisory Board",
+    summary:"International outreach, partnerships, fundraising, and regional coordination carried by named advisors.",
+  })
+
+  return (
+    <section className="committee-roster section-shell" id="advisory-board">
+      <div className="section-heading compact">
+        <p className="kicker">{advisoryHeading.eyebrow}</p>
+        <h2>{advisoryHeading.title}</h2>
+        <p>{advisoryHeading.summary}</p>
+      </div>
+      <div className="advisor-grid">
+        {advisors?.map((person, index) => (
+          <Reveal key={person._id} delay={index * 70}>
+            <article>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <PersonPortrait
-                image={"imageUrl" in person ? person.imageUrl : null}
+                image={person.imageUrl}
                 name={person.title}
-                sizes="(max-width: 720px) 70vw, 24vw"
+                sizes="(max-width: 720px) 70vw, 32vw"
               />
-              <div>
-                <h3>{person.title}</h3>
-                {person.role && <Badge variant="outline">{person.role}</Badge>}
-                <ExpandableBio bio={person.body} />
-              </div>
+              {person.role && <p className="kicker">{person.role}</p>}
+              <h3>{person.title}</h3>
+              <ExpandableBio bio={person.body} />
             </article>
-          ))}
-        </div>
-      </section>
-    </>
+          </Reveal>
+        ))}
+      </div>
+    </section>
   )
 }
 
