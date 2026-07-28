@@ -6,8 +6,8 @@ import { useQuery } from "convex/react"
 import {
   ArrowRightIcon,
   CalendarDaysIcon,
+  CalendarRangeIcon,
   MapPinIcon,
-  PlayIcon,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -17,16 +17,16 @@ import { HeroCountdown } from "@/components/site/hero-countdown"
 import { ManagedText, useEditorialRecord } from "@/components/site/managed-editorial"
 import {
   EvidenceCharts,
+  EvidenceStats,
   FeaturedSpeakers,
   HomeInfoBar,
-  WhyAndChallenges,
 } from "@/components/site/home-dynamic-sections"
 import {
   PartnerWall,
   RegionalSection,
 } from "@/components/site/institutional-sections"
 import { PaymentDialog } from "@/components/site/payment-dialog"
-import { event, evidence } from "@/lib/content"
+import { event } from "@/lib/content"
 import { formatEventDateRange } from "@/lib/event-format"
 
 export default function HomePage() {
@@ -34,9 +34,9 @@ export default function HomePage() {
   const programme = useQuery(api.programme.listPublished)
   const heroActions = useEditorialRecord("home-hero-actions", {
     title:"Reserve a place",
-    secondaryText:"Watch the opening film",
+    secondaryText:"View programme schedule",
     linkUrl:"/participate",
-    body:"/media",
+    body:"/programme",
   })
   const whyIntro = useEditorialRecord("home-why-intro", {
     eyebrow:"Why Paris · Why now",
@@ -94,7 +94,7 @@ export default function HomePage() {
               variant="outline"
               render={<Link href={heroActions.body || "/media"} />}
             >
-              <PlayIcon data-icon="inline-start" /> {heroActions.secondaryText}
+              <CalendarRangeIcon data-icon="inline-start" /> {heroActions.secondaryText}
             </Button>
           </div>
           <div className="hero-meta">
@@ -142,21 +142,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <WhyAndChallenges />
-
       <section className="evidence-band">
         <div className="section-heading compact">
           <p className="kicker"><ManagedText slug="home-evidence-heading" field="eyebrow" fallback="Bangladesh · the record" /></p>
           <h2><ManagedText slug="home-evidence-heading" field="title" fallback="Numbers that should stop the room." /></h2>
         </div>
-        <div className="evidence-grid">
-          {evidence.map((item, index) => (
-            <article key={item.value}>
-              <b><ManagedText slug={["home-evidence-1951", "home-evidence-2022", "home-evidence-2024-25", "home-evidence-2026"][index]} field="title" fallback={item.value} /></b>
-              <p><ManagedText slug={["home-evidence-1951", "home-evidence-2022", "home-evidence-2024-25", "home-evidence-2026"][index]} field="summary" fallback={item.label} /></p>
-            </article>
-          ))}
-        </div>
+        <EvidenceStats />
         <p className="source-note">
           <ManagedText slug="home-evidence-heading" field="body" fallback="Source: summit concept note and cited organisations. Detailed citations and methodology will accompany the evidence archive." />
         </p>

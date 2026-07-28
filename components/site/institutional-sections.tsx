@@ -28,7 +28,7 @@ export function PartnerWall() {
       <div className="partner-grid">
         {organizations.map((organization, index) => (
           <article
-            key={organization.slug}
+            key={organization._id}
             className={`partner-card partner-${organization.tier}`}
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -74,7 +74,7 @@ export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
       )}
       <div className="regional-grid">
         {countries.map((country, index) => (
-          <article key={country.slug}>
+          <article key={country._id}>
             <div className="regional-card-top">
               <span>{country.code}</span>
               <small>

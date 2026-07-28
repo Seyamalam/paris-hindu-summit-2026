@@ -118,7 +118,7 @@ const mediaSections = [
 const settings = {
   eventName:
     "Global Forum on Religious Freedom and Hindu Minority Rights in Bangladesh",
-  shortName: "Paris Assembly",
+  shortName: "Paris Hindu Summit",
   theme: "Justice For Bangladeshi Hindus — Solidarity Without Borders",
   eventStartIso: "2026-10-03T08:30:00+02:00",
   eventEndIso: "2026-10-04T18:00:00+02:00",
@@ -198,7 +198,7 @@ const sectionCopyEntries = [
   {
     slug:"global-brand",
     parentSlug:"global",
-    title:"For dignity & rights",
+    title:"Global Forum on Religious Freedom and Hindu Minority Rights",
     summary:"Global Solidarity Summit for Bangladeshi Hindus",
   },
   {
@@ -218,9 +218,9 @@ const sectionCopyEntries = [
     slug:"home-hero-actions",
     parentSlug:"home",
     title:"Reserve a place",
-    secondaryText:"Watch the opening film",
+    secondaryText:"View programme schedule",
     linkUrl:"/participate",
-    body:"/media",
+    body:"/programme",
   },
   {
     slug:"home-banner",
@@ -682,12 +682,23 @@ const cmsEntries = [
   {
     category: "pageCopy" as const,
     slug: "engage",
-    title: "Attend. Support. Carry it forward.",
-    eyebrow: "Ways into the work",
-    summary: "The assembly is a room, a record and a network. Choose how you want to take part before, during or after Paris.",
+    title: "There is more than one way to enter the work",
+    eyebrow: "Attend and support",
+    summary: "Register as a victim, delegate, researcher or presenter, general audience member, or accredited member of the media.",
     body: "",
     linkUrl: "/engage",
     order: 8,
+    featured: false,
+  },
+  {
+    category: "pageCopy" as const,
+    slug: "faq",
+    title: "Practical answers before Paris.",
+    eyebrow: "Frequently asked questions",
+    summary: "Attendance, access, languages, programme information, media arrangements, and other practical details.",
+    body: "",
+    linkUrl: "/faq",
+    order: 11,
     featured: false,
   },
   {

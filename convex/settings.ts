@@ -3,7 +3,7 @@ import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
 
-export const settingsValidator = v.object({
+export const settingsFieldsValidator = v.object({
   eventName: v.string(),
   shortName: v.string(),
   theme: v.string(),
@@ -40,6 +40,14 @@ export const settingsValidator = v.object({
   footerBody: v.string(),
   registrationOpen: v.boolean(),
   donationsEnabled: v.boolean(),
+  logoStorageId: v.optional(v.id("_storage")),
+  faviconStorageId: v.optional(v.id("_storage")),
+})
+
+export const settingsValidator = v.object({
+  ...settingsFieldsValidator.fields,
+  logoUrl: v.union(v.string(), v.null()),
+  faviconUrl: v.union(v.string(), v.null()),
 })
 
 export const get = query({
@@ -56,12 +64,20 @@ export const get = query({
     void _creationTime
     void key
     void updatedAt
-    return settings
+    return {
+      ...settings,
+      logoUrl: settings.logoStorageId
+        ? await ctx.storage.getUrl(settings.logoStorageId)
+        : null,
+      faviconUrl: settings.faviconStorageId
+        ? await ctx.storage.getUrl(settings.faviconStorageId)
+        : null,
+    }
   },
 })
 
 export const save = mutation({
-  args: settingsValidator.fields,
+  args: settingsFieldsValidator.fields,
   returns: v.null(),
   handler: async (ctx, args) => {
     const actor = await getAdmin(ctx)

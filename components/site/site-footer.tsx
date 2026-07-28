@@ -35,14 +35,14 @@ export function SiteFooter() {
       <div className="footer-grid">
         <div className="footer-brand">
           <Image
-            src="/images/witness-flame-logo.png"
+            src={settings?.logoUrl || "/images/witness-flame-logo.png"}
             alt=""
             width={64}
             height={64}
             aria-hidden="true"
           />
           <div>
-            <b>{settings?.shortName ?? "Paris Assembly"}</b>
+            <b>{settings?.shortName ?? "Paris Hindu Summit"}</b>
             {settings?.eventName && <small>{settings.eventName}</small>}
             <p>{settings?.footerBody ?? event.descriptor}</p>
           </div>
@@ -68,7 +68,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="footer-legal">
-        <span>© 2026 {settings?.shortName ?? "Paris Assembly"}</span>
+        <span>© 2026 {settings?.shortName ?? "Paris Hindu Summit"}</span>
         <span><Link href="/privacy">Privacy</Link> · <Link href="/terms">Terms</Link> · {legal.title}</span>
       </div>
     </footer>

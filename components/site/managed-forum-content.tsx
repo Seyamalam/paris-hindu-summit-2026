@@ -5,11 +5,13 @@ import { useQuery } from "convex/react"
 import {
   ArrowRightIcon,
   BriefcaseBusinessIcon,
+  ChevronDownIcon,
   ChurchIcon,
   HouseIcon,
   LogOutIcon,
   ShieldAlertIcon,
   TriangleAlertIcon,
+  UserRoundIcon,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -86,6 +88,56 @@ export function PresentMoment() {
   )
 }
 
+function PersonPortrait({
+  image,
+  name,
+  sizes,
+  className = "committee-portrait",
+}: {
+  image?: string | null
+  name: string
+  sizes: string
+  className?: string
+}) {
+  return (
+    <div className={`${className} person-portrait`}>
+      {image ? (
+        <Image src={image} alt={name} fill sizes={sizes} />
+      ) : (
+        <span className="person-placeholder" aria-label={`Photo of ${name} not yet available`}>
+          <UserRoundIcon aria-hidden="true" />
+        </span>
+      )}
+    </div>
+  )
+}
+
+function ExpandableBio({ bio }: { bio?: string }) {
+  const cleanBio = bio?.trim() ?? ""
+  if (!cleanBio) return null
+
+  const preview =
+    cleanBio.length > 260
+      ? `${cleanBio.slice(0, 260).replace(/\s+\S*$/, "")}…`
+      : cleanBio
+
+  if (preview === cleanBio) {
+    return <p className="person-bio-copy">{cleanBio}</p>
+  }
+
+  return (
+    <div className="person-bio">
+      <p className="person-bio-copy">{preview}</p>
+      <details>
+        <summary>
+          Read more <ChevronDownIcon aria-hidden="true" />
+        </summary>
+        <p className="person-bio-copy">{cleanBio}</p>
+      </details>
+    </div>
+  )
+}
+
 export function ManagedCommittee() {
   const advisors = useQuery(api.cms.listPublished, { category: "advisory" })
   const managedTeam = useQuery(api.cms.listPublished, { category: "team" })
@@ -113,19 +165,14 @@ export function ManagedCommittee() {
             <Reveal key={person._id} delay={index * 70}>
               <article>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                {person.imageUrl && (
-                  <div className="committee-portrait">
-                    <Image
-                      src={person.imageUrl}
-                      alt={person.title}
-                      fill
-                      sizes="(max-width: 720px) 100vw, 45vw"
-                    />
-                  </div>
-                )}
-                <p className="kicker">{person.role}</p>
+                <PersonPortrait
+                  image={person.imageUrl}
+                  name={person.title}
+                  sizes="(max-width: 720px) 70vw, 32vw"
+                />
+                {person.role && <p className="kicker">{person.role}</p>}
                 <h3>{person.title}</h3>
-                <p>{person.body || person.summary}</p>
+                <ExpandableBio bio={person.body} />
               </article>
             </Reveal>
           ))}
@@ -140,22 +187,15 @@ export function ManagedCommittee() {
           {team.map((person, index) => (
             <article key={person._id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              {"imageUrl" in person && person.imageUrl && (
-                <div className="committee-portrait">
-                  <Image
-                    src={person.imageUrl}
-                    alt={person.title}
-                    fill
-                    sizes="(max-width: 720px) 100vw, 30vw"
-                  />
-                </div>
-              )}
+              <PersonPortrait
+                image={"imageUrl" in person ? person.imageUrl : null}
+                name={person.title}
+                sizes="(max-width: 720px) 70vw, 24vw"
+              />
               <div>
                 <h3>{person.title}</h3>
-                <Badge variant="outline">{person.role}</Badge>
-                {(person.body || person.summary) && (
-                  <p>{person.body || person.summary}</p>
-                )}
+                {person.role && <Badge variant="outline">{person.role}</Badge>}
+                <ExpandableBio bio={person.body} />
               </div>
             </article>
           ))}
@@ -172,7 +212,7 @@ export function ManagedSpeakers() {
           name: speaker.title,
           intro: speaker.role || speaker.summary,
           country: speaker.country,
-          bio: speaker.body || speaker.summary,
+          bio: speaker.body,
           image: speaker.imageUrl,
         }))
 
@@ -183,23 +223,17 @@ export function ManagedSpeakers() {
           <span className="speaker-number">
             {String(index + 1).padStart(2, "0")}
           </span>
-          <div className="speaker-portrait">
-            {speaker.image ? (
-              <Image
-                src={speaker.image}
-                alt={speaker.name}
-                fill
-                sizes="(max-width: 720px) 100vw, 32vw"
-              />
-            ) : (
-              <span aria-hidden="true">{speaker.name.charAt(0)}</span>
-            )}
-          </div>
+          <PersonPortrait
+            image={speaker.image}
+            name={speaker.name}
+            sizes="(max-width: 720px) 70vw, 28vw"
+            className="speaker-portrait"
+          />
           <div>
             <p className="kicker">{speaker.country || "Paris 2026"}</p>
             <h2>{speaker.name}</h2>
-            <h3>{speaker.intro}</h3>
-            <p>{speaker.bio}</p>
+            {speaker.intro && <h3>{speaker.intro}</h3>}
+            <ExpandableBio bio={speaker.bio} />
           </div>
         </article>
       ))}
@@ -229,10 +263,6 @@ export function CmsDocumentPage({
   const mainRecords = category === "strategy"
     ? records.filter((entry) => !["vision", "timeline"].includes(entry.parentSlug))
     : records
-  const resolutionOutcomesHeading = useEditorialRecord("resolution-outcomes-heading", {
-    eyebrow:"After the resolutions",
-    title:"Expected outcomes",
-  })
   const strategyTimelineHeading = useEditorialRecord("strategy-timeline-heading", {
     eyebrow:"Five-year delivery",
     title:"Implementation Timeline",
@@ -253,71 +283,57 @@ export function CmsDocumentPage({
           <p>{strategyVision.body || strategyVision.summary}</p>
         </section>
       )}
-      <section className="document-collection section-shell">
-        <div className={category === "partnership" ? "partnership-document-grid" : undefined}>
-          {mainRecords.map((entry, index) => (
-            <Reveal key={entry._id} delay={(index % 4) * 60}>
-              <article id={entry.slug} data-document-category={category}>
+      <section className="document-accordion section-shell">
+        {mainRecords.map((entry, index) => (
+          <Reveal key={entry._id} delay={(index % 4) * 45}>
+            <details id={entry.slug} data-document-category={category}>
+              <summary>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="kicker">{entry.eyebrow}</p>
                   <h2>{entry.title}</h2>
-                  {entry.summary && (category === "resolution" || entry.summary !== entry.body) && (
-                    <p className="document-summary">{entry.summary}</p>
-                  )}
-                  {entry.body && category !== "resolution" && (
-                    <div className="document-labelled-copy">
-                      <small>
-                        {category === "agenda"
-                          ? "Discussion points"
-                          : category === "strategy"
-                            ? "Key actions"
-                            : category === "partnership"
-                              ? "Area of cooperation"
-                              : "Details"}
-                      </small>
-                      <p>{entry.body}</p>
-                    </div>
-                  )}
-                  {entry.secondaryText && !["resolution", "strategy"].includes(category) && (
-                    <aside>{entry.secondaryText}</aside>
-                  )}
-                  {entry.secondaryText && category === "strategy" && (
-                    <aside>
-                      <small>Expected outcomes</small>
-                      {entry.secondaryText}
-                    </aside>
-                  )}
-                  {entry.linkUrl && (
-                    <Button
-                      nativeButton={false}
-                      variant="link"
-                      render={<Link href={entry.linkUrl} />}
-                    >
-                      {entry.linkLabel || "Read more"}{" "}
-                      <ArrowRightIcon data-icon="inline-end" />
-                    </Button>
-                  )}
                 </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+                <ChevronDownIcon aria-hidden="true" />
+              </summary>
+              <div className="document-accordion-body">
+                {entry.summary && entry.summary !== entry.body && (
+                  <p className="document-summary">{entry.summary}</p>
+                )}
+                {entry.body && (
+                  <div className="document-labelled-copy">
+                    <small>
+                      {category === "agenda"
+                        ? "Discussion points"
+                        : category === "strategy"
+                          ? "Key actions"
+                          : category === "partnership"
+                            ? "Area of cooperation"
+                            : "Resolution details"}
+                    </small>
+                    <p>{entry.body}</p>
+                  </div>
+                )}
+                {entry.secondaryText && (
+                  <aside>
+                    <small>Expected outcomes</small>
+                    <p>{entry.secondaryText}</p>
+                  </aside>
+                )}
+                {entry.linkUrl && (
+                  <Button
+                    nativeButton={false}
+                    variant="link"
+                    render={<Link href={entry.linkUrl} />}
+                  >
+                    {entry.linkLabel || "Read more"}{" "}
+                    <ArrowRightIcon data-icon="inline-end" />
+                  </Button>
+                )}
+              </div>
+            </details>
+          </Reveal>
+        ))}
       </section>
-      {category === "resolution" && records.some((entry) => entry.secondaryText) && (
-        <section className="resolution-outcomes section-shell">
-          <p className="kicker">{resolutionOutcomesHeading.eyebrow}</p>
-          <h2>{resolutionOutcomesHeading.title}</h2>
-          <div>
-            {records.filter((entry) => entry.secondaryText).map((entry) => (
-              <article key={entry._id}>
-                <span>{entry.eyebrow}</span>
-                <p>{entry.secondaryText}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
       {category === "strategy" && strategyTimeline.length > 0 && (
         <section className="strategy-timeline section-shell">
           <header>

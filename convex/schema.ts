@@ -61,8 +61,13 @@ export default defineSchema({
     footerBody: v.string(),
     registrationOpen: v.boolean(),
     donationsEnabled: v.boolean(),
+    logoStorageId: v.optional(v.id("_storage")),
+    faviconStorageId: v.optional(v.id("_storage")),
     updatedAt: v.number(),
-  }).index("by_key", ["key"]),
+  })
+    .index("by_key", ["key"])
+    .index("by_logo_storage_id", ["logoStorageId"])
+    .index("by_favicon_storage_id", ["faviconStorageId"]),
 
   cmsEntries: defineTable({
     category: v.union(

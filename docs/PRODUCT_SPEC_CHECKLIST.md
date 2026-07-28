@@ -1,6 +1,6 @@
 # Product specification checklist
 
-Last reviewed: 27 July 2026
+Last reviewed: 28 July 2026
 Source of truth: `Paris_Website_Spec.pdf`, supplied 26 July 2026
 Target launch: August 2026
 Event: 3–4 October 2026
@@ -33,7 +33,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Donation will use Stripe; payment credentials and final account setup are pending.
 - [x] Registration and donation entry points remain visible in desktop and mobile navigation.
 - [x] Working delivery decision: retain the complete homepage plus detail pages for deep content and SEO.
-- [x] Working delivery decision: retain “Paris Assembly” as the short public brand while preserving the formal forum name in settings.
+- [x] Public brand is “Paris Hindu Summit” with the subtitle “Global Forum on Religious Freedom and Hindu Minority Rights”.
 - [x] Admin access uses named Better Auth email/password accounts, role records, and an audit trail.
 - [x] Public account creation is disabled after bootstrap; administrators provision and suspend named team accounts from the protected Team Access panel.
 - [x] Public-page rendering is independent from admin authentication lookups, so an auth delay cannot block the entire website.
@@ -60,13 +60,13 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Design 06 hero foundation, event date/location, headline, primary CTAs, and responsive typography.
 - [x] Live countdown prototype.
 - [x] Dynamic hero information bar: Venue, Format, Delegates, Languages.
-- [x] Admin-managed “Why This Summit” rationale cards.
+- [x] Homepage rationale is retained as concise editable introductory copy; the former rationale card grid was removed by client request.
 - [x] Featured-speaker teaser is driven by the admin Featured flag and enforces a maximum of three published records.
 - [x] When no speaker is marked Featured, the homepage shows up to the first three published speaker records instead of stale code fixtures.
 - [x] Partners & Sponsors institutional wall; no slider.
 - [x] Editable demographic chart, source note, tooltip, and accessible data table. `Partial`: approved citations remain.
 - [x] Editable displacement chart, note, tooltip, and accessible data table.
-- [x] Admin-managed dark Challenges section.
+- [x] The former homepage Challenges card section was removed by client request.
 - [x] Beyond Bangladesh includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Regional cards are backed by an extensible Convex country model.
 - [x] Dedicated animated Donate and Support pages with server-backed demo behaviour and Stripe-ready architecture.
@@ -142,7 +142,8 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 ### General tab — dynamic
 
-- [x] Event name, theme/tagline, date/time/timezone, venue, full address, format, delegates, and languages. `Partial`: logo selection from the media library remains.
+- [x] Event name, theme/tagline, date/time/timezone, venue, full address, format, delegates, and languages.
+- [x] Website logo and favicon can be uploaded to Convex storage, selected, and changed from Site Settings.
 - [x] Admin-managed event start time drives the public countdown.
 - [x] Announcement content and enabled state.
 - [x] Contact, registration and press emails, phone, and WhatsApp.
@@ -199,7 +200,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] About inspector exposes only Overview and Present Moment records, with page-relevant labels and without unrelated contact, date, link, and parent fields.
 - [x] Present Moment cards support heading, body, order, draft, and publication state.
 - [x] Proposed Agenda editor exposes agenda number, title, discussion points, and expected outcome.
-- [x] Paris Resolution editor exposes resolution number, title, summary, and expected outcomes; published outcomes appear after the resolution list.
+- [x] Paris Resolution editor exposes resolution number, title, summary, and expected outcomes; each published record expands in place to show its details and outcome.
 - [x] 5-Year Strategic Plan editor supports a Vision above all goals, numbered strategic goals, key actions, expected outcomes, and year-based “Implementation Timeline” cards.
 - [x] International Partnership Framework editor exposes country/institution name, area of cooperation, and expected outcomes.
 
@@ -262,6 +263,8 @@ Never make these editable as plain content:
 - [x] After every Git commit, run `bun run convex:deploy:prod`.
 - [x] If fixture/seed data changes in development, run the same idempotent seed in production and verify counts.
 - [x] Production seeds contain no registrations, donor data, credentials, tokens, or personal accounts.
+- [x] Every production Convex deploy and production seed automatically creates a checksummed full snapshot, including authentication records and stored files.
+- [x] Production is the editorial source of truth; development may be refreshed from production only after separate backups of both deployments.
 - [ ] Production backup/export and restore drill before launch.
 - [x] Automated and manual accessibility pass covers keyboard navigation, focus, contrast, reduced motion, form errors and chart data-table alternatives. `Partial`: final third-party audit remains a launch-day check.
 - [x] Responsive QA covers compact mobile, tablet and desktop layouts. `Partial`: final physical-device and Safari/Firefox sign-off remains.

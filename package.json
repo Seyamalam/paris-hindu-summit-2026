@@ -13,9 +13,11 @@
     "convex:dev": "node scripts/convex-key.mjs development dev",
     "convex:dev:once": "node scripts/convex-key.mjs development dev --once",
     "convex:codegen": "node scripts/convex-key.mjs development codegen",
-    "convex:deploy:prod": "node scripts/convex-key.mjs production deploy",
+    "convex:backup:dev": "node scripts/convex-backup.mjs development",
+    "convex:backup:prod": "node scripts/convex-backup.mjs production",
+    "convex:deploy:prod": "bun run convex:backup:prod && node scripts/convex-key.mjs production deploy",
     "convex:seed:dev": "node scripts/convex-key.mjs development run seed:seedInitialContent",
-    "convex:seed:prod": "node scripts/convex-key.mjs production run seed:seedInitialContent"
+    "convex:seed:prod": "bun run convex:backup:prod && node scripts/convex-key.mjs production run seed:seedInitialContent"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

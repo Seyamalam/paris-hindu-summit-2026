@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MenuIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
@@ -29,15 +29,21 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 
-function Brand({ name = "Paris Assembly" }: { name?: string }) {
+function Brand({
+  name = "Paris Hindu Summit",
+  logoUrl,
+}: {
+  name?: string
+  logoUrl?: string | null
+}) {
   const copy = useEditorialRecord("global-brand", {
-    title:"For dignity & rights",
+    title:"Global Forum on Religious Freedom and Hindu Minority Rights",
   })
   return (
     <span className="brand-lockup">
       <Image
         className="brand-mark"
-        src="/images/witness-flame-logo.png"
+        src={logoUrl || "/images/witness-flame-logo.png"}
         alt=""
         width={44}
         height={44}
@@ -59,8 +65,17 @@ export function SiteHeader() {
   const engage = useQuery(api.cms.listPublished, { category: "engage" })
   const media = useQuery(api.media.listPublished)
   const brandCopy = useEditorialRecord("global-brand", {
-    summary:"Global Solidarity Summit for Bangladeshi Hindus",
+    title:"Global Forum on Religious Freedom and Hindu Minority Rights",
   })
+  useEffect(() => {
+    if (!settings?.faviconUrl) return
+    const links = document.querySelectorAll<HTMLLinkElement>(
+      'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+    )
+    links.forEach((link) => {
+      link.href = settings.faviconUrl || link.href
+    })
+  }, [settings?.faviconUrl])
   const aboutLinks = [
     ["/about", "Overview"], ["/committee", "Organizing Team and Advisory Board"],
     ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
@@ -70,15 +85,15 @@ export function SiteHeader() {
     ["About", aboutLinks],
     ["Programme", programme?.map((item) => [`/programme#${item.slug}`, `${item.tabLabel} · ${item.navigationLabel}`]) ?? [["/programme", "Full programme"]]],
     ["Media & Publication", media?.map((section) => [`/media#${section.slug}`, section.name]) ?? [["/media", "Media & Publication"]]],
-    ["Engage", engage?.map((item) => [item.linkUrl || "/engage", item.title]) ?? [["/engage", "Ways to engage"]]],
+    ["Attend and Support", engage?.map((item) => [item.linkUrl || "/engage", item.title]) ?? [["/engage", "Ways to attend and support"]]],
   ] as const
 
   return (
     <>
     {settings?.announcementEnabled !== false && <div className="announcement-strip"><span>{settings?.announcement || "Registration is open now."}</span>{settings?.registrationOpen !== false && <Link href="/participate">Register now</Link>}</div>}
     <header className={cn("site-header", settings?.announcementEnabled !== false && "has-announcement")}>
-      <Link href="/" aria-label="Paris Assembly home">
-        <Brand name={settings?.shortName} />
+      <Link href="/" aria-label="Paris Hindu Summit home">
+        <Brand name={settings?.shortName} logoUrl={settings?.logoUrl} />
       </Link>
       <NavigationMenu className="desktop-nav" aria-label="Main navigation">
         <NavigationMenuList>
@@ -88,7 +103,7 @@ export function SiteHeader() {
           </NavigationMenuItem>)}
           <NavigationMenuItem><NavigationMenuLink render={<Link href="/speakers" />} className={cn(pathname === "/speakers" && "active")}>Speakers</NavigationMenuLink></NavigationMenuItem>
           <NavigationMenuItem><NavigationMenuLink render={<Link href="/regional" />} className={cn(pathname === "/regional" && "active")}>Regional</NavigationMenuLink></NavigationMenuItem>
-          <NavigationMenuItem><NavigationMenuLink render={<Link href="/support" />} className={cn(pathname === "/support" && "active")}>Support</NavigationMenuLink></NavigationMenuItem>
+          <NavigationMenuItem><NavigationMenuLink render={<Link href="/faq" />} className={cn(pathname === "/faq" && "active")}>FAQ</NavigationMenuLink></NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
       <ThemeToggle />
@@ -117,8 +132,8 @@ export function SiteHeader() {
         </SheetTrigger>
         <SheetContent className="mobile-sheet">
           <SheetHeader>
-            <SheetTitle><Brand name={settings?.shortName} /></SheetTitle>
-            <SheetDescription>{brandCopy.summary}</SheetDescription>
+            <SheetTitle><Brand name={settings?.shortName} logoUrl={settings?.logoUrl} /></SheetTitle>
+            <SheetDescription>{brandCopy.title}</SheetDescription>
           </SheetHeader>
           <nav aria-label="Mobile navigation">
             {[
@@ -130,8 +145,8 @@ export function SiteHeader() {
               { href:"/regional",label:"Regional" },
               { href:"/partners",label:"Partners" },
               { href:"/media",label:"Media & Publication" },
-              { href:"/engage",label:"Engage" },
-              { href:"/support",label:"Support" },
+              { href:"/engage",label:"Attend and Support" },
+              { href:"/faq",label:"FAQ" },
               ...(settings?.registrationOpen !== false ? [{ href: "/participate", label: "Reserve a place" }] : []),
               ...(settings?.donationsEnabled !== false ? [{ href: "/donate", label: "Donate" }] : []),
             ].map((item) => (

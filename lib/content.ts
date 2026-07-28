@@ -1,5 +1,5 @@
 export const event = {
-  name: "Paris Assembly",
+  name: "Paris Hindu Summit",
   descriptor: "Global Solidarity Summit for Bangladeshi Hindus",
   theme: "Justice for Bangladeshi Hindus, Solidarity Without Borders",
   dates: "3–4 October 2026",
@@ -12,10 +12,10 @@ export const navItems = [
   { href: "/programme", label: "Programme" },
   { href: "/speakers", label: "Speakers" },
   { href: "/regional", label: "Regional" },
-  { href: "/engage", label: "Engage" },
+  { href: "/engage", label: "Attend and Support" },
   { href: "/partners", label: "Partners" },
   { href: "/media", label: "Media & Publication" },
-  { href: "/support", label: "Support" },
+  { href: "/faq", label: "FAQ" },
 ]
 
 export const regionalFallback = [

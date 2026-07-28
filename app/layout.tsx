@@ -19,8 +19,8 @@ const utilityFont = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
   title: {
-    default: "Paris Assembly · 2026",
-    template: "%s · Paris Assembly",
+    default: "Paris Hindu Summit · 2026",
+    template: "%s · Paris Hindu Summit",
   },
   description:
     "Global Solidarity Summit for Bangladeshi Hindus, 3–4 October 2026 in Paris, France.",

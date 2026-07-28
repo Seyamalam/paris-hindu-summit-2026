@@ -1,8 +1,8 @@
-# Paris Assembly · 2026
+# Paris Hindu Summit · 2026
 
-Production-shaped, responsive website for the **Global Solidarity Summit for Bangladeshi Hindus**, taking place on **3–4 October 2026** at Salle des Princes in Drancy, Paris.
+Production-shaped, responsive website for the **Global Forum on Religious Freedom and Hindu Minority Rights**, taking place on **3–4 October 2026** at Salle des Princes in Drancy, Paris.
 
-The visual system develops the client-selected **Design 06 · Paris Assembly** direction: paper and cobalt civic architecture, signal-red actions, monumental institutional typography, strict rules, and editorial serif support.
+The visual system develops the client-selected **Design 06** direction: paper and cobalt civic architecture, signal-red actions, monumental institutional typography, strict rules, and editorial serif support.
 
 The complete website includes matching **light and dark modes**. The header control follows the visitor across every route, defaults to their system preference, and remembers their selection.
 
@@ -145,6 +145,10 @@ Every commit must be followed by a production backend deploy:
 ```bash
 bun run convex:deploy:prod
 ```
+
+That command now takes and checksums a complete production snapshot—including
+uploaded files—before deploying backend functions. Production admin content is
+the source of truth and must never be replaced from development.
 
 When seed content changes, run the idempotent seed in both environments and
 verify the resulting row counts. Never seed personal, donor, registration, or

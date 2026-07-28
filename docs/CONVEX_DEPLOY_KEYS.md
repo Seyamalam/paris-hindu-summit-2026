@@ -29,6 +29,10 @@ bun run convex:codegen
 # Production deployment
 bun run convex:deploy:prod
 
+# Full snapshots, including stored files
+bun run convex:backup:dev
+bun run convex:backup:prod
+
 # Idempotent content seeds
 bun run convex:seed:dev
 bun run convex:seed:prod
@@ -38,6 +42,16 @@ Each command uses `scripts/convex-key.mjs` to read the selected ignored file and
 pass its key directly to the Convex subprocess. It works when the Convex CLI is
 logged out and prevents the production command from silently using the
 development deployment.
+
+`convex:deploy:prod` and `convex:seed:prod` automatically create and checksum a
+full production snapshot before doing anything else. Snapshots include database
+documents, Better Auth records, and Convex file storage. They are written outside
+the Git repository under `../../convex-backups/automatic/<timestamp>/`.
+
+Production is always the editorial source of truth. Never copy development data
+into production. When development needs current client content, export
+production, back up development separately, and import the production snapshot
+into development with `--replace`. Do not run a seed during this workflow.
 
 ## Vercel
 

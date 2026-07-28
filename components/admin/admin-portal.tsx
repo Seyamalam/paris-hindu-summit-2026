@@ -62,8 +62,8 @@ const websitePages = [
   ["regional", "Regional", "/regional", Globe2Icon],
   ["partners", "Partners", "/partners", HandshakeIcon],
   ["media", "Media & Publication", "/media", BookOpenIcon],
-  ["engage", "Engage", "/engage", SparklesIcon],
-  ["support", "Support", "/support", InboxIcon],
+  ["engage", "Attend and Support", "/engage", SparklesIcon],
+  ["faq", "FAQ", "/faq", InboxIcon],
   ["evidence", "Evidence", "/context", BarChart3Icon],
   ["pageCopy", "Page titles & intros", "/about", FileTextIcon],
   ["sectionCopy", "Editorial sections", "/", FileTextIcon],
@@ -144,7 +144,7 @@ function AuthGate() {
     const email = String(data.get("email"))
     const password = String(data.get("password"))
     const confirmation = String(data.get("confirmPassword"))
-    const name = String(data.get("name") || "Paris Assembly editor")
+    const name = String(data.get("name") || "Paris Hindu Summit editor")
     if (mode === "signup" && password !== confirmation) {
       setPasswordError("The passwords do not match. Check both entries and try again.")
       toast.error("The passwords do not match.")
@@ -415,7 +415,7 @@ function PageStudio({ page }: { page:StudioPage }) {
 }
 
 function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; publishSignal:number; onSaved:()=>void }) {
-  if (page === "home") return <SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} />
+  if (page === "home") return <><SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} /><EvidenceStatsEditor onSaved={onSaved} /></>
   if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
   if (page === "about") return <AboutEditor />
   if (page === "programme") return <ProgrammeAdmin />
@@ -429,12 +429,147 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "partners") return <PartnersPanel />
   if (page === "media") return <MediaPublicationPanel />
   if (page === "engage") return <ContentPanel compact initialCategory="engage" />
-  if (page === "support") return <ContentPanel compact initialCategory="faq" />
+  if (page === "faq") return <ContentPanel compact initialCategory="faq" />
   if (page === "evidence") return <ChartsAdmin />
   if (page === "pageCopy") return <PageCopyEditor />
   if (page === "sectionCopy") return <EditorialCopyEditor />
   if (page === "content") return <ContentPanel compact initialCategory="legal" />
   return <ContentPanel compact initialCategory="resolution" />
+}
+
+function EvidenceStatsEditor({ onSaved }: { onSaved:()=>void }) {
+  const entries = useQuery(api.cms.listForAdmin, { category: "sectionCopy" })
+  const save = useMutation(api.cms.save)
+  const remove = useMutation(api.cms.remove)
+  const stats = entries?.filter(
+    (entry) =>
+      entry.slug.startsWith("home-evidence-") &&
+      entry.slug !== "home-evidence-heading"
+  )
+  const [selected, setSelected] = useState<string>("new")
+  const [draft, setDraft] = useState<ContentDraft>({
+    ...blankContent,
+    parentSlug: "home",
+    status: "published",
+  })
+  const existing = stats?.find((entry) => entry._id === selected)
+
+  useEffect(() => {
+    if (existing) {
+      const {
+        _id,
+        category: _category,
+        imageStorageId: _image,
+        imageUrl: _url,
+        ...fields
+      } = existing
+      void _id
+      void _category
+      void _image
+      void _url
+      setDraft(fields)
+    } else {
+      setDraft({
+        ...blankContent,
+        parentSlug: "home",
+        status: "published",
+        order: (stats?.length ?? 0) + 11,
+      })
+    }
+  }, [existing, selected, stats?.length])
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle
+        eyebrow="Homepage evidence"
+        title="Editable number cards"
+        copy="Add, reorder, publish, or remove any number of cards in “Numbers that should stop the room.”"
+      />
+      <AdminRecordSelect
+        label="Card to edit"
+        value={selected}
+        createLabel="+ Add an evidence card"
+        records={
+          stats?.map((entry) => ({
+            value: entry._id,
+            label: `${entry.title} · ${entry.summary}`,
+          })) ?? []
+        }
+        onChange={setSelected}
+      />
+      <div className="admin-form-grid">
+        <Field
+          label="Number or statistic"
+          value={draft.title}
+          onValueChange={(value) => setDraft({ ...draft, title: value })}
+        />
+        <Field
+          label="Explanation"
+          multiline
+          value={draft.summary}
+          onValueChange={(value) => setDraft({ ...draft, summary: value })}
+        />
+        <Field
+          label="Display order"
+          type="number"
+          value={String(draft.order)}
+          onValueChange={(value) =>
+            setDraft({ ...draft, order: Number(value) })
+          }
+        />
+        <label className="admin-field">
+          <span>Publication status</span>
+          <select
+            value={draft.status}
+            onChange={(event) =>
+              setDraft({
+                ...draft,
+                status: event.target.value as "draft" | "published",
+              })
+            }
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </label>
+      </div>
+      <div className="admin-editor-actions">
+        <Button
+          onClick={async () => {
+            if (!draft.title.trim()) {
+              toast.error("Add a number or statistic before saving.")
+              return
+            }
+            const slug =
+              existing?.slug ||
+              `home-evidence-stat-${Date.now().toString(36)}`
+            await save({
+              ...(existing ? { id: existing._id } : {}),
+              ...draft,
+              category: "sectionCopy",
+              slug,
+              parentSlug: "home",
+            })
+            toast.success("Homepage evidence card published.")
+            setSelected("new")
+            onSaved()
+          }}
+        >
+          <SaveIcon /> Save evidence card
+        </Button>
+        {existing && (
+          <ConfirmDelete
+            label={existing.title}
+            onConfirm={async () => {
+              await remove({ id: existing._id })
+              setSelected("new")
+              onSaved()
+            }}
+          />
+        )}
+      </div>
+    </section>
+  )
 }
 
 function TeamAccessPanel({ canManage }: { canManage:boolean }) {
@@ -608,10 +743,20 @@ function Dashboard() {
 
 function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: { compact?:boolean; focus?:"home"; publishSignal?:number; onSaved?:()=>void }) {
   const settings = useQuery(api.settings.get)
+  const assets = useQuery(api.assets.list)
   const save = useMutation(api.settings.save)
-  const [draft, setDraft] = useState<Record<string, string | boolean> | null>(null)
+  const generateUploadUrl = useMutation(api.assets.generateUploadUrl)
+  const register = useMutation(api.assets.register)
+  const [draft, setDraft] = useState<Record<string, string | boolean | Id<"_storage"> | undefined> | null>(null)
+  const [assetBusy, setAssetBusy] = useState<"logoStorageId" | "faviconStorageId" | null>(null)
   const lastPublishSignal = useRef(0)
-  useEffect(() => { if (settings) setDraft(settings) }, [settings])
+  useEffect(() => {
+    if (!settings) return
+    const { logoUrl: _logoUrl, faviconUrl: _faviconUrl, ...editable } = settings
+    void _logoUrl
+    void _faviconUrl
+    setDraft(editable)
+  }, [settings])
   const allGroups = [
     ["Identity & dates", ["eventName", "shortName", "theme", "eventStartIso", "eventEndIso", "timezone"]],
     ["Venue & scale", ["venue", "address", "cityCountry", "format", "delegateInfo", "languages"]],
@@ -643,6 +788,7 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
     }
   }, [publish, publishSignal])
   if (!draft) return <PanelLoading />
+  const imageAssets = assets?.filter((asset) => asset.mimeType.startsWith("image/"))
   return (
     <section className="admin-panel" data-compact={compact}>
       <PanelTitle
@@ -655,6 +801,95 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
           <label key={key}><Switch checked={Boolean(draft[key])} onCheckedChange={(value) => setDraft({ ...draft, [key]: value })} /><span>{humanize(key)}</span></label>
         ))}
       </div>
+      {!focus && (
+        <fieldset className="admin-fieldset">
+          <legend>Logo &amp; browser icon</legend>
+          <div className="admin-form-grid">
+            {([
+              ["logoStorageId", "Website logo", "Upload website logo"],
+              ["faviconStorageId", "Browser favicon", "Upload browser favicon"],
+            ] as const).map(([key, label, uploadLabel]) => {
+              const selected = imageAssets?.find(
+                (asset) => asset.storageId === draft[key]
+              )
+              return (
+                <div className="admin-asset-picker" key={key}>
+                  <label className="admin-field">
+                    <span>{label}</span>
+                    <select
+                      value={String(draft[key] ?? "")}
+                      onChange={(event) =>
+                        setDraft({
+                          ...draft,
+                          [key]: event.target.value
+                            ? (event.target.value as Id<"_storage">)
+                            : undefined,
+                        })
+                      }
+                    >
+                      <option value="">Use the built-in summit mark</option>
+                      {imageAssets?.map((asset) => (
+                        <option key={asset._id} value={asset.storageId}>
+                          {asset.fileName}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="admin-asset-preview">
+                    {selected?.url ? (
+                      <img src={selected.url} alt={selected.altText} />
+                    ) : (
+                      <div>
+                        <ImageIcon />
+                        <span>Built-in mark</span>
+                      </div>
+                    )}
+                    <label className="admin-logo-upload">
+                      {assetBusy === key ? <Spinner /> : <UploadIcon />}
+                      <span>
+                        {assetBusy === key ? "Uploading…" : uploadLabel}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/avif"
+                        disabled={assetBusy !== null}
+                        onChange={async (event) => {
+                          const file = event.target.files?.[0]
+                          if (!file) return
+                          setAssetBusy(key)
+                          try {
+                            const storageId = await uploadAdminAsset({
+                              file,
+                              category: "logo",
+                              uploadUrl: generateUploadUrl,
+                              register,
+                            })
+                            setDraft((current) =>
+                              current ? { ...current, [key]: storageId } : current
+                            )
+                            toast.success(
+                              `${label} uploaded and selected. Publish site settings to apply it.`
+                            )
+                          } catch (error) {
+                            toast.error(
+                              error instanceof Error
+                                ? error.message
+                                : `${label} upload failed.`
+                            )
+                          } finally {
+                            setAssetBusy(null)
+                            event.target.value = ""
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </fieldset>
+      )}
       {groups.map(([title, keys]) => (
         <fieldset className="admin-fieldset" key={title}>
           <legend>{title}</legend>
@@ -868,7 +1103,8 @@ const editorialPageLabels:Record<string, string> = {
   speakers:"Speakers",
   committee:"Committee",
   participate:"Participate",
-  support:"Support",
+  engage:"Attend and Support",
+  faq:"FAQ",
   partners:"Partners",
   regional:"Regional",
   donate:"Donate",
@@ -1057,9 +1293,9 @@ async function uploadAdminAsset({
   register,
 }: {
   file:File
-  category:"portrait" | "media" | "document"
+  category:"portrait" | "media" | "document" | "logo"
   uploadUrl:()=>Promise<string>
-  register:(args:{ storageId:Id<"_storage">; fileName:string; mimeType:string; byteSize:number; altText:string; category:"portrait" | "media" | "document" })=>Promise<unknown>
+  register:(args:{ storageId:Id<"_storage">; fileName:string; mimeType:string; byteSize:number; altText:string; category:"portrait" | "media" | "document" | "logo" })=>Promise<unknown>
 }) {
   if (file.size > 20_000_000) throw new Error("Files must be smaller than 20 MB.")
   const url = await uploadUrl()
@@ -1107,7 +1343,7 @@ function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
 
   return (
     <section className="admin-panel" data-compact="true">
-      <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : "Organizing Team and Advisory Board"} copy="Add each person with a name, short introduction, biography, and profile picture." />
+      <PanelTitle eyebrow="People editor" title={mode === "speaker" ? "Speakers" : "Organizing Team and Advisory Board"} copy="Add each person with a name, role, full biography, and profile picture. The public page creates a short preview and a Read more control automatically." />
       {mode === "team" && (
         <label className="admin-field admin-record-select">
           <span>People group</span>
@@ -1129,7 +1365,7 @@ function PeopleEditor({ mode }: { mode:"speaker" | "team" }) {
         <Field label="Name" value={draft.title} onValueChange={(value) => update("title", value)} />
         <Field label="Short intro shown below the name" value={draft.role} onValueChange={(value) => update("role", value)} />
         {category === "speaker" && <Field label="Country" value={draft.country} onValueChange={(value) => update("country", value)} />}
-        <Field label="Short biography" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
+        <Field label="Full biography (leave blank to show no biography)" multiline value={draft.body} onValueChange={(value) => update("body", value)} />
         <label className="admin-field"><span>Profile picture</span><select value={imageStorageId ?? ""} onChange={(event) => setImageStorageId((event.target.value || undefined) as Id<"_storage"> | undefined)}><option value="">No picture selected</option>{portraits?.map((asset) => <option key={asset._id} value={asset.storageId}>{asset.fileName}</option>)}</select></label>
         <label className="admin-logo-upload">
           {uploading ? <Spinner /> : <UploadIcon />}<span>{uploading ? "Uploading…" : "Upload profile picture"}</span>

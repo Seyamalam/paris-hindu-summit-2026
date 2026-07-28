@@ -27,27 +27,24 @@ export function HomeInfoBar() {
   return <section className="home-info-bar">{facts.map(([label,value]) => <div key={label}><span>{label}</span><b>{value}</b></div>)}</section>
 }
 
-export function WhyAndChallenges() {
-  const why = useQuery(api.cms.listPublished, { category: "why" })
-  const challenges = useQuery(api.cms.listPublished, { category: "challenge" })
-  const whyHeading = useEditorialRecord("home-why-record-heading", {
-    eyebrow:"Why this summit",
-    title:"Understand the record. Build protection.",
-  })
-  const challengeHeading = useEditorialRecord("home-challenges-heading", {
-    eyebrow:"The challenges",
-    title:"What the declaration must confront.",
-  })
-  return <>
-    <section className="why-record section-shell">
-      <div className="section-heading compact"><p className="kicker">{whyHeading.eyebrow}</p><h2>{whyHeading.title}</h2></div>
-      <div className="why-record-grid">{why?.map((item,index) => <Reveal key={item._id} delay={index*80}><article><span>0{index+1}</span><p className="kicker">{item.eyebrow}</p><h3>{item.title}</h3><p>{item.summary}</p></article></Reveal>)}</div>
-    </section>
-    <section className="challenge-record">
-      <div className="section-heading compact"><p className="kicker">{challengeHeading.eyebrow}</p><h2>{challengeHeading.title}</h2></div>
-      <div className="challenge-record-grid">{challenges?.map((item,index) => <Reveal key={item._id} delay={index*80}><article><span>{item.eyebrow}</span><h3>{item.title}</h3><p>{item.summary}</p></article></Reveal>)}</div>
-    </section>
-  </>
+export function EvidenceStats() {
+  const entries = useQuery(api.cms.listPublished, { category: "sectionCopy" })
+  const stats = (entries ?? []).filter(
+    (entry) =>
+      entry.slug.startsWith("home-evidence-") &&
+      entry.slug !== "home-evidence-heading"
+  )
+
+  return (
+    <div className="evidence-grid">
+      {stats.map((entry) => (
+        <article key={entry._id}>
+          <b>{entry.title}</b>
+          {entry.summary && <p>{entry.summary}</p>}
+        </article>
+      ))}
+    </div>
+  )
 }
 
 export function EvidenceCharts() {
