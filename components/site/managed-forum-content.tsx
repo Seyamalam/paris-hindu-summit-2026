@@ -116,23 +116,24 @@ function ExpandableBio({ bio }: { bio?: string }) {
   const cleanBio = bio?.trim() ?? ""
   if (!cleanBio) return null
 
-  const preview =
+  const previewText =
     cleanBio.length > 260
-      ? `${cleanBio.slice(0, 260).replace(/\s+\S*$/, "")}…`
+      ? cleanBio.slice(0, 260).replace(/\s+\S*$/, "")
       : cleanBio
+  const remainingBio = cleanBio.slice(previewText.length).trimStart()
 
-  if (preview === cleanBio) {
+  if (!remainingBio) {
     return <p className="person-bio-copy">{cleanBio}</p>
   }
 
   return (
     <div className="person-bio">
-      <p className="person-bio-copy">{preview}</p>
+      <p className="person-bio-copy">{previewText}…</p>
       <details>
         <summary>
           Read more <ChevronDownIcon aria-hidden="true" />
         </summary>
-        <p className="person-bio-copy">{cleanBio}</p>
+        <p className="person-bio-copy">{remainingBio}</p>
       </details>
     </div>
   )
