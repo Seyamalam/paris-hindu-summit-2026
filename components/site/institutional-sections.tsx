@@ -60,8 +60,8 @@ export function RegionalSection({ showIntro = true }: { showIntro?: boolean }) {
   const countries = liveCountries ?? []
   const heading = useEditorialRecord("regional-heading", {
     eyebrow:"Beyond Bangladesh · regional forum",
-    title:"Solidarity without borders means listening across them.",
-    summary:"Pakistan, Afghanistan, Myanmar, and Nepal form the starting regional group—a shared record of citizenship, security, heritage, displacement, and the right to remain.",
+    title:"Beyond Bangladesh: a regional crisis",
+    summary:"Bangladesh is where this forum began, but South Asian Hindu minorities face the same story of shrinking numbers and unanswered violence well beyond its borders. Pakistan, Afghanistan, Nepal, and Myanmar are four of the starkest examples—and four reasons this forum exists for more than one country's diaspora.",
   })
 
   return (
