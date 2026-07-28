@@ -1578,31 +1578,19 @@ export const seedInitialContent = internalMutation({
       if (!existing) await ctx.db.insert("programmeSessions", value)
       programmeSessionsUpserted += 1
     }
-    for (const item of chartSeries) {
-      const existing = await ctx.db.query("chartSeries").withIndex("by_slug", (q) => q.eq("slug", item.slug)).first()
-      const value = { ...item, status: "published" as const, updatedAt: now }
-      if (!existing) {
+    // Charts become administrator-owned content after the initial deployment.
+    // Re-seeding missing rows would restore points intentionally deleted in Admin.
+    if (!existingSettings) {
+      for (const item of chartSeries) {
+        const value = { ...item, status: "published" as const, updatedAt: now }
         await ctx.db.insert("chartSeries", value)
-      } else if (
-        (existing.sourceLabel ===
-          "Supplied summit concept note — source approval pending" ||
-          existing.sourceLabel ===
-            "Supplied summit concept note — methodology approval pending")
-      ) {
-        await ctx.db.patch(existing._id, {
-          sourceLabel: value.sourceLabel,
-          description: value.description,
-          updatedAt: now,
-        })
+        chartSeriesUpserted += 1
       }
-      chartSeriesUpserted += 1
-    }
-    for (const item of chartPoints) {
-      const rows = await ctx.db.query("chartPoints").withIndex("by_series_slug_and_order", (q) => q.eq("seriesSlug", item.seriesSlug)).take(100)
-      const existing = rows.find((row) => row.label === item.label)
-      const value = { ...item, updatedAt: now }
-      if (!existing) await ctx.db.insert("chartPoints", value)
-      chartPointsUpserted += 1
+      for (const item of chartPoints) {
+        const value = { ...item, updatedAt: now }
+        await ctx.db.insert("chartPoints", value)
+        chartPointsUpserted += 1
+      }
     }
 
     return {

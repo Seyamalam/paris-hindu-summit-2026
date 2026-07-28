@@ -327,19 +327,25 @@ export const saveItem = mutation({
       throw new ConvexError("Choose a cover from the managed media library.")
     }
     const value = {
-      ...fields,
       sectionSlug: fields.sectionSlug.trim(),
       slug: fields.slug.trim(),
       title: fields.title.trim(),
-      fileStorageId:
-        fields.mediaType === "video" ? undefined : fields.fileStorageId,
+      description: fields.description,
+      mediaType: fields.mediaType,
       fileName: fields.mediaType === "video" ? "" : fields.fileName,
       mimeType: fields.mediaType === "video" ? "" : fields.mimeType,
-      youtubeUrl: fields.mediaType === "video" ? youtubeUrl : undefined,
+      ...(fields.mediaType === "video"
+        ? { youtubeUrl: youtubeUrl! }
+        : { fileStorageId: fields.fileStorageId! }),
+      ...(fields.coverStorageId
+        ? { coverStorageId: fields.coverStorageId }
+        : {}),
+      order: fields.order,
+      status: fields.status,
       updatedAt: Date.now(),
     }
     const entityId = id
-      ? (await ctx.db.patch(id, value), id)
+      ? (await ctx.db.replace(id, value), id)
       : await ctx.db.insert("mediaItems", value)
     await writeAudit(ctx, actor, {
       action: id ? "update" : "create",

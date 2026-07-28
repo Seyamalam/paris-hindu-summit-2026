@@ -26,28 +26,30 @@ export function PartnerWall() {
         </div>
       </div>
       <div className="partner-grid">
-        {organizations.map((organization, index) => (
+        {organizations.map((organization) => (
           <article
             key={organization._id}
             className={`partner-card partner-${organization.tier}`}
           >
-            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div className="partner-card-meta">
+              <span>{organization.kind}</span>
+              <small>{organization.tier}</small>
+            </div>
             <div className="partner-identity">
               {organization.logoUrl && (
-                <Image
-                  src={organization.logoUrl}
-                  alt={`${organization.name} logo`}
-                  width={180}
-                  height={80}
-                  style={{ width: "180px", height: "80px" }}
-                />
+                <div className="partner-logo-frame">
+                  <Image
+                    src={organization.logoUrl}
+                    alt={`${organization.name} logo`}
+                    width={120}
+                    height={60}
+                    sizes="120px"
+                  />
+                </div>
               )}
               <b>{organization.name}</b>
             </div>
             <p>{organization.description}</p>
-            <small>
-              {organization.kind} · {organization.tier}
-            </small>
           </article>
         ))}
       </div>
