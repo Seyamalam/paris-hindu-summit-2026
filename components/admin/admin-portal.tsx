@@ -66,7 +66,6 @@ const websitePages = [
   ["media", "Media & Publication", "/media", BookOpenIcon],
   ["engage", "Attend and Support", "/engage", SparklesIcon],
   ["faq", "FAQ", "/faq", InboxIcon],
-  ["evidence", "Evidence", "/context", BarChart3Icon],
   ["pageCopy", "Page titles & intros", "/about", FileTextIcon],
   ["sectionCopy", "Editorial sections", "/", FileTextIcon],
   ["content", "Other content", "/privacy", FileTextIcon],
@@ -433,7 +432,6 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "media") return <MediaPublicationPanel />
   if (page === "engage") return <ContentPanel compact initialCategory="engage" />
   if (page === "faq") return <ContentPanel compact initialCategory="faq" />
-  if (page === "evidence") return <ChartsAdmin />
   if (page === "pageCopy") return <PageCopyEditor />
   if (page === "sectionCopy") return <EditorialCopyEditor />
   if (page === "content") return <ContentPanel compact initialCategory="legal" />
@@ -1801,19 +1799,6 @@ function ProgrammeAdmin() {
   </section>
 }
 
-function ChartsAdmin() {
-  const data = useQuery(api.charts.listForAdmin)
-  const saveSeries = useMutation(api.charts.saveSeries)
-  const savePoint = useMutation(api.charts.savePoint)
-  const removeSeries = useMutation(api.charts.removeSeries)
-  const removePoint = useMutation(api.charts.removePoint)
-  return <section className="admin-panel">
-    <PanelTitle eyebrow="Accessible evidence" title="Chart series, sources and numeric points." copy="Every visual chart also renders as a readable data table on the public site." />
-    <RecordCards title="Chart series" copy="Titles, context, units and source citations." rows={data?.series.map((row) => ({ ...row, name:row.title }))} fields={["slug","title","eyebrow","description","sourceLabel","sourceUrl","unit","order","status"]} blank={{ slug:"",title:"",eyebrow:"",description:"",sourceLabel:"",sourceUrl:"",unit:"",order:50,status:"draft" }} onSave={saveSeries} onRemove={removeSeries} />
-    <RecordCards title="Chart points" copy="Editable periods and validated non-negative numeric values." rows={data?.points.map((row) => ({ ...row, name:row.label }))} fields={["seriesSlug","label","sublabel","value","order"]} blank={{ seriesSlug:data?.series[0]?.slug ?? "population-share",label:"",sublabel:"",value:0,order:50 }} onSave={savePoint} onRemove={removePoint} />
-  </section>
-}
-
 function DonationsPanel() {
   const donations = useQuery(api.admin.listDonations)
   const tiers = useQuery(api.donations.listTiersForAdmin)
@@ -1821,7 +1806,7 @@ function DonationsPanel() {
   const total = useMemo(() => donations?.filter((d) => d.status === "paid" || d.status === "demo").reduce((sum, d) => sum + d.amountCents, 0) ?? 0, [donations])
   return (
     <section className="admin-panel">
-      <PanelTitle eyebrow="Donation readiness" title="A payment desk built for Stripe." copy="Demo contributions work now. Add Stripe keys and optional price IDs to move into live Checkout without redesigning this flow." />
+      <PanelTitle eyebrow="Donation readiness" title="SSLCOMMERZ selected for launch." copy="Contributions remain in demonstration mode while the approved SSLCOMMERZ merchant account and live integration are completed." />
       <div className="donation-total"><span>Recorded volume</span><b>€{(total / 100).toLocaleString()}</b><small>paid + demo</small></div>
       <h3 className="admin-subhead">Donation levels</h3>
       <div className="tier-grid">
