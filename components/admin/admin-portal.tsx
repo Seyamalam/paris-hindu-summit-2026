@@ -66,6 +66,7 @@ const websitePages = [
   ["media", "Media & Publication", "/media", BookOpenIcon],
   ["engage", "Attend and Support", "/engage", SparklesIcon],
   ["faq", "FAQ", "/faq", InboxIcon],
+  ["evidence", "Evidence charts", "/#evidence-charts", BarChart3Icon],
   ["pageCopy", "Page titles & intros", "/about", FileTextIcon],
   ["sectionCopy", "Editorial sections", "/", FileTextIcon],
   ["content", "Other content", "/privacy", FileTextIcon],
@@ -432,6 +433,7 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "media") return <MediaPublicationPanel />
   if (page === "engage") return <ContentPanel compact initialCategory="engage" />
   if (page === "faq") return <ContentPanel compact initialCategory="faq" />
+  if (page === "evidence") return <ChartsAdmin />
   if (page === "pageCopy") return <PageCopyEditor />
   if (page === "sectionCopy") return <EditorialCopyEditor />
   if (page === "content") return <ContentPanel compact initialCategory="legal" />
@@ -1796,6 +1798,19 @@ function ProgrammeAdmin() {
         onRemove={removeSession}
       />
     ))}
+  </section>
+}
+
+function ChartsAdmin() {
+  const data = useQuery(api.charts.listForAdmin)
+  const saveSeries = useMutation(api.charts.saveSeries)
+  const savePoint = useMutation(api.charts.savePoint)
+  const removeSeries = useMutation(api.charts.removeSeries)
+  const removePoint = useMutation(api.charts.removePoint)
+  return <section className="admin-panel">
+    <PanelTitle eyebrow="Accessible evidence" title="Chart series, sources and numeric points." copy="This editor now previews the live Population Share and Displacement charts on the homepage." />
+    <RecordCards title="Chart series" copy="Titles, context, units and source citations." rows={data?.series.map((row) => ({ ...row, name:row.title }))} fields={["slug","title","eyebrow","description","sourceLabel","sourceUrl","unit","order","status"]} blank={{ slug:"",title:"",eyebrow:"",description:"",sourceLabel:"",sourceUrl:"",unit:"",order:50,status:"draft" }} onSave={saveSeries} onRemove={removeSeries} />
+    <RecordCards title="Chart points" copy="Editable periods and validated non-negative numeric values." rows={data?.points.map((row) => ({ ...row, name:row.label }))} fields={["seriesSlug","label","sublabel","value","order"]} blank={{ seriesSlug:data?.series[0]?.slug ?? "population-share",label:"",sublabel:"",value:0,order:50 }} onSave={savePoint} onRemove={removePoint} />
   </section>
 }
 

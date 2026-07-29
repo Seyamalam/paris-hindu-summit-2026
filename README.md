@@ -65,7 +65,7 @@ The detailed record of delivered work is maintained in
 - Dynamic Media & Publication submenu sections with direct cover and downloadable PDF/Word/PowerPoint uploads to Convex storage
 - Strategic Plan Vision and editable 2027–2031 Implementation Timeline cards
 - New seminar brief represented as 68 editable records across overview, people, agenda, resolution, strategy, and international partnership content
-- Purpose-built programme-day/session and homepage evidence-card editors, dynamic navigation, and an admin-controlled featured-speaker homepage
+- Purpose-built programme-day/session, homepage evidence-card, and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
 - Editable regional-country and partner/sponsor directories
 - Support, contact, sponsorship, volunteer, and media forms with a protected admin inbox
 - Convex file library for managed images and PDF documents
