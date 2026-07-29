@@ -17,7 +17,6 @@ import { Countdown } from "@/components/site/countdown"
 import { HeroCountdown } from "@/components/site/hero-countdown"
 import { ManagedText, useEditorialRecord } from "@/components/site/managed-editorial"
 import {
-  EvidenceCharts,
   EvidenceStats,
   FeaturedSpeakers,
   HomeInfoBar,
@@ -177,7 +176,6 @@ export default function HomePage() {
           <ManagedText slug="home-evidence-heading" field="body" fallback="Source: summit concept note and cited organisations. Detailed citations and methodology will accompany the evidence archive." />
         </p>
       </section>
-      <EvidenceCharts />
 
       <section
         className="section-shell programme-preview"

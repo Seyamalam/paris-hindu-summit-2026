@@ -318,7 +318,9 @@ export function CmsDocumentPage({
                 <ChevronDownIcon aria-hidden="true" />
               </summary>
               <div className="document-accordion-body">
-                {entry.summary && entry.summary !== entry.body && (
+                {category !== "strategy" &&
+                  entry.summary &&
+                  entry.summary !== entry.body && (
                   <p className="document-summary">{entry.summary}</p>
                 )}
                 {entry.body && (

@@ -33,7 +33,7 @@ The complete website includes matching **light and dark modes**. The header cont
 | `/regional`    | Dynamic Beyond Bangladesh regional forum, including Nepal                           |
 | `/partners`    | Non-carousel institutional partner and sponsor wall                                |
 | `/support`     | Persistent support, contact, volunteer, sponsor, and media enquiry forms             |
-| `/donate`      | Stripe-ready contribution flow with a safe demonstration mode                       |
+| `/donate`      | Contribution flow with a safe demonstration mode; SSLCOMMERZ activation is pending  |
 | `/admin`       | Better Auth-protected editorial control room                                         |
 
 The client’s living delivery requirements, implementation state, admin-panel
@@ -56,7 +56,7 @@ The detailed record of delivered work is maintained in
 - Delegate registration form with a realistic success state
 - Convex-persistent registration, contact, volunteer, sponsor, support, and media enquiry flows with references, consent, spam controls, and CSV export
 - Donation dialog with selectable euro amounts, email validation, and a mock success state
-- Dedicated Stripe Checkout-ready donation page with server-side amount validation, a Convex contribution ledger, signed webhook handling, and a safe demo mode while payment keys are absent
+- Dedicated donation page with server-side amount validation, a Convex contribution ledger, and a safe demo mode while the selected SSLCOMMERZ integration is pending
 - Better Auth email/password login; the first verified account can establish the initial administrator, and later accounts require an assigned role
 - Administrator and editor roles enforced inside Convex mutations
 - Invitation-only team access: public account creation closes after bootstrap, and administrators provision or suspend named accounts from Admin
@@ -65,7 +65,7 @@ The detailed record of delivered work is maintained in
 - Dynamic Media & Publication submenu sections with direct cover and downloadable PDF/Word/PowerPoint uploads to Convex storage
 - Strategic Plan Vision and editable 2027–2031 Implementation Timeline cards
 - New seminar brief represented as 68 editable records across overview, people, agenda, resolution, strategy, and international partnership content
-- Purpose-built programme-day/session and evidence-chart editors, dynamic navigation, and an admin-controlled featured-speaker homepage
+- Purpose-built programme-day/session and homepage evidence-card editors, dynamic navigation, and an admin-controlled featured-speaker homepage
 - Editable regional-country and partner/sponsor directories
 - Support, contact, sponsorship, volunteer, and media forms with a protected admin inbox
 - Convex file library for managed images and PDF documents
@@ -133,13 +133,16 @@ Better Auth signing secrets, `ALLOW_INITIAL_ADMIN_SIGNUP`, and payment
 credentials stay in Convex environment variables. Never add them to CMS fields
 or commit them to Git.
 
-### Stripe activation
+### Payment-provider decision
 
-The donation journey is intentionally usable in demonstration mode. To enable
-real payments, add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` to the
-production Convex deployment, register the `/stripe/webhook` endpoint in
-Stripe, and replace the production `SITE_URL` placeholder with the deployed
-frontend origin.
+SSLCOMMERZ is the selected provider for the initial donation launch. Polar is
+excluded, and Stripe is deferred. The current donation journey remains in
+demonstration mode: do not add live payment credentials or treat the inactive
+Stripe prototype as production-ready. Before activation, implement and verify
+SSLCOMMERZ session initiation, signed validation/IPN handling, server-side
+amount reconciliation, success/failure/cancellation routes, approved currencies,
+international-card acceptance, settlement, and applicable foreign-donation
+compliance for the merchant account.
 
 Every commit must be followed by a production backend deploy:
 

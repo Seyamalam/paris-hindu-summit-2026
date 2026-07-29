@@ -362,4 +362,6 @@ for incomplete work, approvals, and launch dependencies.
 ## Intentionally not activated
 
 - ✅ Stripe remains excluded from this delivery at the client’s request.
+- ✅ SSLCOMMERZ is the documented provider decision for the initial donation launch; implementation and merchant activation remain pending.
+- ✅ Polar is excluded, and Stripe is deferred.
 - ✅ No live payment keys, checkout, collection, or webhook were activated.

@@ -8,7 +8,6 @@ import { ArrowRightIcon } from "lucide-react"
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
-import { Reveal } from "@/components/site/reveal"
 
 export function HomeInfoBar() {
   const settings = useQuery(api.settings.get)
@@ -44,70 +43,6 @@ export function EvidenceStats() {
         </article>
       ))}
     </div>
-  )
-}
-
-export function EvidenceCharts() {
-  const series = useQuery(api.charts.listPublished)
-  return (
-    <section className="evidence-charts section-shell">
-      {series?.map((chart, index) => {
-        const maximum = Math.max(
-          1,
-          ...chart.points.map((point) => Math.abs(point.value))
-        )
-
-        return (
-          <Reveal key={chart._id} delay={index * 100}>
-            <article>
-              <header>
-                <p className="kicker">{chart.eyebrow}</p>
-                <h2>{chart.title}</h2>
-                <p>{chart.description}</p>
-              </header>
-              <div
-                className="evidence-bar-chart"
-                role="img"
-                aria-label={`${chart.title}. Exact values are listed in the table below.`}
-              >
-                {chart.points.map((point) => (
-                  <div className="evidence-bar-column" key={point._id}>
-                    <span>{point.value}</span>
-                    <i
-                      aria-hidden="true"
-                      style={{
-                        "--bar-size": `${Math.max(4, (Math.abs(point.value) / maximum) * 100)}%`,
-                      } as React.CSSProperties}
-                    />
-                    <b>{point.label}</b>
-                  </div>
-                ))}
-              </div>
-              <table>
-                <caption className="sr-only">{chart.title}</caption>
-                <thead>
-                  <tr>
-                    <th>Period</th>
-                    <th>Context</th>
-                    <th>Value ({chart.unit})</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chart.points.map((point) => (
-                    <tr key={point._id}>
-                      <td>{point.label}</td>
-                      <td>{point.sublabel}</td>
-                      <td>{point.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <small>{chart.sourceLabel}</small>
-            </article>
-          </Reveal>
-        )
-      })}
-    </section>
   )
 }
 

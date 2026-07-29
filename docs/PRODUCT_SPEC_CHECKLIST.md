@@ -1,6 +1,6 @@
 # Product specification checklist
 
-Last reviewed: 28 July 2026
+Last reviewed: 29 July 2026
 Source of truth: `Paris_Website_Spec.pdf`, supplied 26 July 2026
 Target launch: August 2026
 Event: 3–4 October 2026
@@ -30,7 +30,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Partners and sponsors use a stationary, tiered institutional wall rather than a slider or marquee.
 - [x] Convex is the central content store and file/image storage service.
 - [x] Public content changes must publish without a new frontend deployment.
-- [x] Donation will use Stripe; payment credentials and final account setup are pending.
+- [x] SSLCOMMERZ is the selected payment provider for the initial donation launch. Polar is excluded, and Stripe is deferred.
 - [x] Registration and donation entry points remain visible in desktop and mobile navigation.
 - [x] Working delivery decision: retain the complete homepage plus detail pages for deep content and SEO.
 - [x] Public brand is “Paris Hindu Summit” with the subtitle “Global Forum on Religious Freedom and Hindu Minority Rights”.
@@ -70,12 +70,11 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Featured-speaker teaser is driven by the admin Featured flag and enforces a maximum of three published records.
 - [x] When no speaker is marked Featured, the homepage shows up to the first three published speaker records instead of stale code fixtures.
 - [x] Partners & Sponsors institutional wall; no slider.
-- [x] Editable demographic chart, source note, tooltip, and accessible data table. `Partial`: approved citations remain.
-- [x] Editable displacement chart, note, tooltip, and accessible data table.
+- [x] The retired demographic and displacement chart block and its disconnected standalone Admin editor have been removed; the editable homepage evidence-number cards remain.
 - [x] The former homepage Challenges card section was removed by client request.
 - [x] Beyond Bangladesh includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Regional cards are backed by an extensible Convex country model.
-- [x] Dedicated animated Donate and Support pages with server-backed demo behaviour and Stripe-ready architecture.
+- [x] Dedicated animated Donate and Support pages with server-backed demo behaviour. `Partial`: replace the inactive Stripe prototype with SSLCOMMERZ before live collection.
 - [x] Full persistent Registration section with required fields, consent, reference, and admin inbox workflow.
 - [x] Footer foundation.
 - [x] Footer navigation, managed email, registration, donate, social and legal links.
@@ -110,16 +109,18 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Privacy draft, consent language, honeypot and per-email rate protection, admin reference and inbox workflow exist. `Partial`: client approval, retention period and external email notifications remain.
 - [x] Header, mobile menu, Engage and footer registration links reach the registration route.
 
-## Donation and Stripe
+## Donation and SSLCOMMERZ
 
 - [x] Demonstration donation flow exists and records demo contributions in Convex.
 - [x] Donation headings and supporting copy are admin-editable.
 - [x] Admin-managed tiers for €25, €100, €500, and Other amount.
-- [x] Stripe Checkout session is created server-side; secret key is never exposed to the browser or stored in content records.
-- [x] Stripe webhook verifies signatures and records completed or expired Checkout sessions. `Partial`: refund/dispute event handling remains before launch.
-- [x] Payment price identifiers are stored behind authorised admin mutations.
+- [x] Provider decision: use SSLCOMMERZ for the initial launch, including local Bangladeshi payments and any international card acceptance approved for the merchant account.
+- [x] Polar is excluded because its acceptable-use rules prohibit donations, crowdfunding, and sponsorship collection.
+- [x] Stripe is deferred; the existing inactive Stripe prototype must not be treated as the launch payment integration.
+- [ ] Implement SSLCOMMERZ session initiation, signed validation/IPN handling, server-side amount verification, and payment-status reconciliation.
+- [ ] Confirm the merchant account’s approved currencies, international-card acceptance, settlement route, and foreign-donation compliance before enabling live collection.
 - [x] Custom amount has client and server minimum/maximum validation.
-- [x] Stripe success/cancel return routes and a clear demo result state.
+- [x] A clear demonstration result state exists. `Partial`: replace the inactive Stripe return flow with SSLCOMMERZ success, failure, and cancellation handling.
 - [ ] Donation receipt and organiser notification.
 - [ ] Currency, tax/charity wording, refund policy, privacy wording, and legal entity are approved before activation.
 
@@ -139,7 +140,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Desktop, tablet, and mobile canvas controls render the selected public page at its target viewport width.
 - [x] Website pages and operational tools are separated into clear navigation groups.
 - [x] Home-page settings can be published from the inspector or the global Publish Changes action, with automatic preview refresh.
-- [x] Programme, people, regional, partner, media, engagement, support, evidence, and extended content editors are available beside their corresponding live pages.
+- [x] Programme, people, regional, partner, media, engagement, support, homepage evidence cards, and extended content editors are available beside their corresponding live pages.
 - [x] Forms, donations, media storage, team access, dashboard metrics, and activity are retained in a separate Operations workspace.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
@@ -158,7 +159,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Announcement content and enabled state.
 - [x] Contact, registration and press emails, phone, and WhatsApp.
 - [x] Facebook, X/Twitter, Instagram, and YouTube links.
-- [x] Donation tier labels and optional Stripe price references.
+- [x] Donation tier labels are editable. `Partial`: remove the inactive Stripe price-reference field when SSLCOMMERZ implementation begins.
 - [x] Footer title/body. `Partial`: legal-link records remain.
 
 ### Programme tab — dynamic
@@ -247,7 +248,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 Keep these in code:
 
 - [x] Design tokens, typography, responsive grid, reusable components, accessibility behaviour, route/layout shell, and validation rules.
-- [x] Convex schema, secure server functions, Stripe integration code, and role enforcement.
+- [x] Convex schema, secure server functions, inactive Stripe prototype code, and role enforcement. `Partial`: replace the prototype with SSLCOMMERZ.
 
 Move these to Convex and expose through Admin:
 
@@ -260,7 +261,7 @@ Move these to Convex and expose through Admin:
 
 Never make these editable as plain content:
 
-- [x] Secrets, Stripe secret/webhook keys, auth signing keys, admin role enforcement, database validators, and executable code.
+- [x] Auth signing keys, admin role enforcement, database validators, and executable code remain code-owned. Payment credentials will remain server-only when SSLCOMMERZ is implemented.
 
 ## Delivery operations
 
@@ -296,4 +297,4 @@ Never make these editable as plain content:
 - [x] Support forms, public document layouts, long editorial headings, shared footer content, and homepage record grids have explicit compact and tablet treatments.
 - [x] Hero countdown digits, separators, labels, live indicator, and date row fit without clipping at 320px and 360px compact-phone widths.
 - [x] Visitor-facing placeholder sweep completed; empty states are neutral and operational “coming soon” messages remain intentionally tied to availability settings.
-- [ ] Content approval, legal/privacy approval, Stripe live-mode test, analytics/consent decision, and launch checklist.
+- [ ] Content approval, legal/privacy approval, SSLCOMMERZ live-mode test, analytics/consent decision, and launch checklist.
