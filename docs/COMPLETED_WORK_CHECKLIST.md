@@ -365,3 +365,4 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ SSLCOMMERZ is the documented provider decision for the initial donation launch; implementation and merchant activation remain pending.
 - ✅ Polar is excluded, and Stripe is deferred.
 - ✅ No live payment keys, checkout, collection, or webhook were activated.
+- ✅ Population Share and Displacement charts remain published and editable; the Admin Evidence preview now targets their live homepage section.

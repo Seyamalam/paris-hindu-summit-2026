@@ -70,7 +70,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Featured-speaker teaser is driven by the admin Featured flag and enforces a maximum of three published records.
 - [x] When no speaker is marked Featured, the homepage shows up to the first three published speaker records instead of stale code fixtures.
 - [x] Partners & Sponsors institutional wall; no slider.
-- [x] The retired demographic and displacement chart block and its disconnected standalone Admin editor have been removed; the editable homepage evidence-number cards remain.
+- [x] Editable demographic and displacement charts, source notes, accessible data tables, and homepage evidence-number cards remain published.
 - [x] The former homepage Challenges card section was removed by client request.
 - [x] Beyond Bangladesh includes Pakistan, Afghanistan, Myanmar, and Nepal.
 - [x] Regional cards are backed by an extensible Convex country model.
@@ -140,7 +140,8 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Desktop, tablet, and mobile canvas controls render the selected public page at its target viewport width.
 - [x] Website pages and operational tools are separated into clear navigation groups.
 - [x] Home-page settings can be published from the inspector or the global Publish Changes action, with automatic preview refresh.
-- [x] Programme, people, regional, partner, media, engagement, support, homepage evidence cards, and extended content editors are available beside their corresponding live pages.
+- [x] Programme, people, regional, partner, media, engagement, support, homepage evidence cards, evidence charts, and extended content editors are available beside their corresponding live pages.
+- [x] The Evidence Charts Admin entry previews the matching homepage chart block directly instead of an unrelated section of the Context page.
 - [x] Forms, donations, media storage, team access, dashboard metrics, and activity are retained in a separate Operations workspace.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
