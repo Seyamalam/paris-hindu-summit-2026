@@ -358,6 +358,8 @@ for incomplete work, approvals, and launch dependencies.
 - ✅ GitHub issue #30 resolved: refined editorial palette, larger hero date, more readable Agenda headings, and a three-column Team-style Advisory Board.
 - ✅ GitHub issue #32 resolved: unified structured-document typography, streamlined Register page, and revised Contact and homepage evidence copy.
 - ✅ Reopened GitHub issue #28 resolved: hardened gallery saves against incomplete slugs, stale section/file selections, irrelevant optional fields, and client-supplied file metadata.
+- ✅ GitHub issue #43 resolved: footer social links use recognisable Facebook, X/Twitter, Instagram, LinkedIn, and YouTube icons, with protected Admin fields and quiet placeholders for unconfigured networks.
+- ✅ GitHub issue #44 resolved: gallery cards preserve complete image framing and open in a keyboard-accessible, mobile-first lightbox instead of a new tab.
 
 ## Intentionally not activated
 

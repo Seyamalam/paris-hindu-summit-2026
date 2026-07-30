@@ -1,17 +1,26 @@
 "use client"
 
 import Image from "next/image"
+import { useState } from "react"
 import { useQuery } from "convex/react"
 import {
   ArrowDownToLineIcon,
   BookOpenIcon,
-  ExternalLinkIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ExpandIcon,
   ImagesIcon,
   PlayIcon,
 } from "lucide-react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 function getYouTubeEmbedUrl(value: string | null) {
@@ -37,11 +46,26 @@ function getYouTubeEmbedUrl(value: string | null) {
 
 export function MediaPublications() {
   const sections = useQuery(api.media.listPublished)
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null)
   const emptyCopy = useEditorialRecord("media-empty", {
     eyebrow:"Editorial archive",
     title:"No publications are currently available.",
     summary:"Published books, reports, research papers, and media resources will be collected here.",
   })
+  const photoItems = (sections ?? []).flatMap((section) =>
+    section.items.filter(
+      (item) => item.mediaType === "photo" && Boolean(item.fileUrl)
+    )
+  )
+  const activePhoto =
+    activePhotoIndex === null ? null : photoItems[activePhotoIndex]
+
+  const movePhoto = (direction: -1 | 1) => {
+    setActivePhotoIndex((current) => {
+      if (current === null || photoItems.length === 0) return current
+      return (current + direction + photoItems.length) % photoItems.length
+    })
+  }
 
   if (sections === undefined) {
     return (
@@ -65,8 +89,9 @@ export function MediaPublications() {
   }
 
   return (
-    <section className="publication-library section-shell">
-      {sections.map((section, sectionIndex) => (
+    <>
+      <section className="publication-library section-shell">
+        {sections.map((section, sectionIndex) => (
         <section className="publication-section" id={section.slug} key={section._id}>
           <header>
             <span>{String(sectionIndex + 1).padStart(2, "0")}</span>
@@ -90,31 +115,36 @@ export function MediaPublications() {
                     </div>
                     <div className="photo-gallery-grid">
                       {section.items
-                        .filter((item) => item.mediaType === "photo")
+                        .filter(
+                          (item) =>
+                            item.mediaType === "photo" && Boolean(item.fileUrl)
+                        )
                         .map((item) => (
-                          <a
-                            href={item.fileUrl ?? undefined}
-                            target="_blank"
-                            rel="noreferrer"
+                          <button
+                            type="button"
                             key={item._id}
-                            aria-label={`View ${item.title} at full size`}
+                            aria-label={`Open ${item.title} in the image viewer`}
+                            onClick={() => {
+                              const photoIndex = photoItems.findIndex(
+                                (photo) => photo._id === item._id
+                              )
+                              if (photoIndex >= 0) setActivePhotoIndex(photoIndex)
+                            }}
                           >
                             <span className="photo-gallery-image">
-                              {item.fileUrl && (
-                                <Image
-                                  src={item.fileUrl}
-                                  alt={item.title}
-                                  fill
-                                  sizes="(max-width: 720px) 100vw, 33vw"
-                                />
-                              )}
+                              <Image
+                                src={item.fileUrl!}
+                                alt={item.title}
+                                fill
+                                sizes="(max-width: 720px) 100vw, 33vw"
+                              />
                             </span>
                             <span className="photo-gallery-caption">
                               <strong>{item.title}</strong>
                               {item.description && <small>{item.description}</small>}
-                              <ExternalLinkIcon aria-hidden="true" />
+                              <ExpandIcon aria-hidden="true" />
                             </span>
-                          </a>
+                          </button>
                         ))}
                     </div>
                   </div>
@@ -242,7 +272,66 @@ export function MediaPublications() {
             </p>
           )}
         </section>
-      ))}
-    </section>
+        ))}
+      </section>
+      <Dialog
+        open={Boolean(activePhoto)}
+        onOpenChange={(open) => {
+          if (!open) setActivePhotoIndex(null)
+        }}
+      >
+        <DialogContent
+          className="photo-lightbox"
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") movePhoto(-1)
+            if (event.key === "ArrowRight") movePhoto(1)
+          }}
+        >
+          {activePhoto?.fileUrl && (
+            <>
+              <div className="photo-lightbox-stage">
+                <Image
+                  src={activePhoto.fileUrl}
+                  alt={activePhoto.title}
+                  fill
+                  sizes="100vw"
+                />
+              </div>
+              <div className="photo-lightbox-copy">
+                <p className="kicker">
+                  Photograph{" "}
+                  {String((activePhotoIndex ?? 0) + 1).padStart(2, "0")} /{" "}
+                  {String(photoItems.length).padStart(2, "0")}
+                </p>
+                <DialogTitle>{activePhoto.title}</DialogTitle>
+                <DialogDescription>
+                  {activePhoto.description || "Paris Hindu Summit visual archive"}
+                </DialogDescription>
+              </div>
+              {photoItems.length > 1 && (
+                <div className="photo-lightbox-controls">
+                  <Button
+                    aria-label="Previous photograph"
+                    onClick={() => movePhoto(-1)}
+                    size="icon"
+                    variant="outline"
+                  >
+                    <ChevronLeftIcon />
+                  </Button>
+                  <Button
+                    aria-label="Next photograph"
+                    onClick={() => movePhoto(1)}
+                    size="icon"
+                    variant="outline"
+                  >
+                    <ChevronRightIcon />
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

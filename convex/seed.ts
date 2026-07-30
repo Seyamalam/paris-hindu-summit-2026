@@ -147,6 +147,7 @@ const settings = {
   xUrl: "",
   instagramUrl: "",
   youtubeUrl: "",
+  linkedinUrl: "",
   heroEyebrow: "Global forum · Paris · October 2026",
   heroTitleLine1: "We assemble",
   heroTitleLine2: "for equality.",
