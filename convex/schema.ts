@@ -117,6 +117,18 @@ export default defineSchema({
     .index("by_category_and_status_and_order", ["category", "status", "order"])
     .index("by_category_and_order", ["category", "order"]),
 
+  homeBanners: defineTable({
+    title: v.string(),
+    imageStorageId: v.id("_storage"),
+    altText: v.string(),
+    order: v.number(),
+    status: publicationStatus,
+    updatedAt: v.number(),
+  })
+    .index("by_image_storage_id", ["imageStorageId"])
+    .index("by_status_and_order", ["status", "order"])
+    .index("by_order", ["order"]),
+
   programmeDays: defineTable({
     slug: v.string(),
     tabLabel: v.string(),

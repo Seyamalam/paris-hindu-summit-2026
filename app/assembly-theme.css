@@ -572,6 +572,80 @@ main {
   text-transform: uppercase;
 }
 
+.home-banner-carousel {
+  padding: clamp(12px, 2.2vw, 34px);
+  background: #0a1428;
+  border-bottom: 1px solid #b08a42;
+}
+.home-banner-shell {
+  width: min(1600px, 100%);
+  margin-inline: auto;
+}
+.home-banner-artwork {
+  position: relative;
+  aspect-ratio: 5 / 2;
+  overflow: hidden;
+  background: #07101f;
+  border: 1px solid #b08a42;
+  box-shadow: 0 22px 64px #02081766;
+}
+.home-banner-image {
+  object-fit: contain;
+  animation: home-banner-reveal 360ms ease both;
+}
+.home-banner-controls {
+  min-height: 48px;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  color: #f5efe3;
+  background: #111d37;
+  border: 1px solid #b08a42;
+  border-top: 0;
+}
+.home-banner-controls button {
+  width: 48px;
+  display: grid;
+  place-items: center;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid #b08a4273;
+}
+.home-banner-controls button:hover,
+.home-banner-controls button:focus-visible {
+  color: #0a1428;
+  background: #d5b36a;
+  outline: 0;
+}
+.home-banner-controls button:first-child {
+  border-left: 0;
+}
+.home-banner-controls svg {
+  width: 17px;
+  height: 17px;
+}
+.home-banner-controls span {
+  min-width: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-left: 1px solid #b08a4273;
+  font: 750 9px var(--font-mono-stack);
+  letter-spacing: 0.14em;
+}
+.home-banner-controls i {
+  color: #d5b36a;
+  font-style: normal;
+}
+@keyframes home-banner-reveal {
+  from {
+    opacity: 0.35;
+    transform: scale(1.008);
+  }
+}
+
 /* Homepage sections */
 .split-intro {
   border-bottom: 1px solid var(--assembly-rule);
@@ -1632,6 +1706,16 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
 }
 
 @media (max-width: 720px) {
+  .home-banner-carousel {
+    padding: 8px;
+  }
+  .home-banner-controls {
+    justify-content: center;
+  }
+  .home-banner-controls button {
+    width: 44px;
+  }
+
   .managed-list-skeleton {
     grid-template-columns: 1fr;
   }

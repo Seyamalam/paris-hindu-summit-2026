@@ -80,6 +80,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Footer navigation, managed email, registration, donate, legal links, and recognisable Facebook, X/Twitter, Instagram, LinkedIn, and YouTube icons.
 - [x] A summit-branded animated 404 route provides clear Home and Programme recovery actions.
 - [x] Photo-gallery images render uncropped and open in an accessible in-page lightbox with next/previous controls instead of a new browser tab.
+- [x] The supplied 2026 campaign banner appears uncropped below the homepage hero, with reduced-motion-safe carousel controls when multiple banners are published.
 
 ### Detailed content
 
@@ -152,6 +153,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Privacy and Terms records are reachable through the Other Content inspector.
 - [x] All admin file inputs use a consistent drag/drop queue with file metadata, progress, retry, removal, validation errors, and Convex-backed upload handlers.
 - [x] Animated status notifications are shared by public forms and the protected admin workspace.
+- [x] Home-page banners have a purpose-built Admin editor with direct Convex upload/selection, accessible image descriptions, order, draft/published status, and removal.
 
 ### General tab — dynamic
 
@@ -235,7 +237,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 
 ## Convex content and file architecture
 
-- [x] `regionalCountries`, `organizations`, and `assets` initial schema.
+- [x] `regionalCountries`, `organizations`, `homeBanners`, and `assets` schema.
 - [x] Public reads use indexed queries and return resolved storage URLs rather than persisting URLs.
 - [x] File records store `Id<"_storage">`; temporary storage URLs are never stored.
 - [x] Authenticated upload URL generation.
@@ -259,6 +261,7 @@ Move these to Convex and expose through Admin:
 - [x] Navigation labels are generated from programme, media, engage, and detailed content.
 - [x] People, partners/sponsors, regional countries, media, programme, chart series, and detailed editorial copy are supported.
 - [x] Logos, portraits, thumbnails, downloadable files, and alt text/metadata can be stored in the Convex media library. `Partial`: polished attachment pickers remain.
+- [x] Homepage campaign banners are stored as ordered Convex records that reference managed storage IDs and resolve public URLs at read time.
 - [x] Remaining editorial section framing is represented by named, layout-safe Convex records rather than a generic unstructured page builder.
 
 Never make these editable as plain content:
