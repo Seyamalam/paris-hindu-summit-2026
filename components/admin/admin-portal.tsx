@@ -417,7 +417,7 @@ function PageStudio({ page }: { page:StudioPage }) {
 }
 
 function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; publishSignal:number; onSaved:()=>void }) {
-  if (page === "home") return <><SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} /><EvidenceStatsEditor onSaved={onSaved} /></>
+  if (page === "home") return <><SettingsPanel compact focus="home" publishSignal={publishSignal} onSaved={onSaved} /><HomeBannersEditor onSaved={onSaved} /><EvidenceStatsEditor onSaved={onSaved} /></>
   if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
   if (page === "about") return <AboutEditor />
   if (page === "programme") return <ProgrammeAdmin />
@@ -438,6 +438,242 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "sectionCopy") return <EditorialCopyEditor />
   if (page === "content") return <ContentPanel compact initialCategory="legal" />
   return <ContentPanel compact initialCategory="resolution" />
+}
+
+type HomeBannerDraft = {
+  title: string
+  imageStorageId?: Id<"_storage">
+  altText: string
+  order: number
+  status: "draft" | "published"
+}
+
+function HomeBannersEditor({ onSaved }: { onSaved: () => void }) {
+  const rows = useQuery(api.banners.listForAdmin)
+  const assets = useQuery(api.assets.list)
+  const save = useMutation(api.banners.save)
+  const remove = useMutation(api.banners.remove)
+  const generateUploadUrl = useMutation(api.assets.generateUploadUrl)
+  const register = useMutation(api.assets.register)
+  const [selected, setSelected] = useState<string>("new")
+  const [uploading, setUploading] = useState(false)
+  const [draft, setDraft] = useState<HomeBannerDraft>({
+    title: "",
+    altText: "",
+    order: 10,
+    status: "published",
+  })
+  const existing = rows?.find((row) => row._id === selected)
+  const imageAssets = assets?.filter((asset) => asset.mimeType.startsWith("image/"))
+  const selectedAsset = imageAssets?.find(
+    (asset) => asset.storageId === draft.imageStorageId
+  )
+
+  useEffect(() => {
+    if (existing) {
+      setDraft({
+        title: existing.title,
+        imageStorageId: existing.imageStorageId,
+        altText: existing.altText,
+        order: existing.order,
+        status: existing.status,
+      })
+      return
+    }
+    const nextOrder =
+      (rows?.reduce((highest, row) => Math.max(highest, row.order), 0) ?? 0) + 10
+    setDraft({
+      title: "",
+      altText: "",
+      order: nextOrder,
+      status: "published",
+    })
+  }, [existing, rows])
+
+  return (
+    <section className="admin-panel" data-compact="true">
+      <PanelTitle
+        eyebrow="Homepage banners"
+        title="Campaign artwork carousel"
+        copy="Upload any number of wide banners, choose their order, and publish only the artwork that should rotate on the Home page."
+      />
+      <AdminRecordSelect
+        label="Banner to edit"
+        value={selected}
+        createLabel="+ Add a banner"
+        records={
+          rows?.map((row) => ({
+            value: row._id,
+            label: `${row.title} · ${row.status}`,
+          })) ?? []
+        }
+        onChange={setSelected}
+      />
+      <div className="admin-form-grid">
+        <Field
+          label="Internal banner name"
+          value={draft.title}
+          onValueChange={(value) => setDraft({ ...draft, title: value })}
+        />
+        <Field
+          label="Image description for screen readers"
+          multiline
+          value={draft.altText}
+          onValueChange={(value) => setDraft({ ...draft, altText: value })}
+        />
+        <Field
+          label="Display order"
+          type="number"
+          value={String(draft.order)}
+          onValueChange={(value) =>
+            setDraft({ ...draft, order: Number(value) })
+          }
+        />
+        <label className="admin-field">
+          <span>Publication status</span>
+          <select
+            value={draft.status}
+            onChange={(event) =>
+              setDraft({
+                ...draft,
+                status: event.target.value as "draft" | "published",
+              })
+            }
+          >
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+        </label>
+        <div className="admin-asset-picker admin-banner-picker">
+          <label className="admin-field">
+            <span>Banner artwork</span>
+            <select
+              value={draft.imageStorageId ?? ""}
+              onChange={(event) => {
+                const storageId = (event.target.value || undefined) as
+                  | Id<"_storage">
+                  | undefined
+                const asset = imageAssets?.find(
+                  (item) => item.storageId === storageId
+                )
+                setDraft({
+                  ...draft,
+                  imageStorageId: storageId,
+                  altText: draft.altText || asset?.altText || "",
+                })
+              }}
+            >
+              <option value="">Choose managed artwork</option>
+              {imageAssets?.map((asset) => (
+                <option key={asset._id} value={asset.storageId}>
+                  {asset.fileName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="admin-banner-preview">
+            {selectedAsset?.url ? (
+              <img src={selectedAsset.url} alt={draft.altText || selectedAsset.altText} />
+            ) : (
+              <div>
+                <ImageIcon />
+                <span>No banner selected</span>
+              </div>
+            )}
+          </div>
+          <AdminFileUpload
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            title="Upload banner artwork"
+            description="Wide JPEG, PNG, WebP or AVIF · at least 1200 × 400 px · maximum 20 MB"
+            disabled={uploading}
+            onUpload={async (file) => {
+              const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "image/avif",
+              ]
+              if (!allowedTypes.includes(file.type)) {
+                throw new Error("Choose a JPEG, PNG, WebP, or AVIF banner.")
+              }
+              const bitmap = await createImageBitmap(file)
+              if (bitmap.width < 1200 || bitmap.height < 400) {
+                bitmap.close()
+                throw new Error("Banner artwork must be at least 1200 × 400 pixels.")
+              }
+              bitmap.close()
+              setUploading(true)
+              try {
+                const storageId = await uploadAdminAsset({
+                  file,
+                  category: "media",
+                  uploadUrl: generateUploadUrl,
+                  register,
+                })
+                const plainName = file.name.replace(/\.[^.]+$/, "").trim()
+                setDraft((current) => ({
+                  ...current,
+                  imageStorageId: storageId,
+                  title: current.title || plainName,
+                  altText:
+                    current.altText ||
+                    `${plainName || "Paris Hindu Summit"} promotional banner`,
+                }))
+                toast.success("Banner uploaded and selected. Save it to publish.")
+              } finally {
+                setUploading(false)
+              }
+            }}
+          />
+        </div>
+      </div>
+      <div className="admin-editor-actions">
+        <Button
+          onClick={async () => {
+            if (!draft.imageStorageId) {
+              toast.error("Choose or upload banner artwork first.")
+              return
+            }
+            try {
+              await save({
+                ...(existing ? { id: existing._id } : {}),
+                title: draft.title,
+                imageStorageId: draft.imageStorageId,
+                altText: draft.altText,
+                order: draft.order,
+                status: draft.status,
+              })
+              toast.success(
+                draft.status === "published"
+                  ? "Homepage banner published."
+                  : "Banner saved as a draft."
+              )
+              setSelected("new")
+              onSaved()
+            } catch (error) {
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : "The banner could not be saved."
+              )
+            }
+          }}
+        >
+          <SaveIcon /> Save banner
+        </Button>
+        {existing && (
+          <ConfirmDelete
+            label={existing.title}
+            onConfirm={async () => {
+              await remove({ id: existing._id })
+              setSelected("new")
+              onSaved()
+            }}
+          />
+        )}
+      </div>
+    </section>
+  )
 }
 
 function EvidenceStatsEditor({ onSaved }: { onSaved:()=>void }) {

@@ -15,6 +15,7 @@ import { TextReveal } from "@/components/motion/text-reveal"
 import { api } from "@/convex/_generated/api"
 import { Countdown } from "@/components/site/countdown"
 import { HeroCountdown } from "@/components/site/hero-countdown"
+import { HomeBannerCarousel } from "@/components/site/home-banner-carousel"
 import { ManagedText, useEditorialRecord } from "@/components/site/managed-editorial"
 import {
   EvidenceCharts,
@@ -35,6 +36,7 @@ export default function HomePage() {
   const programme = useQuery(api.programme.listPublished)
   const charts = useQuery(api.charts.listPublished)
   const speakers = useQuery(api.cms.listPublished, { category:"speaker" })
+  const banners = useQuery(api.banners.listPublished)
   const organizations = useQuery(api.content.listOrganizations)
   const countries = useQuery(api.content.listRegionalCountries)
   const heroActions = useEditorialRecord("home-hero-actions", {
@@ -68,6 +70,7 @@ export default function HomePage() {
     programme !== undefined &&
     charts !== undefined &&
     speakers !== undefined &&
+    banners !== undefined &&
     organizations !== undefined &&
     countries !== undefined &&
     !heroActions.isLoading &&
@@ -140,14 +143,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="assembly-banner">
-        <strong><ManagedText slug="home-banner" field="title" fallback="PARIS" /></strong>
-        <p>
-          {settings?.theme ??
-            "One room. Many institutions. A shared commitment."}
-        </p>
-        <span>{eventDates}</span>
-      </section>
+      <HomeBannerCarousel banners={banners} />
       <HomeInfoBar />
 
       <section className="split-intro section-shell">

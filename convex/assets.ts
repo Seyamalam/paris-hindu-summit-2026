@@ -111,12 +111,14 @@ export const remove = mutation({
     if (asset) {
       const [
         cmsReference,
+        bannerReference,
         regionalReference,
         organizationReference,
         mediaCoverReference,
         mediaFileReference,
       ] = await Promise.all([
         ctx.db.query("cmsEntries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
+        ctx.db.query("homeBanners").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
         ctx.db.query("regionalCountries").withIndex("by_image_storage_id", (q) => q.eq("imageStorageId", asset.storageId)).first(),
         ctx.db.query("organizations").withIndex("by_logo_storage_id", (q) => q.eq("logoStorageId", asset.storageId)).first(),
         ctx.db.query("mediaItems").withIndex("by_cover_storage_id", (q) => q.eq("coverStorageId", asset.storageId)).first(),
@@ -124,6 +126,7 @@ export const remove = mutation({
       ])
       if (
         cmsReference ||
+        bannerReference ||
         regionalReference ||
         organizationReference ||
         mediaCoverReference ||

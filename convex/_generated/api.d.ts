@@ -11,6 +11,7 @@
 import type * as admin from "../admin.js";
 import type * as assets from "../assets.js";
 import type * as auth from "../auth.js";
+import type * as banners from "../banners.js";
 import type * as charts from "../charts.js";
 import type * as cms from "../cms.js";
 import type * as content from "../content.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   assets: typeof assets;
   auth: typeof auth;
+  banners: typeof banners;
   charts: typeof charts;
   cms: typeof cms;
   content: typeof content;
