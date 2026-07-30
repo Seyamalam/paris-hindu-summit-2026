@@ -764,7 +764,7 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
     ["Identity & dates", ["eventName", "shortName", "theme", "eventStartIso", "eventEndIso", "timezone"]],
     ["Venue & scale", ["venue", "address", "cityCountry", "format", "delegateInfo", "languages"]],
     ["Contact desk", ["contactEmail", "registrationEmail", "pressEmail", "phone", "whatsapp"]],
-    ["Social links", ["facebookUrl", "xUrl", "instagramUrl", "youtubeUrl"]],
+    ["Social links", ["facebookUrl", "xUrl", "instagramUrl", "linkedinUrl", "youtubeUrl"]],
     ["Hero", ["heroEyebrow", "heroTitleLine1", "heroTitleLine2", "heroLead"]],
     ["Why this summit", ["whyTitle", "whyBody"]],
     ["Donation invitation", ["donationEyebrow", "donationTitle", "donationBody"]],

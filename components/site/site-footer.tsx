@@ -2,13 +2,14 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRightIcon, AtSignIcon, MailIcon, MapPinIcon, MessageCircleIcon, PhoneIcon, PlayIcon, UsersIcon } from "lucide-react"
+import { ArrowUpRightIcon, MailIcon, MapPinIcon, MessageCircleIcon, PhoneIcon } from "lucide-react"
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
 import { Separator } from "@/components/ui/separator"
+import { SocialIcon } from "@/components/site/social-icon"
 import { event, navItems } from "@/lib/content"
 
 export function SiteFooter() {
@@ -31,6 +32,14 @@ export function SiteFooter() {
       </footer>
     )
   }
+  const socialLinks = [
+    ["facebook", "Facebook", settings?.facebookUrl],
+    ["x", "X / Twitter", settings?.xUrl],
+    ["instagram", "Instagram", settings?.instagramUrl],
+    ["linkedin", "LinkedIn", settings?.linkedinUrl],
+    ["youtube", "YouTube", settings?.youtubeUrl],
+  ] as const
+
   return (
     <footer className="site-footer">
       <div className="footer-callout">
@@ -68,11 +77,30 @@ export function SiteFooter() {
           {settings?.pressEmail && <a href={`mailto:${settings.pressEmail}`}><MailIcon /> Press desk</a>}
           {settings?.phone && <a href={`tel:${settings.phone}`}><PhoneIcon /> {settings.phone}</a>}
           {settings?.whatsapp && <a href={`https://wa.me/${settings.whatsapp.replace(/\D/g, "")}`}><MessageCircleIcon /> WhatsApp</a>}
-          <div className="footer-socials">
-            {settings?.facebookUrl && <a aria-label="Facebook" href={settings.facebookUrl}><UsersIcon /></a>}
-            {settings?.xUrl && <a aria-label="X" href={settings.xUrl}><AtSignIcon /></a>}
-            {settings?.instagramUrl && <a aria-label="Instagram" href={settings.instagramUrl}><AtSignIcon /></a>}
-            {settings?.youtubeUrl && <a aria-label="YouTube" href={settings.youtubeUrl}><PlayIcon /></a>}
+          <div className="footer-socials" aria-label="Social media">
+            {socialLinks.map(([network, label, href]) =>
+              href ? (
+                <a
+                  aria-label={label}
+                  href={href}
+                  key={network}
+                  rel="noreferrer"
+                  target="_blank"
+                  title={label}
+                >
+                  <SocialIcon network={network} />
+                </a>
+              ) : (
+                <span
+                  aria-hidden="true"
+                  data-empty="true"
+                  key={network}
+                  title={`${label} link not configured`}
+                >
+                  <SocialIcon network={network} />
+                </span>
+              )
+            )}
           </div>
         </div>
       </div>

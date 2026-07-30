@@ -27,6 +27,7 @@ export const settingsFieldsValidator = v.object({
   xUrl: v.string(),
   instagramUrl: v.string(),
   youtubeUrl: v.string(),
+  linkedinUrl: v.optional(v.string()),
   heroEyebrow: v.string(),
   heroTitleLine1: v.string(),
   heroTitleLine2: v.string(),

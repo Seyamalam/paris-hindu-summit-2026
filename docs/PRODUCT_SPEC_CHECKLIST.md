@@ -77,8 +77,9 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Dedicated animated Donate and Support pages with server-backed demo behaviour. `Partial`: replace the inactive Stripe prototype with SSLCOMMERZ before live collection.
 - [x] Full persistent Registration section with required fields, consent, reference, and admin inbox workflow.
 - [x] Footer foundation.
-- [x] Footer navigation, managed email, registration, donate, social and legal links.
+- [x] Footer navigation, managed email, registration, donate, legal links, and recognisable Facebook, X/Twitter, Instagram, LinkedIn, and YouTube icons.
 - [x] A summit-branded animated 404 route provides clear Home and Programme recovery actions.
+- [x] Photo-gallery images render uncropped and open in an accessible in-page lightbox with next/previous controls instead of a new browser tab.
 
 ### Detailed content
 
