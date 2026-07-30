@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "convex/react"
 import {
   ArrowDownToLineIcon,
@@ -66,6 +66,20 @@ export function MediaPublications() {
       return (current + direction + photoItems.length) % photoItems.length
     })
   }
+  useEffect(() => {
+    if (activePhotoIndex === null || photoItems.length < 2) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+      event.preventDefault()
+      const direction = event.key === "ArrowLeft" ? -1 : 1
+      setActivePhotoIndex((current) => {
+        if (current === null) return current
+        return (current + direction + photoItems.length) % photoItems.length
+      })
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [activePhotoIndex, photoItems.length])
 
   if (sections === undefined) {
     return (
@@ -280,13 +294,7 @@ export function MediaPublications() {
           if (!open) setActivePhotoIndex(null)
         }}
       >
-        <DialogContent
-          className="photo-lightbox"
-          onKeyDown={(event) => {
-            if (event.key === "ArrowLeft") movePhoto(-1)
-            if (event.key === "ArrowRight") movePhoto(1)
-          }}
-        >
+        <DialogContent className="photo-lightbox">
           {activePhoto?.fileUrl && (
             <>
               <div className="photo-lightbox-stage">
