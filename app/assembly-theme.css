@@ -1503,7 +1503,7 @@ main {
   width: min(1180px, calc(100vw - 28px)) !important;
   max-width: none !important;
   max-height: calc(100svh - 28px);
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.3fr);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
   gap: 0 !important;
   padding: 0 !important;
   overflow: hidden;
@@ -1534,15 +1534,16 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
   flex-direction: column;
   justify-content: flex-end;
   min-width: 0;
-  padding: clamp(24px, 4vw, 48px);
+  padding: clamp(24px, 3vw, 40px);
   padding-bottom: clamp(92px, 8vw, 122px);
   border-left: 1px solid var(--assembly-rule);
 }
 .photo-lightbox-copy [data-slot="dialog-title"] {
   margin: 12px 0 16px;
-  font: 800 clamp(28px, 3vw, 48px)/0.94 var(--font-body-stack);
+  font: 800 clamp(28px, 2.7vw, 42px)/0.94 var(--font-body-stack);
   letter-spacing: -0.05em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 .photo-lightbox-copy [data-slot="dialog-description"] {
   color: var(--ash);
@@ -3152,14 +3153,14 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   white-space: pre-line;
 }
 
-/* Complete people portraits without forced cropping */
+/* Borderless, face-forward people portraits */
 .person-portrait {
   position: relative;
   width: min(260px, 100%);
   min-height: 0;
   aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid var(--assembly-rule);
+  border: 0;
   border-radius: 50%;
   background: color-mix(
     in srgb,
@@ -3170,9 +3171,9 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
 .person-portrait img,
 .speaker-portrait.person-portrait img,
 .committee-portrait.person-portrait img {
-  padding: 8px;
-  object-fit: contain;
-  object-position: center;
+  padding: 0;
+  object-fit: cover;
+  object-position: 50% 22%;
   border-radius: 50%;
   filter: saturate(0.9) contrast(1.02);
 }
@@ -3205,28 +3206,27 @@ body:has(.announcement-strip) .page-hero { padding-top: 110px; }
   line-height: 1.8;
   white-space: pre-line;
 }
-.person-bio details > summary {
+.person-bio-expand {
   width: fit-content;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   margin-top: 12px;
+  padding: 0;
   color: var(--assembly-red);
   font: 750 10px var(--font-mono-stack);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  list-style: none;
 }
-.person-bio details > summary svg {
+.person-bio-expand svg {
   width: 15px;
-  transition: transform 180ms ease;
 }
-.person-bio details[open] > summary svg {
-  transform: rotate(180deg);
-}
-.person-bio details[open] > .person-bio-copy {
-  margin-top: 18px;
+.person-bio-expand:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
 }
 
 /* FAQ and implementation cards */
@@ -3381,7 +3381,7 @@ body small:not([data-preserve-compact]) {
 .header-action,
 .header-secondary-action,
 .hero-actions [data-slot="button"],
-.person-bio details > summary {
+.person-bio-expand {
   font-size: 12px;
   line-height: 1.35;
 }

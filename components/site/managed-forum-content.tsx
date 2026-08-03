@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { useQuery } from "convex/react"
+import { useState } from "react"
 import {
   ArrowRightIcon,
   BriefcaseBusinessIcon,
@@ -114,6 +115,7 @@ function PersonPortrait({
 }
 
 function ExpandableBio({ bio }: { bio?: string }) {
+  const [isExpanded, setIsExpanded] = useState(false)
   const cleanBio = bio?.trim() ?? ""
   if (!cleanBio) return null
 
@@ -129,13 +131,18 @@ function ExpandableBio({ bio }: { bio?: string }) {
 
   return (
     <div className="person-bio">
-      <p className="person-bio-copy">{previewText}…</p>
-      <details>
-        <summary>
+      <p className="person-bio-copy">
+        {isExpanded ? cleanBio : `${previewText}…`}
+      </p>
+      {!isExpanded && (
+        <button
+          type="button"
+          className="person-bio-expand"
+          onClick={() => setIsExpanded(true)}
+        >
           Read more <ChevronDownIcon aria-hidden="true" />
-        </summary>
-        <p className="person-bio-copy">{remainingBio}</p>
-      </details>
+        </button>
+      )}
     </div>
   )
 }

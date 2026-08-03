@@ -80,6 +80,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Footer navigation, managed email, registration, donate, legal links, and recognisable Facebook, X/Twitter, Instagram, LinkedIn, and YouTube icons.
 - [x] A summit-branded animated 404 route provides clear Home and Programme recovery actions.
 - [x] Photo-gallery images render uncropped and open in an accessible in-page lightbox with next/previous controls instead of a new browser tab.
+- [x] Photo-lightbox metadata reserves enough width for its headline and wraps long titles without clipping at desktop and tablet sizes.
 - [x] The supplied 2026 campaign banner appears uncropped below the homepage hero, with reduced-motion-safe carousel controls when multiple banners are published.
 
 ### Detailed content
@@ -185,6 +186,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Add, edit, remove, reorder, draft, and publish speaker records.
 - [x] Purpose-built speaker editor uses client-facing fields: name, short introduction shown below the name, country, biography, direct profile-picture upload/selection, order, and publication state.
 - [x] The public Speakers page now reads published speaker records from Convex instead of a code-only list.
+- [x] Expanding a long biography replaces its preview with one continuous paragraph, without leaving a Read more control or content break inside the biography.
 - [x] Featured toggle drives the homepage teaser and the backend enforces the approved maximum of three.
 - [x] Speaker views do not substitute removed or unpublished records with hard-coded fallback people.
 
@@ -193,6 +195,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Organising Committee and Advisory Board have separate Page Studio navigation entries, live previews, and people editors.
 - [x] Team and Advisory Board fields support name, short introduction, biography, direct profile-picture upload/selection, order, and publication state.
 - [x] Published committee portraits render on `/committee`; published advisor portraits render separately on `/advisory-board`.
+- [x] Public people portraits use a full-bleed circular, borderless, face-forward crop without an inner rectangular image frame.
 
 ### Partners & Sponsors tab — dynamic
 
