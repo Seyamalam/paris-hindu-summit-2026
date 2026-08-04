@@ -363,6 +363,14 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_message_id", ["messageId"]),
 
+  mailDispatches: defineTable({
+    providerMessageId: v.string(),
+    recipientCount: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_provider_message_id", ["providerMessageId"])
+    .index("by_created_at", ["createdAt"]),
+
   donations: defineTable({
     reference: v.string(),
     donorName: v.string(),

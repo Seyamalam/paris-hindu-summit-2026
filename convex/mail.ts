@@ -95,18 +95,11 @@ export const dailyAllowance = query({
     const now = new Date()
     const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
     const resetsAt = start + 24 * 60 * 60 * 1000
-    const messages = await ctx.db
-      .query("mailMessages")
-      .withIndex("by_direction_and_created_at", (q) =>
-        q.eq("direction", "outgoing").gte("createdAt", start)
-      )
+    const dispatches = await ctx.db
+      .query("mailDispatches")
+      .withIndex("by_created_at", (q) => q.gte("createdAt", start))
       .collect()
-    const used = messages.reduce(
-      (total, message) => message.deliveryStatus === "failed"
-        ? total
-        : total + message.toAddresses.length + message.ccAddresses.length + (message.bccAddresses?.length ?? 0),
-      0
-    )
+    const used = dispatches.reduce((total, dispatch) => total + dispatch.recipientCount, 0)
     const limit = 300
     return { limit, used, remaining: Math.max(0, limit - used), resetsAt }
   },
@@ -266,6 +259,11 @@ export const recordSent = mutation({
         createdAt: now,
       })
     }
+    await ctx.db.insert("mailDispatches", {
+      providerMessageId: args.messageId,
+      recipientCount: args.toAddresses.length + args.ccAddresses.length + args.bccAddresses.length,
+      createdAt: now,
+    })
     await writeAudit(ctx, actor, {
       action: "send",
       entityType: "mailMessage",
@@ -323,6 +321,45 @@ export const recordFailed = mutation({
       summary: `Email failed for ${args.toAddresses.join(", ")}: ${args.providerResponse}`,
     })
     return id
+  },
+})
+
+export const backfillDispatchLedger = internalMutation({
+  args: {},
+  returns: v.object({ inserted: v.number(), skipped: v.number() }),
+  handler: async (ctx) => {
+    const messages = await ctx.db
+      .query("mailMessages")
+      .withIndex("by_direction_and_created_at", (q) => q.eq("direction", "outgoing"))
+      .collect()
+    let inserted = 0
+    let skipped = 0
+
+    for (const message of messages) {
+      if (message.deliveryStatus === "failed") {
+        skipped += 1
+        continue
+      }
+      const existing = await ctx.db
+        .query("mailDispatches")
+        .withIndex("by_provider_message_id", (q) => q.eq("providerMessageId", message.messageId))
+        .first()
+      if (existing) {
+        skipped += 1
+        continue
+      }
+      await ctx.db.insert("mailDispatches", {
+        providerMessageId: message.messageId,
+        recipientCount:
+          message.toAddresses.length +
+          message.ccAddresses.length +
+          (message.bccAddresses?.length ?? 0),
+        createdAt: message.createdAt,
+      })
+      inserted += 1
+    }
+
+    return { inserted, skipped }
   },
 })
 
