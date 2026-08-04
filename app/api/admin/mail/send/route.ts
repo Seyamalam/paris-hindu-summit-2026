@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       requireTLS: port === 587,
     })
     const info = await transporter.sendMail({
-      from: { name: "Paris Hindu Summit", address: fromAddress },
+      from: { name: "Paris Hindu Summit 2026", address: fromAddress },
       to,
       cc,
       replyTo: fromAddress,
