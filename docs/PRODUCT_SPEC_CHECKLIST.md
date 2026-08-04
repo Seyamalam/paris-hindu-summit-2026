@@ -134,7 +134,7 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] `/admin` has a dedicated Better Auth email/password sign-in and account setup screen.
 - [x] Admin mutations verify Better Auth identity and an active role record on the server.
 - [x] Passwords are handled by Better Auth and never stored in application tables.
-- [x] Roles: Administrator and Editor.
+- [x] Roles: Administrator, Editor, and Mail & Forms Only. The restricted role cannot access website content, donations, media, team access, or audit tools.
 - [x] Invitation-only Team Access panel supports account creation, role selection, suspension, restoration, and last-administrator safeguards.
 - [x] Draft/published status for public content.
 - [x] Audit events and update timestamps for editorial operations.
@@ -146,6 +146,8 @@ text, see [`CONTENT_EDITABILITY_AUDIT.md`](CONTENT_EDITABILITY_AUDIT.md).
 - [x] Programme, people, regional, partner, media, engagement, support, homepage evidence cards, evidence charts, and extended content editors are available beside their corresponding live pages.
 - [x] The Evidence Charts Admin entry previews the matching homepage chart block directly instead of an unrelated section of the Context page.
 - [x] Forms, donations, media storage, team access, dashboard metrics, and activity are retained in a separate Operations workspace.
+- [x] Mail Desk archives routed inbound email in Convex, supports read state and threading metadata, and sends authenticated replies from `info@parishindusummit.org` through a server-only SMTP route.
+- [x] Cloudflare Email Routing continues forwarding incoming messages to verified destination inboxes while the Email Worker records a copy for the protected Mail Desk.
 - [x] All Convex-backed saves update public queries reactively without a code deployment.
 - [x] Global Site Settings are bound to the public hero, event facts, rationale, donation invitation, registration/donation availability, header, and footer rather than duplicated static copy.
 - [x] Page titles, eyebrows, and introductory paragraphs for all principal public pages are editable through a dedicated Page Titles & Intros inspector.

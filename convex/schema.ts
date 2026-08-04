@@ -14,7 +14,11 @@ export default defineSchema({
     authUserId: v.string(),
     email: v.string(),
     name: v.string(),
-    role: v.union(v.literal("administrator"), v.literal("editor")),
+    role: v.union(
+      v.literal("administrator"),
+      v.literal("editor"),
+      v.literal("mail_manager")
+    ),
     status: v.union(v.literal("active"), v.literal("suspended")),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -306,6 +310,42 @@ export default defineSchema({
     .index("by_type_and_status", ["type", "status"])
     .index("by_status_and_created_at", ["status", "createdAt"])
     .index("by_email_and_created_at", ["email", "createdAt"]),
+
+  mailMessages: defineTable({
+    direction: v.union(v.literal("incoming"), v.literal("outgoing")),
+    messageId: v.string(),
+    inReplyTo: v.optional(v.string()),
+    references: v.optional(v.string()),
+    fromAddress: v.string(),
+    fromName: v.string(),
+    toAddresses: v.array(v.string()),
+    ccAddresses: v.array(v.string()),
+    subject: v.string(),
+    textBody: v.string(),
+    htmlBody: v.string(),
+    deliveryStatus: v.union(
+      v.literal("received"),
+      v.literal("sent"),
+      v.literal("failed")
+    ),
+    isRead: v.boolean(),
+    sentByEmail: v.optional(v.string()),
+    providerResponse: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_message_id", ["messageId"])
+    .index("by_created_at", ["createdAt"])
+    .index("by_direction_and_created_at", ["direction", "createdAt"]),
+
+  mailAttachments: defineTable({
+    messageId: v.id("mailMessages"),
+    fileName: v.string(),
+    mimeType: v.string(),
+    byteSize: v.number(),
+    contentId: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_message_id", ["messageId"]),
 
   donations: defineTable({
     reference: v.string(),

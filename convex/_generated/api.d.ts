@@ -19,6 +19,7 @@ import type * as donations from "../donations.js";
 import type * as forms from "../forms.js";
 import type * as http from "../http.js";
 import type * as lib_admin from "../lib/admin.js";
+import type * as mail from "../mail.js";
 import type * as media from "../media.js";
 import type * as programme from "../programme.js";
 import type * as seed from "../seed.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   forms: typeof forms;
   http: typeof http;
   "lib/admin": typeof lib_admin;
+  mail: typeof mail;
   media: typeof media;
   programme: typeof programme;
   seed: typeof seed;
