@@ -80,6 +80,33 @@ http.route({
 })
 
 http.route({
+  path: "/mail/delivery",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const expectedSecret = process.env.MAIL_INGEST_SECRET
+    const suppliedSecret = request.headers.get("x-mail-ingest-secret")
+    if (!expectedSecret || suppliedSecret !== expectedSecret) {
+      return new Response("Unauthorized", { status: 401 })
+    }
+    let value: unknown
+    try { value = await request.json() } catch { return new Response("Invalid JSON", { status:400 }) }
+    const events = Array.isArray(value) ? value : [value]
+    const results = []
+    for (const item of events.slice(0, 500)) {
+      if (!item || typeof item !== "object") continue
+      const body = item as Record<string, unknown>
+      const messageId = stringValue(body["message-id"], 1000)
+      const email = stringValue(body.email, 500).toLowerCase()
+      const event = stringValue(body.event, 100).toLowerCase()
+      if (!messageId || !email || !event) continue
+      const detail = stringValue(body.reason, 1000) || stringValue(body.message, 1000) || stringValue(body.subject, 1000) || event
+      results.push(await ctx.runMutation(internal.mail.applyDeliveryEvent, { messageId, email, event, detail }))
+    }
+    return Response.json({ processed:results.length, results })
+  }),
+})
+
+http.route({
   path: "/stripe/webhook",
   method: "POST",
   handler: httpAction(async (ctx, request) => {

@@ -1413,6 +1413,30 @@
   line-height: 1.45;
 }
 
+.mail-delivery-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.2rem 0 0.45rem;
+}
+
+.mail-delivery-breakdown span {
+  padding: 0.22rem 0.45rem;
+  color: var(--mail-text);
+  border: 1px solid var(--mail-rule);
+  background: var(--mail-list);
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+.mail-failed-addresses {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.35rem 0;
+  color: #8d1d28;
+  overflow-wrap: anywhere;
+}
+
 .mail-compose-layer {
   position: fixed;
   z-index: 70;

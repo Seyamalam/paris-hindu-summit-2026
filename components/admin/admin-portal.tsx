@@ -2231,8 +2231,10 @@ function MailDeskPanel() {
               <footer>
                 <span>Delivery</span>
                 <strong className="mail-delivery-status">{selected.deliveryStatus}</strong>
+                {selected.direction === "outgoing" && <div className="mail-delivery-breakdown"><span>{selected.deliveredAddresses?.length ?? 0} delivered</span><span>{selected.deferredAddresses?.length ?? 0} deferred</span><span>{selected.failedAddresses?.length ?? 0} failed</span></div>}
                 <span>Message ID</span>
                 <code>{selected.messageId}</code>
+                {(selected.failedAddresses?.length ?? 0) > 0 && <p className="mail-failed-addresses"><b>Failed recipients</b>{selected.failedAddresses?.join(", ")}</p>}
                 {selected.deliveryStatus === "failed" && selected.providerResponse && <p className="mail-failure-detail"><b>Failure reason</b>{selected.providerResponse}</p>}
                 {selected.sentByEmail && <small>Sent by {selected.sentByEmail}</small>}
               </footer>
