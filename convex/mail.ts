@@ -112,7 +112,7 @@ export const recordSent = mutation({
       inReplyTo: args.inReplyTo,
       references: args.references,
       fromAddress: "info@parishindusummit.org",
-      fromName: "Paris Hindu Summit",
+      fromName: "Paris Hindu Summit 2026",
       toAddresses: args.toAddresses,
       ccAddresses: args.ccAddresses,
       subject: args.subject,
