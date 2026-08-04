@@ -299,6 +299,7 @@ Never make these editable as plain content:
 - [x] Production is the editorial source of truth; development may be refreshed from production only after separate backups of both deployments.
 - [ ] Production backup/export and restore drill before launch.
 - [x] Automated and manual accessibility pass covers keyboard navigation, focus, contrast, reduced motion, form errors and chart data-table alternatives. `Partial`: final third-party audit remains a launch-day check.
+- [x] GitHub issue #52 — committee and advisory designations use prominent, high-contrast labels that remain readable on compact screens and wrap longer roles safely.
 - [x] Responsive QA covers compact mobile, tablet and desktop layouts. `Partial`: final physical-device and Safari/Firefox sign-off remains.
 - [x] All 20 public routes are browser-verified without horizontal overflow at 320px, 390px, 768px, 1024px, and 1280px.
 - [x] Mobile navigation fits a 320px viewport, scrolls vertically, wraps long labels, preserves touch targets, and exposes Programme and Partners.
