@@ -10,17 +10,27 @@ type SendBody = {
   text?: unknown
   inReplyTo?: unknown
   references?: unknown
+  mode?: unknown
+  consentConfirmed?: unknown
+  attachments?: unknown
 }
 
-function addresses(value: unknown) {
+type MailAttachment = {
+  fileName: string
+  mimeType: string
+  byteSize: number
+  contentBase64: string
+}
+
+function addresses(value: unknown, limit = 25) {
   if (typeof value !== "string") return []
   return value
-    .split(/[;,]/)
+    .split(/[;,\n]/)
     .map((address) => address.trim().toLowerCase())
     .filter((address, index, items) =>
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address) && items.indexOf(address) === index
     )
-    .slice(0, 25)
+    .slice(0, limit)
 }
 
 function text(value: unknown, maxLength: number) {
@@ -34,6 +44,24 @@ function escapeHtml(value: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;")
+}
+
+function attachments(value: unknown): MailAttachment[] {
+  if (!Array.isArray(value)) return []
+  const parsed = value.slice(0, 5).flatMap((item) => {
+    if (!item || typeof item !== "object") return []
+    const record = item as Record<string, unknown>
+    const fileName = text(record.fileName, 180).replace(/[\\/]/g, "-")
+    const mimeType = text(record.mimeType, 120) || "application/octet-stream"
+    const contentBase64 = typeof record.contentBase64 === "string" ? record.contentBase64 : ""
+    const byteSize = Buffer.byteLength(contentBase64, "base64")
+    if (!fileName || !contentBase64 || byteSize < 1) return []
+    return [{ fileName, mimeType, byteSize, contentBase64 }]
+  })
+  if (parsed.reduce((total, item) => total + item.byteSize, 0) > 3_000_000) {
+    throw new Error("Attachments must total 3 MB or less.")
+  }
+  return parsed
 }
 
 export async function POST(request: Request) {
@@ -50,16 +78,38 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request body." }, { status: 400 })
   }
 
-  const to = addresses(body.to)
+  const mode = body.mode === "bulk" ? "bulk" : "single"
+  const to = addresses(body.to, mode === "bulk" ? 300 : 25)
   const cc = addresses(body.cc)
   const subject = text(body.subject, 998)
   const messageText = text(body.text, 200_000)
   const inReplyTo = text(body.inReplyTo, 1000) || undefined
   const references = text(body.references, 4000) || undefined
+  let messageAttachments: MailAttachment[]
+  try {
+    messageAttachments = attachments(body.attachments)
+  } catch (error) {
+    return Response.json({ error: error instanceof Error ? error.message : "Invalid attachments." }, { status: 400 })
+  }
   if (to.length === 0 || !subject || !messageText) {
     return Response.json(
       { error: "Add at least one valid recipient, a subject, and a message." },
       { status: 400 }
+    )
+  }
+  if (mode === "bulk" && (cc.length > 0 || to.length < 2)) {
+    return Response.json({ error: "Bulk dispatches need at least two recipients and cannot use Cc." }, { status: 400 })
+  }
+  if (mode === "bulk" && body.consentConfirmed !== true) {
+    return Response.json({ error: "Confirm that every campaign recipient consented to receive email." }, { status: 400 })
+  }
+
+  const allowance = await fetchAuthQuery(api.mail.dailyAllowance, {})
+  const requestedRecipients = to.length + cc.length
+  if (requestedRecipients > allowance.remaining) {
+    return Response.json(
+      { error: `This dispatch needs ${requestedRecipients} recipients, but only ${allowance.remaining} remain today.` },
+      { status: 429 }
     )
   }
 
@@ -82,14 +132,20 @@ export async function POST(request: Request) {
     })
     const info = await transporter.sendMail({
       from: { name: "Paris Hindu Summit 2026", address: fromAddress },
-      to,
-      cc,
+      ...(mode === "bulk"
+        ? { to: "undisclosed-recipients:;", bcc: to }
+        : { to, cc }),
       replyTo: fromAddress,
       subject,
       text: messageText,
       html: `<div style="font-family:Arial,sans-serif;line-height:1.6;white-space:pre-wrap">${escapeHtml(messageText)}</div>`,
       inReplyTo,
       references,
+      attachments: messageAttachments.map((item) => ({
+        filename: item.fileName,
+        content: Buffer.from(item.contentBase64, "base64"),
+        contentType: item.mimeType,
+      })),
     })
     await fetchAuthMutation(api.mail.recordSent, {
       messageId: info.messageId,
@@ -100,6 +156,11 @@ export async function POST(request: Request) {
       subject,
       textBody: messageText,
       providerResponse: info.response,
+      attachments: messageAttachments.map(({ fileName, mimeType, byteSize }) => ({
+        fileName,
+        mimeType,
+        byteSize,
+      })),
     })
     return Response.json({ ok: true, messageId: info.messageId })
   } catch (error) {

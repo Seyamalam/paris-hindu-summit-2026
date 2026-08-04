@@ -23,10 +23,12 @@ import {
   Loader2Icon,
   LogOutIcon,
   MailIcon,
+  MegaphoneIcon,
   MonitorIcon,
   PaperclipIcon,
   RefreshCwIcon,
   SaveIcon,
+  SearchIcon,
   SendIcon,
   Settings2Icon,
   ShieldCheckIcon,
@@ -35,6 +37,7 @@ import {
   TabletIcon,
   UserCogIcon,
   Users2Icon,
+  XIcon,
 } from "lucide-react"
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "@/components/motion/animated-toast-provider"
@@ -2013,10 +2016,12 @@ function InboxPanel() {
 
 function MailDeskPanel() {
   const messages = useQuery(api.mail.listMessages)
+  const allowance = useQuery(api.mail.dailyAllowance)
   const markRead = useMutation(api.mail.markRead)
   const [selectedId, setSelectedId] = useState<Id<"mailMessages"> | null>(null)
   const [composeOpen, setComposeOpen] = useState(false)
   const [sending, setSending] = useState(false)
+  const [search, setSearch] = useState("")
   const [draft, setDraft] = useState({
     to: "",
     cc: "",
@@ -2024,8 +2029,25 @@ function MailDeskPanel() {
     text: "",
     inReplyTo: "",
     references: "",
+    mode: "single" as "single" | "bulk",
+    consentConfirmed: false,
+    attachments: [] as Array<{ fileName: string; mimeType: string; byteSize: number; contentBase64: string }>,
   })
-  const selected = messages?.find((message) => message._id === selectedId) ?? messages?.[0]
+  const filteredMessages = useMemo(() => {
+    const needle = search.trim().toLowerCase()
+    if (!needle) return messages ?? []
+    return (messages ?? []).filter((message) => [
+      message.subject,
+      message.textBody,
+      message.fromName,
+      message.fromAddress,
+      ...message.toAddresses,
+      ...message.ccAddresses,
+    ].some((value) => value.toLowerCase().includes(needle)))
+  }, [messages, search])
+  const selected = filteredMessages.find((message) => message._id === selectedId) ?? filteredMessages[0]
+  const recipientCount = draft.to.split(/[;,\n]/).map((item) => item.trim()).filter(Boolean).length
+  const usagePercent = allowance ? Math.min(100, (allowance.used / allowance.limit) * 100) : 0
 
   useEffect(() => {
     if (!selectedId && messages?.[0]) setSelectedId(messages[0]._id)
@@ -2036,7 +2058,12 @@ function MailDeskPanel() {
   }, [markRead, selected])
 
   function openCompose() {
-    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "" })
+    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "", mode: "single", consentConfirmed:false, attachments: [] })
+    setComposeOpen(true)
+  }
+
+  function openCampaign() {
+    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "", mode: "bulk", consentConfirmed:false, attachments: [] })
     setComposeOpen(true)
   }
 
@@ -2052,8 +2079,34 @@ function MailDeskPanel() {
       text: "",
       inReplyTo: selected.messageId,
       references: [selected.references, selected.messageId].filter(Boolean).join(" "),
+      mode: "single",
+      consentConfirmed: false,
+      attachments: [],
     })
     setComposeOpen(true)
+  }
+
+  async function addAttachments(files: FileList | null) {
+    if (!files) return
+    const available = 5 - draft.attachments.length
+    const chosen = Array.from(files).slice(0, available)
+    const next = await Promise.all(chosen.map(async (file) => ({
+      fileName: file.name,
+      mimeType: file.type || "application/octet-stream",
+      byteSize: file.size,
+      contentBase64: await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onerror = () => reject(new Error(`Could not read ${file.name}.`))
+        reader.onload = () => resolve(String(reader.result).split(",")[1] || "")
+        reader.readAsDataURL(file)
+      }),
+    })))
+    const combined = [...draft.attachments, ...next]
+    if (combined.reduce((total, file) => total + file.byteSize, 0) > 3_000_000) {
+      toast.error("Attachments must total 3 MB or less.")
+      return
+    }
+    setDraft((current) => ({ ...current, attachments: combined }))
   }
 
   async function sendMessage(event: FormEvent<HTMLFormElement>) {
@@ -2084,17 +2137,32 @@ function MailDeskPanel() {
           title="One desk for summit email."
           copy="Incoming messages are archived here and forwarded by Cloudflare. Replies leave as info@parishindusummit.org through Brevo."
         />
-        <Button onClick={openCompose}><MailIcon /> New message</Button>
+        <div className="mail-desk-actions">
+          <Button variant="outline" onClick={openCampaign}><MegaphoneIcon /> Bulk campaign</Button>
+          <Button onClick={openCompose}><MailIcon /> New message</Button>
+        </div>
+      </div>
+      <div className="mail-command-strip">
+        <label className="mail-search">
+          <SearchIcon />
+          <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search sender, recipient, subject or message…" />
+        </label>
+        <div className="mail-allowance" aria-label={`${allowance?.remaining ?? 300} of 300 recipients remaining today`}>
+          <div><span>Daily dispatch allowance</span><strong>{allowance?.remaining ?? "—"} <small>of {allowance?.limit ?? 300} left</small></strong></div>
+          <div className="mail-allowance-track"><span style={{ width:`${usagePercent}%` }} /></div>
+          <small>Resets {allowance ? new Date(allowance.resetsAt).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) : "at midnight UTC"}</small>
+        </div>
       </div>
       <div className="mail-desk-grid">
         <aside className="mail-message-list" aria-label="Email messages">
           <div className="mail-list-stamp">
             <span>{messages?.filter((message) => !message.isRead).length ?? 0} unread</span>
-            <b>{messages?.length ?? 0} filed</b>
+            <b>{filteredMessages.length}{search ? ` of ${messages?.length ?? 0}` : ""} filed</b>
           </div>
           {!messages && <PanelLoading />}
           {messages?.length === 0 && <EmptyCopy text="No routed email has arrived yet. New messages will appear here automatically." />}
-          {messages?.map((message) => (
+          {messages && messages.length > 0 && filteredMessages.length === 0 && <EmptyCopy text="No message matches this search." />}
+          {filteredMessages.map((message) => (
             <button
               key={message._id}
               data-active={selected?._id === message._id}
@@ -2147,14 +2215,21 @@ function MailDeskPanel() {
         <div className="mail-compose-layer" role="dialog" aria-modal="true" aria-labelledby="mail-compose-title">
           <form className="mail-compose" onSubmit={sendMessage}>
             <header>
-              <div><span>Outbound · info@parishindusummit.org</span><h2 id="mail-compose-title">Write message</h2></div>
+              <div><span>Outbound · Paris Hindu Summit 2026</span><h2 id="mail-compose-title">{draft.mode === "bulk" ? "Prepare bulk campaign" : "Write message"}</h2></div>
               <button type="button" onClick={() => setComposeOpen(false)} aria-label="Close composer">×</button>
             </header>
-            <label><span>To</span><Input value={draft.to} onChange={(event) => setDraft({ ...draft, to:event.target.value })} placeholder="name@example.com" required /></label>
-            <label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Optional; separate addresses with commas" /></label>
+            <label><span>{draft.mode === "bulk" ? "Recipients" : "To"}</span><Textarea className={draft.mode === "bulk" ? "mail-recipient-field" : ""} value={draft.to} onChange={(event) => setDraft({ ...draft, to:event.target.value })} placeholder={draft.mode === "bulk" ? "Paste emails separated by commas, semicolons or new lines" : "name@example.com"} required /></label>
+            {draft.mode === "bulk"
+              ? <><div className="mail-recipient-note"><ShieldCheckIcon /> {recipientCount} recipients · addresses are hidden with BCC · {allowance?.remaining ?? 300} available today</div><label className="mail-consent-check"><Checkbox checked={draft.consentConfirmed} onCheckedChange={(value) => setDraft({ ...draft, consentConfirmed:Boolean(value) })} /><span>I confirm these recipients consented to receive summit email.</span></label></>
+              : <label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Optional; separate addresses with commas" /></label>}
             <label><span>Subject</span><Input value={draft.subject} onChange={(event) => setDraft({ ...draft, subject:event.target.value })} required /></label>
             <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} required /></label>
-            <footer><Button type="button" variant="outline" onClick={() => setComposeOpen(false)}>Cancel</Button><Button type="submit" disabled={sending}>{sending ? <Loader2Icon className="animate-spin" /> : <SendIcon />} Send message</Button></footer>
+            <div className="mail-compose-attachments">
+              <label className="mail-file-trigger"><PaperclipIcon /><span>Add attachments</span><input type="file" multiple onChange={(event) => void addAttachments(event.target.files)} /></label>
+              <small>Up to 5 files, 3 MB total.</small>
+              {draft.attachments.map((file, index) => <span className="mail-attachment-chip" key={`${file.fileName}-${index}`}>{file.fileName} <small>{Math.ceil(file.byteSize / 1024)} KB</small><button type="button" aria-label={`Remove ${file.fileName}`} onClick={() => setDraft((current) => ({ ...current, attachments:current.attachments.filter((_, itemIndex) => itemIndex !== index) }))}><XIcon /></button></span>)}
+            </div>
+            <footer><Button type="button" variant="outline" onClick={() => setComposeOpen(false)}>Cancel</Button><Button type="submit" disabled={sending || (draft.mode === "bulk" && (recipientCount < 2 || !draft.consentConfirmed))}>{sending ? <Loader2Icon className="animate-spin" /> : draft.mode === "bulk" ? <MegaphoneIcon /> : <SendIcon />} {draft.mode === "bulk" ? `Queue campaign${recipientCount ? ` · ${recipientCount}` : ""}` : "Send message"}</Button></footer>
           </form>
         </div>
       )}
