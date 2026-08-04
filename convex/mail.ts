@@ -12,6 +12,7 @@ const attachment = v.object({
 
 const messageSummary = v.object({
   _id: v.id("mailMessages"),
+  _creationTime: v.number(),
   direction: v.union(v.literal("incoming"), v.literal("outgoing")),
   messageId: v.string(),
   inReplyTo: v.optional(v.string()),
@@ -32,6 +33,7 @@ const messageSummary = v.object({
   sentByEmail: v.optional(v.string()),
   providerResponse: v.optional(v.string()),
   createdAt: v.number(),
+  updatedAt: v.number(),
   attachments: v.array(attachment),
 })
 
