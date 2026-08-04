@@ -22,6 +22,9 @@ const messageSummary = v.object({
   toAddresses: v.array(v.string()),
   ccAddresses: v.array(v.string()),
   bccAddresses: v.optional(v.array(v.string())),
+  deliveredAddresses: v.optional(v.array(v.string())),
+  failedAddresses: v.optional(v.array(v.string())),
+  deferredAddresses: v.optional(v.array(v.string())),
   subject: v.string(),
   textBody: v.string(),
   htmlBody: v.string(),
@@ -320,6 +323,52 @@ export const recordFailed = mutation({
       summary: `Email failed for ${args.toAddresses.join(", ")}: ${args.providerResponse}`,
     })
     return id
+  },
+})
+
+export const applyDeliveryEvent = internalMutation({
+  args: {
+    messageId: v.string(),
+    email: v.string(),
+    event: v.string(),
+    detail: v.string(),
+  },
+  returns: v.object({ matched: v.boolean(), status: v.optional(v.string()) }),
+  handler: async (ctx, args) => {
+    const variants = [args.messageId]
+    if (args.messageId.startsWith("<") && args.messageId.endsWith(">")) variants.push(args.messageId.slice(1, -1))
+    else variants.push(`<${args.messageId}>`)
+    let message = null
+    for (const candidate of variants) {
+      message = await ctx.db.query("mailMessages").withIndex("by_message_id", (q) => q.eq("messageId", candidate)).unique()
+      if (message) break
+    }
+    if (!message || message.direction !== "outgoing") return { matched:false }
+
+    const email = args.email.trim().toLowerCase()
+    const delivered = new Set(message.deliveredAddresses ?? [])
+    const failed = new Set(message.failedAddresses ?? [])
+    const deferred = new Set(message.deferredAddresses ?? [])
+    const failureEvents = new Set(["hard_bounce", "hardbounce", "soft_bounce", "softbounce", "blocked", "invalid", "error", "spam"])
+    if (args.event === "delivered") {
+      delivered.add(email); failed.delete(email); deferred.delete(email)
+    } else if (args.event === "deferred") {
+      deferred.add(email)
+    } else if (failureEvents.has(args.event.toLowerCase())) {
+      failed.add(email); deferred.delete(email)
+    }
+    const recipients = new Set([...message.toAddresses, ...message.ccAddresses, ...(message.bccAddresses ?? [])])
+    const resolved = [...delivered, ...failed].filter((address) => recipients.has(address)).length
+    const deliveryStatus = failed.size > 0 ? "failed" : delivered.size >= recipients.size && recipients.size > 0 ? "sent" : "queued"
+    await ctx.db.patch(message._id, {
+      deliveredAddresses:[...delivered],
+      failedAddresses:[...failed],
+      deferredAddresses:[...deferred],
+      deliveryStatus,
+      providerResponse: args.detail || `${args.event} for ${email}`,
+      updatedAt:Date.now(),
+    })
+    return { matched:true, status:deliveryStatus + (resolved < recipients.size ? "_partial" : "") }
   },
 })
 
