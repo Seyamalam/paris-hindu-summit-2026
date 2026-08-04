@@ -320,6 +320,7 @@ export default defineSchema({
     fromName: v.string(),
     toAddresses: v.array(v.string()),
     ccAddresses: v.array(v.string()),
+    bccAddresses: v.optional(v.array(v.string())),
     subject: v.string(),
     textBody: v.string(),
     htmlBody: v.string(),
@@ -338,6 +339,17 @@ export default defineSchema({
     .index("by_message_id", ["messageId"])
     .index("by_created_at", ["createdAt"])
     .index("by_direction_and_created_at", ["direction", "createdAt"]),
+
+  mailContacts: defineTable({
+    name: v.string(),
+    email: v.string(),
+    organization: v.string(),
+    notes: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_email", ["email"])
+    .index("by_updated_at", ["updatedAt"]),
 
   mailAttachments: defineTable({
     messageId: v.id("mailMessages"),

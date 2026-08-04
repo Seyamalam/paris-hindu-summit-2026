@@ -6,6 +6,7 @@ import { fetchAuthMutation, fetchAuthQuery } from "@/lib/auth-server"
 type SendBody = {
   to?: unknown
   cc?: unknown
+  bcc?: unknown
   subject?: unknown
   text?: unknown
   inReplyTo?: unknown
@@ -81,6 +82,7 @@ export async function POST(request: Request) {
   const mode = body.mode === "bulk" ? "bulk" : "single"
   const to = addresses(body.to, mode === "bulk" ? 300 : 25)
   const cc = addresses(body.cc)
+  const bcc = addresses(body.bcc)
   const subject = text(body.subject, 998)
   const messageText = text(body.text, 200_000)
   const inReplyTo = text(body.inReplyTo, 1000) || undefined
@@ -97,15 +99,15 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
-  if (mode === "bulk" && (cc.length > 0 || to.length < 2)) {
-    return Response.json({ error: "Bulk dispatches need at least two recipients and cannot use Cc." }, { status: 400 })
+  if (mode === "bulk" && (cc.length > 0 || bcc.length > 0 || to.length < 2)) {
+    return Response.json({ error: "Bulk dispatches need at least two recipients and use their own private recipient list." }, { status: 400 })
   }
   if (mode === "bulk" && body.consentConfirmed !== true) {
     return Response.json({ error: "Confirm that every campaign recipient consented to receive email." }, { status: 400 })
   }
 
   const allowance = await fetchAuthQuery(api.mail.dailyAllowance, {})
-  const requestedRecipients = to.length + cc.length
+  const requestedRecipients = to.length + cc.length + bcc.length
   if (requestedRecipients > allowance.remaining) {
     return Response.json(
       { error: `This dispatch needs ${requestedRecipients} recipients, but only ${allowance.remaining} remain today.` },
@@ -134,7 +136,7 @@ export async function POST(request: Request) {
       from: { name: "Paris Hindu Summit 2026", address: fromAddress },
       ...(mode === "bulk"
         ? { to: "undisclosed-recipients:;", bcc: to }
-        : { to, cc }),
+        : { to, cc, bcc }),
       replyTo: fromAddress,
       subject,
       text: messageText,
@@ -153,6 +155,7 @@ export async function POST(request: Request) {
       references,
       toAddresses: to,
       ccAddresses: cc,
+      bccAddresses: bcc,
       subject,
       textBody: messageText,
       providerResponse: info.response,

@@ -7,6 +7,7 @@ import {
   BarChart3Icon,
   BlocksIcon,
   BookOpenIcon,
+  BookUserIcon,
   CheckCircle2Icon,
   CircleDollarSignIcon,
   FileTextIcon,
@@ -2017,14 +2018,22 @@ function InboxPanel() {
 function MailDeskPanel() {
   const messages = useQuery(api.mail.listMessages)
   const allowance = useQuery(api.mail.dailyAllowance)
+  const contacts = useQuery(api.mail.listContacts)
   const markRead = useMutation(api.mail.markRead)
+  const deleteMessage = useMutation(api.mail.deleteMessage)
+  const saveContact = useMutation(api.mail.saveContact)
+  const removeContact = useMutation(api.mail.removeContact)
   const [selectedId, setSelectedId] = useState<Id<"mailMessages"> | null>(null)
   const [composeOpen, setComposeOpen] = useState(false)
+  const [contactBookOpen, setContactBookOpen] = useState(false)
+  const [recipientBookOpen, setRecipientBookOpen] = useState(false)
   const [sending, setSending] = useState(false)
   const [search, setSearch] = useState("")
+  const [contactDraft, setContactDraft] = useState({ name:"", email:"", organization:"", notes:"" })
   const [draft, setDraft] = useState({
     to: "",
     cc: "",
+    bcc: "",
     subject: "",
     text: "",
     inReplyTo: "",
@@ -2043,6 +2052,7 @@ function MailDeskPanel() {
       message.fromAddress,
       ...message.toAddresses,
       ...message.ccAddresses,
+      ...(message.bccAddresses ?? []),
     ].some((value) => value.toLowerCase().includes(needle)))
   }, [messages, search])
   const selected = filteredMessages.find((message) => message._id === selectedId) ?? filteredMessages[0]
@@ -2058,12 +2068,14 @@ function MailDeskPanel() {
   }, [markRead, selected])
 
   function openCompose() {
-    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "", mode: "single", consentConfirmed:false, attachments: [] })
+    setDraft({ to: "", cc: "", bcc:"", subject: "", text: "", inReplyTo: "", references: "", mode: "single", consentConfirmed:false, attachments: [] })
+    setRecipientBookOpen(false)
     setComposeOpen(true)
   }
 
   function openCampaign() {
-    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "", mode: "bulk", consentConfirmed:false, attachments: [] })
+    setDraft({ to: "", cc: "", bcc:"", subject: "", text: "", inReplyTo: "", references: "", mode: "bulk", consentConfirmed:false, attachments: [] })
+    setRecipientBookOpen(false)
     setComposeOpen(true)
   }
 
@@ -2075,6 +2087,7 @@ function MailDeskPanel() {
     setDraft({
       to: selected.direction === "incoming" ? selected.fromAddress : selected.toAddresses[0] ?? "",
       cc: "",
+      bcc: "",
       subject: replySubject,
       text: "",
       inReplyTo: selected.messageId,
@@ -2083,7 +2096,15 @@ function MailDeskPanel() {
       consentConfirmed: false,
       attachments: [],
     })
+    setRecipientBookOpen(false)
     setComposeOpen(true)
+  }
+
+  function addRecipient(field: "to" | "cc" | "bcc", email: string) {
+    setDraft((current) => {
+      const existing = current[field].split(/[;,\n]/).map((item) => item.trim()).filter(Boolean)
+      return existing.includes(email) ? current : { ...current, [field]:[...existing, email].join(", ") }
+    })
   }
 
   async function addAttachments(files: FileList | null) {
@@ -2138,6 +2159,7 @@ function MailDeskPanel() {
           copy="Incoming messages are archived here and forwarded by Cloudflare. Replies leave as info@parishindusummit.org through Brevo."
         />
         <div className="mail-desk-actions">
+          <Button variant="outline" onClick={() => setContactBookOpen(true)}><BookUserIcon /> Contacts · {contacts?.length ?? 0}</Button>
           <Button variant="outline" onClick={openCampaign}><MegaphoneIcon /> Bulk campaign</Button>
           <Button onClick={openCompose}><MailIcon /> New message</Button>
         </div>
@@ -2187,8 +2209,14 @@ function MailDeskPanel() {
                     <b>{selected.direction === "incoming" ? "From" : "To"}</b>{" "}
                     {selected.direction === "incoming" ? selected.fromAddress : selected.toAddresses.join(", ")}
                   </p>
+                  {selected.ccAddresses.length > 0 && <p><b>Cc</b> {selected.ccAddresses.join(", ")}</p>}
+                  {(selected.bccAddresses?.length ?? 0) > 0 && <p><b>Bcc</b> {selected.bccAddresses?.join(", ")}</p>}
                 </div>
-                <Button variant="outline" onClick={openReply}><SendIcon /> Reply</Button>
+                <div className="mail-reading-actions">
+                  {selected.direction === "incoming" && <Button variant="outline" onClick={() => { setContactDraft({ name:selected.fromName, email:selected.fromAddress, organization:"", notes:`Saved from “${selected.subject}”` }); setContactBookOpen(true) }}><BookUserIcon /> Save contact</Button>}
+                  <Button variant="outline" onClick={openReply}><SendIcon /> Reply</Button>
+                  <ConfirmDelete label={`mail “${selected.subject}”`} onConfirm={async () => { await deleteMessage({ id:selected._id }); setSelectedId(null); toast.success("Mail history deleted.") }} />
+                </div>
               </header>
               <div className="mail-paper-body">{selected.textBody || "This message has no plain-text body."}</div>
               {selected.attachments.length > 0 && (
@@ -2218,10 +2246,12 @@ function MailDeskPanel() {
               <div><span>Outbound · Paris Hindu Summit 2026</span><h2 id="mail-compose-title">{draft.mode === "bulk" ? "Prepare bulk campaign" : "Write message"}</h2></div>
               <button type="button" onClick={() => setComposeOpen(false)} aria-label="Close composer">×</button>
             </header>
+            <div className="mail-recipient-toolbar"><button type="button" onClick={() => setRecipientBookOpen((value) => !value)}><BookUserIcon /> Choose saved contacts</button><span>{contacts?.length ?? 0} available</span></div>
+            {recipientBookOpen && <div className="mail-recipient-book">{contacts?.length === 0 && <small>No contacts saved yet.</small>}{contacts?.map((contact) => <div key={contact._id}><span><strong>{contact.name || contact.email}</strong><small>{contact.email}{contact.organization ? ` · ${contact.organization}` : ""}</small></span><span>{draft.mode === "bulk" ? <button type="button" onClick={() => addRecipient("to", contact.email)}>Add</button> : <><button type="button" onClick={() => addRecipient("to", contact.email)}>To</button><button type="button" onClick={() => addRecipient("cc", contact.email)}>Cc</button><button type="button" onClick={() => addRecipient("bcc", contact.email)}>Bcc</button></>}</span></div>)}</div>}
             <label><span>{draft.mode === "bulk" ? "Recipients" : "To"}</span><Textarea className={draft.mode === "bulk" ? "mail-recipient-field" : ""} value={draft.to} onChange={(event) => setDraft({ ...draft, to:event.target.value })} placeholder={draft.mode === "bulk" ? "Paste emails separated by commas, semicolons or new lines" : "name@example.com"} required /></label>
             {draft.mode === "bulk"
               ? <><div className="mail-recipient-note"><ShieldCheckIcon /> {recipientCount} recipients · addresses are hidden with BCC · {allowance?.remaining ?? 300} available today</div><label className="mail-consent-check"><Checkbox checked={draft.consentConfirmed} onCheckedChange={(value) => setDraft({ ...draft, consentConfirmed:Boolean(value) })} /><span>I confirm these recipients consented to receive summit email.</span></label></>
-              : <label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Optional; separate addresses with commas" /></label>}
+              : <div className="mail-copy-fields"><label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Visible copy" /></label><label><span>Bcc</span><Input value={draft.bcc} onChange={(event) => setDraft({ ...draft, bcc:event.target.value })} placeholder="Hidden copy" /></label></div>}
             <label><span>Subject</span><Input value={draft.subject} onChange={(event) => setDraft({ ...draft, subject:event.target.value })} required /></label>
             <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} required /></label>
             <div className="mail-compose-attachments">
@@ -2231,6 +2261,24 @@ function MailDeskPanel() {
             </div>
             <footer><Button type="button" variant="outline" onClick={() => setComposeOpen(false)}>Cancel</Button><Button type="submit" disabled={sending || (draft.mode === "bulk" && (recipientCount < 2 || !draft.consentConfirmed))}>{sending ? <Loader2Icon className="animate-spin" /> : draft.mode === "bulk" ? <MegaphoneIcon /> : <SendIcon />} {draft.mode === "bulk" ? `Queue campaign${recipientCount ? ` · ${recipientCount}` : ""}` : "Send message"}</Button></footer>
           </form>
+        </div>
+      )}
+      {contactBookOpen && (
+        <div className="mail-compose-layer" role="dialog" aria-modal="true" aria-labelledby="contact-book-title">
+          <div className="mail-contact-book">
+            <header><div><span>Reusable recipients</span><h2 id="contact-book-title">Contact book</h2></div><button type="button" onClick={() => setContactBookOpen(false)} aria-label="Close contact book">×</button></header>
+            <form onSubmit={async (event) => { event.preventDefault(); try { await saveContact(contactDraft); setContactDraft({ name:"", email:"", organization:"", notes:"" }); toast.success("Contact saved.") } catch (error) { toast.error(error instanceof Error ? error.message : "Contact could not be saved.") } }}>
+              <Input value={contactDraft.name} onChange={(event) => setContactDraft({ ...contactDraft, name:event.target.value })} placeholder="Name" />
+              <Input value={contactDraft.email} onChange={(event) => setContactDraft({ ...contactDraft, email:event.target.value })} placeholder="Email address" type="email" required />
+              <Input value={contactDraft.organization} onChange={(event) => setContactDraft({ ...contactDraft, organization:event.target.value })} placeholder="Organization (optional)" />
+              <Input value={contactDraft.notes} onChange={(event) => setContactDraft({ ...contactDraft, notes:event.target.value })} placeholder="Private note (optional)" />
+              <Button type="submit"><SaveIcon /> Save contact</Button>
+            </form>
+            <div className="mail-contact-list">
+              {contacts?.length === 0 && <EmptyCopy text="Save frequent recipients here for quick access while composing." />}
+              {contacts?.map((contact) => <article key={contact._id}><div><strong>{contact.name || contact.email}</strong><span>{contact.email}</span><small>{[contact.organization, contact.notes].filter(Boolean).join(" · ")}</small></div><ConfirmDelete label={contact.name || contact.email} onConfirm={async () => { await removeContact({ id:contact._id }); toast.success("Contact deleted.") }} /></article>)}
+            </div>
+          </div>
         </div>
       )}
     </section>
