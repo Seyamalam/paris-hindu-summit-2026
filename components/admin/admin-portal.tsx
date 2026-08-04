@@ -2017,7 +2017,7 @@ function InboxPanel() {
 
 function MailDeskPanel() {
   const messages = useQuery(api.mail.listMessages)
-  const allowance = useQuery(api.mail.dailyAllowance)
+  const localAllowance = useQuery(api.mail.dailyAllowance)
   const contacts = useQuery(api.mail.listContacts)
   const markRead = useMutation(api.mail.markRead)
   const deleteMessage = useMutation(api.mail.deleteMessage)
@@ -2029,6 +2029,7 @@ function MailDeskPanel() {
   const [recipientBookOpen, setRecipientBookOpen] = useState(false)
   const [sending, setSending] = useState(false)
   const [search, setSearch] = useState("")
+  const [providerAllowance, setProviderAllowance] = useState<null | { limit:number; used:number; remaining:number; resetsAt:number; providerRemaining:number | null; source:"brevo" | "local" }>(null)
   const [contactDraft, setContactDraft] = useState({ name:"", email:"", organization:"", notes:"" })
   const [draft, setDraft] = useState({
     to: "",
@@ -2056,8 +2057,21 @@ function MailDeskPanel() {
     ].some((value) => value.toLowerCase().includes(needle)))
   }, [messages, search])
   const selected = filteredMessages.find((message) => message._id === selectedId) ?? filteredMessages[0]
+  const allowance = providerAllowance ?? localAllowance
   const recipientCount = draft.to.split(/[;,\n]/).map((item) => item.trim()).filter(Boolean).length
-  const usagePercent = allowance ? Math.min(100, (allowance.used / allowance.limit) * 100) : 0
+  const usagePercent = allowance ? Math.min(100, ((allowance.limit - allowance.remaining) / allowance.limit) * 100) : 0
+
+  useEffect(() => {
+    let active = true
+    void fetch("/api/admin/mail/allowance", { cache:"no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Allowance unavailable")
+        return await response.json() as { limit:number; used:number; remaining:number; resetsAt:number; providerRemaining:number | null; source:"brevo" | "local" }
+      })
+      .then((result) => { if (active) setProviderAllowance(result) })
+      .catch(() => { if (active) setProviderAllowance(null) })
+    return () => { active = false }
+  }, [localAllowance?.used])
 
   useEffect(() => {
     if (!selectedId && messages?.[0]) setSelectedId(messages[0]._id)
@@ -2184,7 +2198,7 @@ function MailDeskPanel() {
         <div className="mail-allowance" aria-label={`${allowance?.remaining ?? 300} of 300 recipients remaining today`}>
           <div><span>Daily dispatch allowance</span><strong>{allowance?.remaining ?? "—"} <small>of {allowance?.limit ?? 300} left</small></strong></div>
           <div className="mail-allowance-track"><span style={{ width:`${usagePercent}%` }} /></div>
-          <small>Resets {allowance ? new Date(allowance.resetsAt).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) : "at midnight UTC"}</small>
+          <small>{providerAllowance?.source === "brevo" ? "Live Brevo balance" : "Local dispatch ledger"} · resets {allowance ? new Date(allowance.resetsAt).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) : "at midnight UTC"}</small>
         </div>
       </div>
       <div className="mail-desk-grid">
