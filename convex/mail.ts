@@ -99,7 +99,9 @@ export const dailyAllowance = query({
       )
       .collect()
     const used = messages.reduce(
-      (total, message) => total + message.toAddresses.length + message.ccAddresses.length + (message.bccAddresses?.length ?? 0),
+      (total, message) => message.deliveryStatus === "failed"
+        ? total
+        : total + message.toAddresses.length + message.ccAddresses.length + (message.bccAddresses?.length ?? 0),
       0
     )
     const limit = 300
@@ -266,6 +268,56 @@ export const recordSent = mutation({
       entityType: "mailMessage",
       entityId: id,
       summary: `Queued email to ${args.toAddresses.join(", ")}`,
+    })
+    return id
+  },
+})
+
+export const recordFailed = mutation({
+  args: {
+    messageId: v.string(),
+    inReplyTo: v.optional(v.string()),
+    references: v.optional(v.string()),
+    toAddresses: v.array(v.string()),
+    ccAddresses: v.array(v.string()),
+    bccAddresses: v.array(v.string()),
+    subject: v.string(),
+    textBody: v.string(),
+    providerResponse: v.string(),
+    attachments: v.array(attachment),
+  },
+  returns: v.id("mailMessages"),
+  handler: async (ctx, args) => {
+    const actor = await getMailOperator(ctx)
+    const now = Date.now()
+    const id = await ctx.db.insert("mailMessages", {
+      direction: "outgoing",
+      messageId: args.messageId,
+      inReplyTo: args.inReplyTo,
+      references: args.references,
+      fromAddress: "info@parishindusummit.org",
+      fromName: "Paris Hindu Summit 2026",
+      toAddresses: args.toAddresses,
+      ccAddresses: args.ccAddresses,
+      bccAddresses: args.bccAddresses,
+      subject: args.subject,
+      textBody: args.textBody,
+      htmlBody: "",
+      deliveryStatus: "failed",
+      isRead: true,
+      sentByEmail: actor.admin.email,
+      providerResponse: args.providerResponse,
+      createdAt: now,
+      updatedAt: now,
+    })
+    for (const item of args.attachments) {
+      await ctx.db.insert("mailAttachments", { messageId:id, ...item, createdAt:now })
+    }
+    await writeAudit(ctx, actor, {
+      action: "send_failed",
+      entityType: "mailMessage",
+      entityId: id,
+      summary: `Email failed for ${args.toAddresses.join(", ")}: ${args.providerResponse}`,
     })
     return id
   },

@@ -1227,6 +1227,7 @@
 
 .mail-message-list > button {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   width: 100%;
   gap: 0.38rem;
   padding: 1.1rem 1rem 1.05rem 1.25rem;
@@ -1237,6 +1238,11 @@
   border-left: 4px solid transparent;
   background: transparent;
   cursor: pointer;
+}
+
+.mail-message-list > button > span,
+.mail-message-list > button > strong {
+  grid-column: 1 / -1;
 }
 
 .mail-message-list > button:hover,
@@ -1271,6 +1277,33 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.mail-message-flags {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.mail-status-chip {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  padding: 0.2rem 0.45rem;
+  color: var(--mail-text);
+  border: 1px solid var(--mail-rule);
+  background: var(--mail-list);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.mail-status-chip[data-status="queued"] { color: #7b4c00; border-color: #d89b2b; background: #fff2ce; }
+.mail-status-chip[data-status="sent"] { color: #116237; border-color: #4ba878; background: #dcf8e9; }
+.mail-status-chip[data-status="failed"] { color: #8d1d28; border-color: #d0525e; background: #ffe2e5; }
+.mail-status-chip[data-status="received"] { color: #174f7d; border-color: #649aca; background: #e2f1ff; }
 
 .mail-reading-pane {
   display: flex;
@@ -1369,6 +1402,17 @@
   white-space: normal;
 }
 
+.mail-failure-detail {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.35rem 0;
+  padding: 0.75rem;
+  color: #8d1d28;
+  border: 1px solid #d0525e;
+  background: #ffe2e5;
+  line-height: 1.45;
+}
+
 .mail-compose-layer {
   position: fixed;
   z-index: 70;
@@ -1446,6 +1490,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
+}
+
+.mail-copy-fields textarea {
+  min-height: 74px;
+  resize: vertical;
 }
 
 .mail-recipient-toolbar {
