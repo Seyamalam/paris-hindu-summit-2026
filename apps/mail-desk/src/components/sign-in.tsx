@@ -1,6 +1,7 @@
 import { Image } from "expo-image"
 import { useState } from "react"
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from "react-native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 
 import { NativeButton } from "@/components/native-button"
 import { Screen } from "@/components/screen"
@@ -24,12 +25,11 @@ export function SignIn() {
 
   return (
     <Screen>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.keyboard}>
-        <ScrollView
+        <KeyboardAwareScrollView
+          bottomOffset={62}
           contentContainerStyle={styles.center}
           keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
-          automaticallyAdjustKeyboardInsets={Platform.OS === "ios"}
         >
         <Image
           // Static asset references are resolved by Metro at build time.
@@ -47,14 +47,13 @@ export function SignIn() {
           {error ? <Text style={styles.error}>{error}</Text> : null}
           {busy ? <ActivityIndicator color={palette.gold} /> : <NativeButton label="Sign in securely" onPress={submit} disabled={!email || !password} />}
         </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     </Screen>
   )
 }
 
 const styles = StyleSheet.create({
-  keyboard: { flex: 1 }, center: { flexGrow: 1, justifyContent: "center", padding: 28 }, logo: { width: 92, height: 92, alignSelf: "center", marginBottom: 22 },
+  center: { flexGrow: 1, justifyContent: "center", padding: 28 }, logo: { width: 92, height: 92, alignSelf: "center", marginBottom: 22 },
   eyebrow: { textAlign: "center", fontSize: 12, fontWeight: "800", letterSpacing: 2 }, title: { fontSize: 38, fontWeight: "800", textAlign: "center", marginTop: 8 },
   subtitle: { textAlign: "center", fontSize: 16, marginTop: 8, marginBottom: 30 }, form: { gap: 12 },
   input: { minHeight: 54, borderWidth: 1, borderRadius: 14, paddingHorizontal: 16, fontSize: 16 }, error: { color: palette.danger, lineHeight: 20 },

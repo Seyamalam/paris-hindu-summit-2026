@@ -2,7 +2,8 @@ import * as DocumentPicker from "expo-document-picker"
 import { File } from "expo-file-system"
 import { router, useLocalSearchParams } from "expo-router"
 import { useState } from "react"
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native"
+import { Alert, StyleSheet, Switch, Text, TextInput, View } from "react-native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 
 import { AuthenticatedScreen } from "@/components/authenticated-screen"
 import { NativeButton } from "@/components/native-button"
@@ -48,7 +49,7 @@ export default function ComposeScreen() {
     finally { setBusy(false) }
   }
 
-  return <AuthenticatedScreen><Screen><KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+  return <AuthenticatedScreen><Screen><KeyboardAwareScrollView bottomOffset={62} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
     <Text style={[styles.heading, { color: theme.text }]}>Write with purpose.</Text><Text style={[styles.subheading, { color: theme.muted }]}>Sending as Paris Hindu Summit 2026 &lt;info@parishindusummit.org&gt;</Text>
     <View style={styles.mode}><Text style={[styles.label, { color: theme.text }]}>Bulk campaign</Text><Switch value={bulk} onValueChange={(value) => { setBulk(value); if (value) { setCc(""); setBcc("") } }} trackColor={{ true: palette.gold }} /></View>
     <TextInput value={to} onChangeText={setTo} placeholder={bulk ? "Recipients (comma separated)" : "To"} placeholderTextColor={theme.muted} autoCapitalize="none" keyboardType="email-address" style={fieldStyle} />
@@ -59,7 +60,7 @@ export default function ComposeScreen() {
     {bulk ? <PressableConsent checked={consent} onChange={setConsent} textColor={theme.text} mutedColor={theme.muted} /> : null}
     {error ? <Card style={{ borderColor: palette.danger }}><Text style={{ color: palette.danger, lineHeight: 21 }}>{error}</Text></Card> : null}
     <NativeButton label={busy ? "Sending…" : bulk ? "Send private campaign" : "Send message"} onPress={submit} disabled={busy || !to.trim() || !subject.trim() || !body.trim() || (bulk && !consent)} />
-  </ScrollView></KeyboardAvoidingView></Screen></AuthenticatedScreen>
+  </KeyboardAwareScrollView></Screen></AuthenticatedScreen>
 }
 
 function PressableConsent({ checked, onChange, textColor, mutedColor }: { checked: boolean; onChange: (value: boolean) => void; textColor: string; mutedColor: string }) {
