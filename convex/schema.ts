@@ -325,6 +325,7 @@ export default defineSchema({
     htmlBody: v.string(),
     deliveryStatus: v.union(
       v.literal("received"),
+      v.literal("queued"),
       v.literal("sent"),
       v.literal("failed")
     ),

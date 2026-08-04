@@ -26,6 +26,7 @@ const messageSummary = v.object({
   htmlBody: v.string(),
   deliveryStatus: v.union(
     v.literal("received"),
+    v.literal("queued"),
     v.literal("sent"),
     v.literal("failed")
   ),
@@ -117,7 +118,9 @@ export const recordSent = mutation({
       subject: args.subject,
       textBody: args.textBody,
       htmlBody: "",
-      deliveryStatus: "sent",
+      // An SMTP 250 response only confirms that the provider accepted the
+      // message. It does not confirm delivery to the recipient's mailbox.
+      deliveryStatus: "queued",
       isRead: true,
       sentByEmail: actor.admin.email,
       providerResponse: args.providerResponse,
@@ -128,7 +131,7 @@ export const recordSent = mutation({
       action: "send",
       entityType: "mailMessage",
       entityId: id,
-      summary: `Sent email to ${args.toAddresses.join(", ")}`,
+      summary: `Queued email to ${args.toAddresses.join(", ")}`,
     })
     return id
   },

@@ -2068,7 +2068,7 @@ function MailDeskPanel() {
       const result = (await response.json()) as { error?: string }
       if (!response.ok) throw new Error(result.error || "The message could not be sent.")
       setComposeOpen(false)
-      toast.success("Message sent from info@parishindusummit.org.")
+      toast.success("Message queued for delivery from info@parishindusummit.org.")
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "The message could not be sent.")
     } finally {
@@ -2133,6 +2133,8 @@ function MailDeskPanel() {
                 </div>
               )}
               <footer>
+                <span>Delivery</span>
+                <strong className="mail-delivery-status">{selected.deliveryStatus}</strong>
                 <span>Message ID</span>
                 <code>{selected.messageId}</code>
                 {selected.sentByEmail && <small>Sent by {selected.sentByEmail}</small>}
