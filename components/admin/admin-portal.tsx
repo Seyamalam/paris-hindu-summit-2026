@@ -2139,10 +2139,10 @@ function MailDeskPanel() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(draft),
       })
-      const result = (await response.json()) as { error?: string }
+      const result = (await response.json()) as { error?: string; status?: string; recipientCount?: number }
       if (!response.ok) throw new Error(result.error || "The message could not be sent.")
       setComposeOpen(false)
-      toast.success("Message queued for delivery from info@parishindusummit.org.")
+      toast.success(`Queued for ${result.recipientCount ?? 1} recipient${(result.recipientCount ?? 1) === 1 ? "" : "s"}. Delivery status will appear in Mail Desk.`)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "The message could not be sent.")
     } finally {
@@ -2193,7 +2193,7 @@ function MailDeskPanel() {
             >
               <span>{message.direction === "incoming" ? message.fromName || message.fromAddress : `To: ${message.toAddresses.join(", ")}`}</span>
               <strong>{message.subject}</strong>
-              <small>{new Date(message.createdAt).toLocaleString()}</small>
+              <small>{new Date(message.createdAt).toLocaleString()}</small><i className="mail-status-chip" data-status={message.deliveryStatus}>{message.deliveryStatus}</i>
             </button>
           ))}
         </aside>
@@ -2203,7 +2203,7 @@ function MailDeskPanel() {
             <>
               <header>
                 <div>
-                  <span className="mail-direction">{selected.direction}</span>
+                  <div className="mail-message-flags"><span className="mail-direction">{selected.direction}</span><i className="mail-status-chip" data-status={selected.deliveryStatus}>{selected.deliveryStatus}</i></div>
                   <h2>{selected.subject}</h2>
                   <p>
                     <b>{selected.direction === "incoming" ? "From" : "To"}</b>{" "}
@@ -2233,6 +2233,7 @@ function MailDeskPanel() {
                 <strong className="mail-delivery-status">{selected.deliveryStatus}</strong>
                 <span>Message ID</span>
                 <code>{selected.messageId}</code>
+                {selected.deliveryStatus === "failed" && selected.providerResponse && <p className="mail-failure-detail"><b>Failure reason</b>{selected.providerResponse}</p>}
                 {selected.sentByEmail && <small>Sent by {selected.sentByEmail}</small>}
               </footer>
             </>
@@ -2251,7 +2252,7 @@ function MailDeskPanel() {
             <label><span>{draft.mode === "bulk" ? "Recipients" : "To"}</span><Textarea className={draft.mode === "bulk" ? "mail-recipient-field" : ""} value={draft.to} onChange={(event) => setDraft({ ...draft, to:event.target.value })} placeholder={draft.mode === "bulk" ? "Paste emails separated by commas, semicolons or new lines" : "name@example.com"} required /></label>
             {draft.mode === "bulk"
               ? <><div className="mail-recipient-note"><ShieldCheckIcon /> {recipientCount} recipients · addresses are hidden with BCC · {allowance?.remaining ?? 300} available today</div><label className="mail-consent-check"><Checkbox checked={draft.consentConfirmed} onCheckedChange={(value) => setDraft({ ...draft, consentConfirmed:Boolean(value) })} /><span>I confirm these recipients consented to receive summit email.</span></label></>
-              : <div className="mail-copy-fields"><label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Visible copy" /></label><label><span>Bcc</span><Input value={draft.bcc} onChange={(event) => setDraft({ ...draft, bcc:event.target.value })} placeholder="Hidden copy" /></label></div>}
+              : <div className="mail-copy-fields"><label><span>Cc · visible to recipients</span><Textarea value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="One or more addresses" /></label><label><span>Bcc · hidden from recipients</span><Textarea value={draft.bcc} onChange={(event) => setDraft({ ...draft, bcc:event.target.value })} placeholder="One or more addresses" /></label></div>}
             <label><span>Subject</span><Input value={draft.subject} onChange={(event) => setDraft({ ...draft, subject:event.target.value })} required /></label>
             <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} required /></label>
             <div className="mail-compose-attachments">

@@ -26,7 +26,7 @@ type MailAttachment = {
 function addresses(value: unknown, limit = 25) {
   if (typeof value !== "string") return []
   return value
-    .split(/[;,\n]/)
+    .split(/[;,\s]+/)
     .map((address) => address.trim().toLowerCase())
     .filter((address, index, items) =>
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address) && items.indexOf(address) === index
@@ -124,6 +124,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Outbound mail is not configured." }, { status: 503 })
   }
 
+  const messageId = `<${crypto.randomUUID()}@parishindusummit.org>`
   try {
     const transporter = nodemailer.createTransport({
       host,
@@ -133,6 +134,7 @@ export async function POST(request: Request) {
       requireTLS: port === 587,
     })
     const info = await transporter.sendMail({
+      messageId,
       from: { name: "Paris Hindu Summit 2026", address: fromAddress },
       ...(mode === "bulk"
         ? { to: "undisclosed-recipients:;", bcc: to }
@@ -165,11 +167,25 @@ export async function POST(request: Request) {
         byteSize,
       })),
     })
-    return Response.json({ ok: true, messageId: info.messageId })
+    return Response.json({ ok: true, messageId: info.messageId, status: "queued", recipientCount: requestedRecipients })
   } catch (error) {
-    console.error("Outbound mail failed", error instanceof Error ? error.message : "Unknown error")
+    const details = error && typeof error === "object" ? error as { message?: string; response?: string; code?: string } : {}
+    const providerMessage = text(details.response || details.message, 500) || "The delivery provider did not accept the message."
+    console.error("Outbound mail failed", providerMessage)
+    await fetchAuthMutation(api.mail.recordFailed, {
+      messageId,
+      inReplyTo,
+      references,
+      toAddresses: to,
+      ccAddresses: cc,
+      bccAddresses: bcc,
+      subject,
+      textBody: messageText,
+      providerResponse: providerMessage,
+      attachments: messageAttachments.map(({ fileName, mimeType, byteSize }) => ({ fileName, mimeType, byteSize })),
+    }).catch((recordError) => console.error("Could not record failed mail", recordError))
     return Response.json(
-      { error: "The message could not be sent. Check the outbound mail configuration." },
+      { error: `Message failed: ${providerMessage}`, code: details.code || "SMTP_REJECTED" },
       { status: 502 }
     )
   }
