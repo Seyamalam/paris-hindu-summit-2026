@@ -172,7 +172,9 @@ export function ManagedCommittee() {
             />
             <div>
               <h3>{person.title}</h3>
-              {person.role && <Badge variant="outline">{person.role}</Badge>}
+              {person.role && (
+                <Badge className="person-designation">{person.role}</Badge>
+              )}
               <ExpandableBio bio={person.body} />
             </div>
           </article>
@@ -208,7 +210,9 @@ export function ManagedAdvisoryBoard() {
             />
             <div>
               <h3>{person.title}</h3>
-              {person.role && <Badge variant="outline">{person.role}</Badge>}
+              {person.role && (
+                <Badge className="person-designation">{person.role}</Badge>
+              )}
               <ExpandableBio bio={person.body} />
             </div>
           </article>
