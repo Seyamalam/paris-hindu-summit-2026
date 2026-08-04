@@ -21,6 +21,7 @@ const messageSummary = v.object({
   fromName: v.string(),
   toAddresses: v.array(v.string()),
   ccAddresses: v.array(v.string()),
+  bccAddresses: v.optional(v.array(v.string())),
   subject: v.string(),
   textBody: v.string(),
   htmlBody: v.string(),
@@ -98,7 +99,7 @@ export const dailyAllowance = query({
       )
       .collect()
     const used = messages.reduce(
-      (total, message) => total + message.toAddresses.length + message.ccAddresses.length,
+      (total, message) => total + message.toAddresses.length + message.ccAddresses.length + (message.bccAddresses?.length ?? 0),
       0
     )
     const limit = 300
@@ -119,6 +120,101 @@ export const markRead = mutation({
   },
 })
 
+export const deleteMessage = mutation({
+  args: { id: v.id("mailMessages") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const actor = await getMailOperator(ctx)
+    const message = await ctx.db.get(args.id)
+    if (!message) return null
+    const attachments = await ctx.db
+      .query("mailAttachments")
+      .withIndex("by_message_id", (q) => q.eq("messageId", args.id))
+      .collect()
+    for (const item of attachments) await ctx.db.delete(item._id)
+    await ctx.db.delete(args.id)
+    await writeAudit(ctx, actor, {
+      action: "delete",
+      entityType: "mailMessage",
+      entityId: args.id,
+      summary: `Deleted mail history: ${message.subject}`,
+    })
+    return null
+  },
+})
+
+export const listContacts = query({
+  args: {},
+  returns: v.array(v.object({
+    _id: v.id("mailContacts"),
+    _creationTime: v.number(),
+    name: v.string(),
+    email: v.string(),
+    organization: v.string(),
+    notes: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })),
+  handler: async (ctx) => {
+    await getMailOperator(ctx)
+    return await ctx.db.query("mailContacts").withIndex("by_updated_at").order("desc").take(500)
+  },
+})
+
+export const saveContact = mutation({
+  args: {
+    id: v.optional(v.id("mailContacts")),
+    name: v.string(),
+    email: v.string(),
+    organization: v.string(),
+    notes: v.string(),
+  },
+  returns: v.id("mailContacts"),
+  handler: async (ctx, args) => {
+    const actor = await getMailOperator(ctx)
+    const email = args.email.trim().toLowerCase()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Enter a valid contact email.")
+    const duplicate = await ctx.db.query("mailContacts").withIndex("by_email", (q) => q.eq("email", email)).unique()
+    if (duplicate && duplicate._id !== args.id) throw new Error("That email is already saved.")
+    const now = Date.now()
+    const values = {
+      name: args.name.trim().slice(0, 120),
+      email,
+      organization: args.organization.trim().slice(0, 160),
+      notes: args.notes.trim().slice(0, 1000),
+      updatedAt: now,
+    }
+    const id = args.id
+      ? (await ctx.db.patch(args.id, values), args.id)
+      : await ctx.db.insert("mailContacts", { ...values, createdAt: now })
+    await writeAudit(ctx, actor, {
+      action: args.id ? "update" : "create",
+      entityType: "mailContact",
+      entityId: id,
+      summary: `${args.id ? "Updated" : "Saved"} mail contact ${email}`,
+    })
+    return id
+  },
+})
+
+export const removeContact = mutation({
+  args: { id: v.id("mailContacts") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const actor = await getMailOperator(ctx)
+    const contact = await ctx.db.get(args.id)
+    if (!contact) return null
+    await ctx.db.delete(args.id)
+    await writeAudit(ctx, actor, {
+      action: "delete",
+      entityType: "mailContact",
+      entityId: args.id,
+      summary: `Deleted mail contact ${contact.email}`,
+    })
+    return null
+  },
+})
+
 export const recordSent = mutation({
   args: {
     messageId: v.string(),
@@ -126,6 +222,7 @@ export const recordSent = mutation({
     references: v.optional(v.string()),
     toAddresses: v.array(v.string()),
     ccAddresses: v.array(v.string()),
+    bccAddresses: v.array(v.string()),
     subject: v.string(),
     textBody: v.string(),
     providerResponse: v.optional(v.string()),
@@ -144,6 +241,7 @@ export const recordSent = mutation({
       fromName: "Paris Hindu Summit 2026",
       toAddresses: args.toAddresses,
       ccAddresses: args.ccAddresses,
+      bccAddresses: args.bccAddresses,
       subject: args.subject,
       textBody: args.textBody,
       htmlBody: "",
