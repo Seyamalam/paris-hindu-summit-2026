@@ -49,6 +49,7 @@ function escapeHtml(value: string) {
 
 function attachments(value: unknown): MailAttachment[] {
   if (!Array.isArray(value)) return []
+  const allowedExtensions = new Set(["pdf", "doc", "docx", "jpg", "jpeg", "png"])
   const parsed = value.slice(0, 5).flatMap((item) => {
     if (!item || typeof item !== "object") return []
     const record = item as Record<string, unknown>
@@ -57,6 +58,9 @@ function attachments(value: unknown): MailAttachment[] {
     const contentBase64 = typeof record.contentBase64 === "string" ? record.contentBase64 : ""
     const byteSize = Buffer.byteLength(contentBase64, "base64")
     if (!fileName || !contentBase64 || byteSize < 1) return []
+    if (!allowedExtensions.has(fileName.split(".").pop()?.toLowerCase() ?? "")) {
+      throw new Error("Attachments must be PDF, DOC, DOCX, JPEG, or PNG files.")
+    }
     return [{ fileName, mimeType, byteSize, contentBase64 }]
   })
   if (parsed.reduce((total, item) => total + item.byteSize, 0) > 3_000_000) {

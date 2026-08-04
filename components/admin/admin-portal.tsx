@@ -2107,10 +2107,22 @@ function MailDeskPanel() {
     })
   }
 
-  async function addAttachments(files: FileList | null) {
+  async function addAttachments(files: FileList | File[] | null) {
     if (!files) return
+    const allowedExtensions = new Set(["pdf", "doc", "docx", "jpg", "jpeg", "png"])
+    const incoming = Array.from(files)
+    const rejected = incoming.filter((file) => !allowedExtensions.has(file.name.split(".").pop()?.toLowerCase() ?? ""))
+    if (rejected.length > 0) {
+      toast.error("Attachments must be PDF, DOC, DOCX, JPEG, or PNG files.")
+      return
+    }
     const available = 5 - draft.attachments.length
-    const chosen = Array.from(files).slice(0, available)
+    if (available <= 0) {
+      toast.error("You can attach up to 5 files.")
+      return
+    }
+    const chosen = incoming.slice(0, available)
+    if (incoming.length > available) toast.error(`Only ${available} more attachment${available === 1 ? "" : "s"} can be added.`)
     const next = await Promise.all(chosen.map(async (file) => ({
       fileName: file.name,
       mimeType: file.type || "application/octet-stream",
@@ -2256,10 +2268,10 @@ function MailDeskPanel() {
               ? <><div className="mail-recipient-note"><ShieldCheckIcon /> {recipientCount} recipients · addresses are hidden with BCC · {allowance?.remaining ?? 300} available today</div><label className="mail-consent-check"><Checkbox checked={draft.consentConfirmed} onCheckedChange={(value) => setDraft({ ...draft, consentConfirmed:Boolean(value) })} /><span>I confirm these recipients consented to receive summit email.</span></label></>
               : <div className="mail-copy-fields"><label><span>Cc · visible to recipients</span><Textarea value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="One or more addresses" /></label><label><span>Bcc · hidden from recipients</span><Textarea value={draft.bcc} onChange={(event) => setDraft({ ...draft, bcc:event.target.value })} placeholder="One or more addresses" /></label></div>}
             <label><span>Subject</span><Input value={draft.subject} onChange={(event) => setDraft({ ...draft, subject:event.target.value })} required /></label>
-            <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} required /></label>
+            <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} onPaste={(event) => { const files = Array.from(event.clipboardData.files); if (files.length > 0) { event.preventDefault(); void addAttachments(files) } }} required /></label>
             <div className="mail-compose-attachments">
-              <label className="mail-file-trigger"><PaperclipIcon /><span>Add attachments</span><input type="file" multiple onChange={(event) => void addAttachments(event.target.files)} /></label>
-              <small>Up to 5 files, 3 MB total.</small>
+              <label className="mail-file-trigger"><PaperclipIcon /><span>Add attachments</span><input type="file" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onChange={(event) => void addAttachments(event.target.files)} /></label>
+              <small>PDF, DOC, DOCX, JPEG, or PNG · up to 5 files and 3 MB total · paste files into the message area.</small>
               {draft.attachments.map((file, index) => <span className="mail-attachment-chip" key={`${file.fileName}-${index}`}>{file.fileName} <small>{Math.ceil(file.byteSize / 1024)} KB</small><button type="button" aria-label={`Remove ${file.fileName}`} onClick={() => setDraft((current) => ({ ...current, attachments:current.attachments.filter((_, itemIndex) => itemIndex !== index) }))}><XIcon /></button></span>)}
             </div>
             <footer><Button type="button" variant="outline" onClick={() => setComposeOpen(false)}>Cancel</Button><Button type="submit" disabled={sending || (draft.mode === "bulk" && (recipientCount < 2 || !draft.consentConfirmed))}>{sending ? <Loader2Icon className="animate-spin" /> : draft.mode === "bulk" ? <MegaphoneIcon /> : <SendIcon />} {draft.mode === "bulk" ? `Queue campaign${recipientCount ? ` · ${recipientCount}` : ""}` : "Send message"}</Button></footer>
