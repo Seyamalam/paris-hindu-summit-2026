@@ -1,4 +1,5 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth"
+import { expo } from "@better-auth/expo"
 import { convex } from "@convex-dev/better-auth/plugins"
 import { betterAuth } from "better-auth/minimal"
 import { v } from "convex/values"
@@ -19,7 +20,7 @@ export const createAuth = (
   betterAuth({
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
-    trustedOrigins: [siteUrl],
+    trustedOrigins: [siteUrl, "parishindusummitmail://"],
     emailAndPassword: {
       enabled: true,
       disableSignUp:
@@ -28,7 +29,7 @@ export const createAuth = (
       requireEmailVerification: false,
       minPasswordLength: 10,
     },
-    plugins: [convex({ authConfig })],
+    plugins: [expo(), convex({ authConfig })],
   })
 
 export const getCurrentUser = query({
