@@ -13,6 +13,7 @@
     },
     "android": {
       "package": "org.parishindusummit.mail",
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#07111F",
         "foregroundImage": "./assets/images/summit-logo.png"
