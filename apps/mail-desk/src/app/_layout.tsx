@@ -1,6 +1,7 @@
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router"
 import { ConvexReactClient } from "convex/react"
+import { KeyboardProvider } from "react-native-keyboard-controller"
 import { useColorScheme } from "react-native"
 
 import { authClient } from "@/lib/auth-client"
@@ -16,14 +17,16 @@ export default function RootLayout() {
   const theme = { ...base, colors: { ...base.colors, primary: palette.gold, background: dark ? palette.navy : "#F4F0E8", card: dark ? palette.navySoft : "#FFFFFF" } }
   return (
     <ConvexBetterAuthProvider client={convex} authClient={authClient}>
-      <ThemeProvider value={theme}>
-        <Stack screenOptions={{ headerTintColor: palette.gold, headerBackButtonDisplayMode: "minimal" }}>
-          <Stack.Screen name="index" options={{ title: "Mail Desk" }} />
-          <Stack.Screen name="message/[id]" options={{ title: "Message" }} />
-          <Stack.Screen name="compose" options={{ title: "New message", presentation: "modal" }} />
-          <Stack.Screen name="contacts" options={{ title: "Contacts" }} />
-        </Stack>
-      </ThemeProvider>
+      <KeyboardProvider>
+        <ThemeProvider value={theme}>
+          <Stack screenOptions={{ headerTintColor: palette.gold, headerBackButtonDisplayMode: "minimal" }}>
+            <Stack.Screen name="index" options={{ title: "Mail Desk" }} />
+            <Stack.Screen name="message/[id]" options={{ title: "Message" }} />
+            <Stack.Screen name="compose" options={{ title: "New message", presentation: "modal" }} />
+            <Stack.Screen name="contacts" options={{ title: "Contacts" }} />
+          </Stack>
+        </ThemeProvider>
+      </KeyboardProvider>
     </ConvexBetterAuthProvider>
   )
 }

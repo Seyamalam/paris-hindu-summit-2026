@@ -14,7 +14,11 @@ function formatDate(value: number) {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(value)
 }
 
-export default function InboxScreen() {
+export default function InboxRoute() {
+  return <AuthenticatedScreen><InboxScreen /></AuthenticatedScreen>
+}
+
+function InboxScreen() {
   const theme = useSummitTheme()
   const messages = useQuery(api.mail.listMessages)
   const allowance = useQuery(api.mail.dailyAllowance)

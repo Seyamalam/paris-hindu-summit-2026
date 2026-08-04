@@ -9,7 +9,11 @@ import { NativeButton } from "@/components/native-button"
 import { Card, Screen } from "@/components/screen"
 import { palette, useSummitTheme } from "@/theme"
 
-export default function MessageScreen() {
+export default function MessageRoute() {
+  return <AuthenticatedScreen><MessageScreen /></AuthenticatedScreen>
+}
+
+function MessageScreen() {
   const theme = useSummitTheme()
   const { id } = useLocalSearchParams<{ id: string }>()
   const messages = useQuery(api.mail.listMessages)

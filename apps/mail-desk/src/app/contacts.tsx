@@ -10,7 +10,11 @@ import { NativeButton } from "@/components/native-button"
 import { Card, Screen } from "@/components/screen"
 import { palette, useSummitTheme } from "@/theme"
 
-export default function ContactsScreen() {
+export default function ContactsRoute() {
+  return <AuthenticatedScreen><ContactsScreen /></AuthenticatedScreen>
+}
+
+function ContactsScreen() {
   const theme = useSummitTheme()
   const contacts = useQuery(api.mail.listContacts)
   const save = useMutation(api.mail.saveContact)
