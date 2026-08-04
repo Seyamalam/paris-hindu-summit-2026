@@ -23,12 +23,39 @@ export async function getAdmin(
     throw new ConvexError("Administrator access is required.")
   }
 
+  if (admin.role === "mail_manager") {
+    if (options.allowMissing) return null
+    throw new ConvexError("Editorial administrator access is required.")
+  }
+
+  return { user, admin }
+}
+
+export async function getMailOperator(ctx: QueryCtx | MutationCtx) {
+  const user = await authComponent.safeGetAuthUser(ctx)
+  if (!user) throw new ConvexError("Sign in is required.")
+
+  const admin = await ctx.db
+    .query("adminUsers")
+    .withIndex("by_auth_user_id", (q) => q.eq("authUserId", user._id))
+    .unique()
+
+  if (
+    !admin ||
+    admin.status !== "active" ||
+    (admin.role !== "administrator" && admin.role !== "mail_manager")
+  ) {
+    throw new ConvexError("Mail desk access is required.")
+  }
+
   return { user, admin }
 }
 
 export async function writeAudit(
   ctx: MutationCtx,
-  actor: Awaited<ReturnType<typeof getAdmin>>,
+  actor:
+    | Awaited<ReturnType<typeof getAdmin>>
+    | Awaited<ReturnType<typeof getMailOperator>>,
   event: {
     action: string
     entityType: string

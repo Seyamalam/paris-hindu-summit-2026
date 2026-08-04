@@ -2,9 +2,13 @@ import { ConvexError, v } from "convex/values"
 
 import { mutation, query } from "./_generated/server"
 import { authComponent, createAuth } from "./auth"
-import { getAdmin, writeAudit } from "./lib/admin"
+import { getAdmin, getMailOperator, writeAudit } from "./lib/admin"
 
-const role = v.union(v.literal("administrator"), v.literal("editor"))
+const role = v.union(
+  v.literal("administrator"),
+  v.literal("editor"),
+  v.literal("mail_manager")
+)
 const adminStatus = v.union(v.literal("active"), v.literal("suspended"))
 export const getAccessState = query({
   args: {},
@@ -281,7 +285,7 @@ export const listSubmissions = query({
     })
   ),
   handler: async (ctx) => {
-    await getAdmin(ctx)
+    await getMailOperator(ctx)
     const rows = await ctx.db
       .query("submissions")
       .withIndex("by_status_and_created_at")
@@ -317,7 +321,7 @@ export const updateSubmission = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const actor = await getAdmin(ctx)
+    const actor = await getMailOperator(ctx)
     await ctx.db.patch(args.id, {
       status: args.status,
       adminNote: args.adminNote.trim(),

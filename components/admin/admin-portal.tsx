@@ -22,9 +22,12 @@ import {
   CalendarRangeIcon,
   Loader2Icon,
   LogOutIcon,
+  MailIcon,
   MonitorIcon,
+  PaperclipIcon,
   RefreshCwIcon,
   SaveIcon,
+  SendIcon,
   Settings2Icon,
   ShieldCheckIcon,
   SmartphoneIcon,
@@ -75,6 +78,7 @@ const websitePages = [
 
 const operationPanels = [
   ["dashboard", "Overview", LayoutDashboardIcon],
+  ["mail", "Mail desk", MailIcon],
   ["inbox", "Forms inbox", InboxIcon],
   ["donations", "Donations", CircleDollarSignIcon],
   ["assets", "Media library", ImageIcon],
@@ -273,9 +277,12 @@ function AuthGate() {
   return <Workspace admin={access.admin} />
 }
 
-function Workspace({ admin }: { admin: { name: string; email: string; role: "administrator" | "editor" } }) {
+type AdminRole = "administrator" | "editor" | "mail_manager"
+
+function Workspace({ admin }: { admin: { name: string; email: string; role: AdminRole } }) {
+  const mailOnly = admin.role === "mail_manager"
   const [page, setPage] = useState<StudioPage>("home")
-  const [operation, setOperation] = useState<OperationPanel | null>(null)
+  const [operation, setOperation] = useState<OperationPanel | null>(mailOnly ? "mail" : null)
   const pageTitle = websitePages.find(([id]) => id === page)?.[1] ?? "Home"
   const operationTitle = operationPanels.find(([id]) => id === operation)?.[1]
   return (
@@ -286,14 +293,14 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
           <div><b>Page studio</b><small>Paris · 2026</small></div>
         </div>
         <nav className="admin-primary-nav" aria-label="Admin workspace">
-          <p>Website</p>
-          {websitePages.map(([id, label, , Icon]) => (
+          {!mailOnly && <p>Website</p>}
+          {!mailOnly && websitePages.map(([id, label, , Icon]) => (
             <button key={id} data-active={!operation && page === id} onClick={() => { setPage(id); setOperation(null) }}>
               <Icon /><span>{label}</span>
             </button>
           ))}
           <p>Operations</p>
-          {operationPanels.map(([id, label, Icon]) => (
+          {operationPanels.filter(([id]) => !mailOnly || id === "mail" || id === "inbox").map(([id, label, Icon]) => (
             <button key={id} data-active={operation === id} onClick={() => setOperation(id)}>
               <Icon /><span>{label}</span>
             </button>
@@ -312,10 +319,11 @@ function Workspace({ admin }: { admin: { name: string; email: string; role: "adm
                 <p className="admin-kicker">Operations</p>
                 <h1>{operationTitle}</h1>
               </div>
-              <button onClick={() => setOperation(null)}><HomeIcon /> Return to {pageTitle}</button>
+              {!mailOnly && <button onClick={() => setOperation(null)}><HomeIcon /> Return to {pageTitle}</button>}
             </header>
             <div className="admin-operation-stage">
               {operation === "dashboard" && <Dashboard />}
+              {operation === "mail" && <MailDeskPanel />}
               {operation === "team" && <TeamAccessPanel canManage={admin.role === "administrator"} />}
               {operation === "inbox" && <InboxPanel />}
               {operation === "donations" && <DonationsPanel />}
@@ -838,7 +846,7 @@ function TeamAccessPanel({ canManage }: { canManage:boolean }) {
         name:String(data.get("name")),
         email:String(data.get("email")),
         password,
-        role:String(data.get("role")) as "administrator" | "editor",
+        role:String(data.get("role")) as AdminRole,
       })
       form.reset()
       setShowPassword(false)
@@ -870,11 +878,12 @@ function TeamAccessPanel({ canManage }: { canManage:boolean }) {
                 <span>Access role</span>
                 <select name="role" defaultValue="editor">
                   <option value="editor">Editor</option>
+                  <option value="mail_manager">Mail & forms only</option>
                   <option value="administrator">Administrator</option>
                 </select>
               </label>
               <div className="team-access-guidance">
-                Editors manage content. Administrators can also create accounts and change access.
+                Editors manage content. Mail & forms accounts only handle correspondence. Administrators control everything.
               </div>
               <PasswordField
                 id="team-password"
@@ -919,7 +928,7 @@ function TeamAccessPanel({ canManage }: { canManage:boolean }) {
                 disabled={!canManage}
                 onChange={async (event) => {
                   try {
-                    await changeRole({ id:member._id, role:event.target.value as "administrator" | "editor" })
+                    await changeRole({ id:member._id, role:event.target.value as AdminRole })
                     toast.success("Team role updated.")
                   } catch (error) {
                     toast.error(error instanceof Error ? error.message : "Role could not be updated.")
@@ -927,6 +936,7 @@ function TeamAccessPanel({ canManage }: { canManage:boolean }) {
                 }}
               >
                 <option value="editor">Editor</option>
+                <option value="mail_manager">Mail & forms only</option>
                 <option value="administrator">Administrator</option>
               </select>
             </label>
@@ -2001,6 +2011,155 @@ function InboxPanel() {
   )
 }
 
+function MailDeskPanel() {
+  const messages = useQuery(api.mail.listMessages)
+  const markRead = useMutation(api.mail.markRead)
+  const [selectedId, setSelectedId] = useState<Id<"mailMessages"> | null>(null)
+  const [composeOpen, setComposeOpen] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [draft, setDraft] = useState({
+    to: "",
+    cc: "",
+    subject: "",
+    text: "",
+    inReplyTo: "",
+    references: "",
+  })
+  const selected = messages?.find((message) => message._id === selectedId) ?? messages?.[0]
+
+  useEffect(() => {
+    if (!selectedId && messages?.[0]) setSelectedId(messages[0]._id)
+  }, [messages, selectedId])
+
+  useEffect(() => {
+    if (selected?.direction === "incoming" && !selected.isRead) void markRead({ id: selected._id })
+  }, [markRead, selected])
+
+  function openCompose() {
+    setDraft({ to: "", cc: "", subject: "", text: "", inReplyTo: "", references: "" })
+    setComposeOpen(true)
+  }
+
+  function openReply() {
+    if (!selected) return
+    const replySubject = selected.subject.toLowerCase().startsWith("re:")
+      ? selected.subject
+      : `Re: ${selected.subject}`
+    setDraft({
+      to: selected.direction === "incoming" ? selected.fromAddress : selected.toAddresses[0] ?? "",
+      cc: "",
+      subject: replySubject,
+      text: "",
+      inReplyTo: selected.messageId,
+      references: [selected.references, selected.messageId].filter(Boolean).join(" "),
+    })
+    setComposeOpen(true)
+  }
+
+  async function sendMessage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSending(true)
+    try {
+      const response = await fetch("/api/admin/mail/send", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(draft),
+      })
+      const result = (await response.json()) as { error?: string }
+      if (!response.ok) throw new Error(result.error || "The message could not be sent.")
+      setComposeOpen(false)
+      toast.success("Message sent from info@parishindusummit.org.")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "The message could not be sent.")
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <section className="admin-panel mail-desk">
+      <div className="mail-desk-heading">
+        <PanelTitle
+          eyebrow="Correspondence ledger"
+          title="One desk for summit email."
+          copy="Incoming messages are archived here and forwarded by Cloudflare. Replies leave as info@parishindusummit.org through Brevo."
+        />
+        <Button onClick={openCompose}><MailIcon /> New message</Button>
+      </div>
+      <div className="mail-desk-grid">
+        <aside className="mail-message-list" aria-label="Email messages">
+          <div className="mail-list-stamp">
+            <span>{messages?.filter((message) => !message.isRead).length ?? 0} unread</span>
+            <b>{messages?.length ?? 0} filed</b>
+          </div>
+          {!messages && <PanelLoading />}
+          {messages?.length === 0 && <EmptyCopy text="No routed email has arrived yet. New messages will appear here automatically." />}
+          {messages?.map((message) => (
+            <button
+              key={message._id}
+              data-active={selected?._id === message._id}
+              data-unread={!message.isRead}
+              onClick={() => setSelectedId(message._id)}
+            >
+              <span>{message.direction === "incoming" ? message.fromName || message.fromAddress : `To: ${message.toAddresses.join(", ")}`}</span>
+              <strong>{message.subject}</strong>
+              <small>{new Date(message.createdAt).toLocaleString()}</small>
+            </button>
+          ))}
+        </aside>
+        <article className="mail-reading-pane">
+          {!selected && <EmptyCopy text="Select a message to read it, or start a new conversation." />}
+          {selected && (
+            <>
+              <header>
+                <div>
+                  <span className="mail-direction">{selected.direction}</span>
+                  <h2>{selected.subject}</h2>
+                  <p>
+                    <b>{selected.direction === "incoming" ? "From" : "To"}</b>{" "}
+                    {selected.direction === "incoming" ? selected.fromAddress : selected.toAddresses.join(", ")}
+                  </p>
+                </div>
+                <Button variant="outline" onClick={openReply}><SendIcon /> Reply</Button>
+              </header>
+              <div className="mail-paper-body">{selected.textBody || "This message has no plain-text body."}</div>
+              {selected.attachments.length > 0 && (
+                <div className="mail-attachments">
+                  <b><PaperclipIcon /> Attachments</b>
+                  {selected.attachments.map((item) => (
+                    <span key={`${item.fileName}-${item.byteSize}`}>{item.fileName} · {Math.ceil(item.byteSize / 1024)} KB</span>
+                  ))}
+                  <small>Attachment metadata is retained; forwarded copies remain available at the destination inbox.</small>
+                </div>
+              )}
+              <footer>
+                <span>Message ID</span>
+                <code>{selected.messageId}</code>
+                {selected.sentByEmail && <small>Sent by {selected.sentByEmail}</small>}
+              </footer>
+            </>
+          )}
+        </article>
+      </div>
+      {composeOpen && (
+        <div className="mail-compose-layer" role="dialog" aria-modal="true" aria-labelledby="mail-compose-title">
+          <form className="mail-compose" onSubmit={sendMessage}>
+            <header>
+              <div><span>Outbound · info@parishindusummit.org</span><h2 id="mail-compose-title">Write message</h2></div>
+              <button type="button" onClick={() => setComposeOpen(false)} aria-label="Close composer">×</button>
+            </header>
+            <label><span>To</span><Input value={draft.to} onChange={(event) => setDraft({ ...draft, to:event.target.value })} placeholder="name@example.com" required /></label>
+            <label><span>Cc</span><Input value={draft.cc} onChange={(event) => setDraft({ ...draft, cc:event.target.value })} placeholder="Optional; separate addresses with commas" /></label>
+            <label><span>Subject</span><Input value={draft.subject} onChange={(event) => setDraft({ ...draft, subject:event.target.value })} required /></label>
+            <label className="mail-compose-body"><span>Message</span><Textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text:event.target.value })} required /></label>
+            <footer><Button type="button" variant="outline" onClick={() => setComposeOpen(false)}>Cancel</Button><Button type="submit" disabled={sending}>{sending ? <Loader2Icon className="animate-spin" /> : <SendIcon />} Send message</Button></footer>
+          </form>
+        </div>
+      )}
+    </section>
+  )
+}
+
 function ProgrammeAdmin() {
   const data = useQuery(api.programme.listForAdmin)
   const saveDay = useMutation(api.programme.saveDay)
@@ -2105,7 +2264,8 @@ function AssetsPanel() {
     const url = await uploadUrl()
     const response = await fetch(url, { method:"POST", headers:{ "Content-Type":file.type }, body:file })
     if (!response.ok) throw new Error("Convex rejected the upload. Please try again.")
-    const { storageId } = await response.json()
+    const payload = (await response.json()) as { storageId: Id<"_storage"> }
+    const { storageId } = payload
     await register({ storageId, fileName:file.name, mimeType:file.type, byteSize:file.size, altText:file.name.replace(/\.[^.]+$/, ""), category:file.type === "application/pdf" ? "document" : "general" })
     toast.success("Asset uploaded to Convex.")
   }
