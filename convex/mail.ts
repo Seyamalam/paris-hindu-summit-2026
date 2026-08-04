@@ -78,6 +78,34 @@ export const listMessages = query({
   },
 })
 
+export const dailyAllowance = query({
+  args: {},
+  returns: v.object({
+    limit: v.number(),
+    used: v.number(),
+    remaining: v.number(),
+    resetsAt: v.number(),
+  }),
+  handler: async (ctx) => {
+    await getMailOperator(ctx)
+    const now = new Date()
+    const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    const resetsAt = start + 24 * 60 * 60 * 1000
+    const messages = await ctx.db
+      .query("mailMessages")
+      .withIndex("by_direction_and_created_at", (q) =>
+        q.eq("direction", "outgoing").gte("createdAt", start)
+      )
+      .collect()
+    const used = messages.reduce(
+      (total, message) => total + message.toAddresses.length + message.ccAddresses.length,
+      0
+    )
+    const limit = 300
+    return { limit, used, remaining: Math.max(0, limit - used), resetsAt }
+  },
+})
+
 export const markRead = mutation({
   args: { id: v.id("mailMessages") },
   returns: v.null(),
@@ -101,6 +129,7 @@ export const recordSent = mutation({
     subject: v.string(),
     textBody: v.string(),
     providerResponse: v.optional(v.string()),
+    attachments: v.array(attachment),
   },
   returns: v.id("mailMessages"),
   handler: async (ctx, args) => {
@@ -127,6 +156,13 @@ export const recordSent = mutation({
       createdAt: now,
       updatedAt: now,
     })
+    for (const item of args.attachments) {
+      await ctx.db.insert("mailAttachments", {
+        messageId: id,
+        ...item,
+        createdAt: now,
+      })
+    }
     await writeAudit(ctx, actor, {
       action: "send",
       entityType: "mailMessage",
