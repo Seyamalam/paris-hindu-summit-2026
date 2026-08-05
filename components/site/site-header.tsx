@@ -103,9 +103,13 @@ export function SiteHeader() {
     ["/agenda", "Proposed agenda"], ["/resolution", "Paris Resolution 2026"],
     ["/strategy", "Five-year strategy"], ["/partnership-framework", "International partnerships"],
   ]
+  const programmeLinks = [
+    ...(programme?.map((item) => [`/programme#${item.slug}`, `${item.tabLabel} · ${item.navigationLabel}`]) ?? [["/programme", "Full programme"]]),
+    ["/programme/honor-the-victims", "Oct 5 - Honor the Victims"],
+  ]
   const navGroups = [
     ["About", aboutLinks],
-    ["Programme", programme?.map((item) => [`/programme#${item.slug}`, `${item.tabLabel} · ${item.navigationLabel}`]) ?? [["/programme", "Full programme"]]],
+    ["Programme", programmeLinks],
     ["Media & Publication", media?.map((section) => [`/media#${section.slug}`, section.name]) ?? [["/media", "Media & Publication"]]],
     ["Attend and Support", engage?.map((item) => [item.linkUrl || "/engage", item.title]) ?? [["/engage", "Ways to attend and support"]]],
   ] as const
