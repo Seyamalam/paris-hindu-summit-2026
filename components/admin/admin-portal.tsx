@@ -1018,6 +1018,7 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
     ["Hero", ["heroEyebrow", "heroTitleLine1", "heroTitleLine2", "heroLead"]],
     ["Why this summit", ["whyTitle", "whyBody"]],
     ["Donation invitation", ["donationEyebrow", "donationTitle", "donationBody"]],
+    ["Donation bank transfer", ["bankTransferEyebrow", "bankTransferTitle", "bankTransferBody", "bankName", "bankAccountName", "bankIban", "bankBic"]],
     ["Footer", ["footerTitle", "footerBody"]],
     ["Announcement", ["announcement"]],
   ] as const

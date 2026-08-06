@@ -161,6 +161,14 @@ const settings = {
   donationTitle: "Your contribution funds testimony, not talk.",
   donationBody:
     "Donations support survivor-testimony documentation, translation, legal research, and delegate travel for those who could not otherwise attend.",
+  bankTransferEyebrow: "Direct bank transfer",
+  bankTransferTitle: "Give directly, securely.",
+  bankTransferBody:
+    "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account.",
+  bankName: "Credit Industriel et Commercial (CIC Bank)",
+  bankAccountName: "Bureau of Human Rights and Justice",
+  bankIban: "FR76 3006 6104 5100 0207 8600 151",
+  bankBic: "CMCIFRPP",
   footerTitle: "One room. Many institutions. A shared commitment.",
   footerBody:
     "Human rights, dignity, evidence, and equal citizenship—carried from Paris into sustained international action.",

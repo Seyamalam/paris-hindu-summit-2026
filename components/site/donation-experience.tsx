@@ -1,7 +1,7 @@
 "use client"
 
 import { useAction, useQuery } from "convex/react"
-import { CheckCircle2Icon, HeartHandshakeIcon, Loader2Icon, LockKeyholeIcon } from "lucide-react"
+import { CheckCircle2Icon, HeartHandshakeIcon, LandmarkIcon, Loader2Icon, LockKeyholeIcon } from "lucide-react"
 import { FormEvent, useState } from "react"
 
 import { api } from "@/convex/_generated/api"
@@ -52,6 +52,22 @@ export function DonationExperience() {
 
   return (
     <section className="donation-desk section-shell">
+      <Reveal className="bank-transfer-panel">
+        <div className="bank-transfer-intro">
+          <LandmarkIcon aria-hidden="true" />
+          <div>
+            <p className="kicker">{settings?.bankTransferEyebrow ?? "Direct bank transfer"}</p>
+            <h2>{settings?.bankTransferTitle ?? "Give directly, securely."}</h2>
+            <p>{settings?.bankTransferBody ?? "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account."}</p>
+          </div>
+        </div>
+        <dl className="bank-transfer-details">
+          <div><dt>Bank name</dt><dd>{settings?.bankName ?? "Credit Industriel et Commercial (CIC Bank)"}</dd></div>
+          <div><dt>Account name</dt><dd>{settings?.bankAccountName ?? "Bureau of Human Rights and Justice"}</dd></div>
+          <div><dt>IBAN</dt><dd>{settings?.bankIban ?? "FR76 3006 6104 5100 0207 8600 151"}</dd></div>
+          <div><dt>BIC</dt><dd>{settings?.bankBic ?? "CMCIFRPP"}</dd></div>
+        </dl>
+      </Reveal>
       <Reveal className="donation-heading">
         <p className="kicker">{settings?.donationEyebrow ?? "Choose a contribution"}</p>
         <h2>{settings?.donationTitle ?? "Turn solidarity into practical capacity."}</h2>
