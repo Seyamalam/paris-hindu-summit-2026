@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 
-import { mutation, query } from "./_generated/server"
+import { internalMutation, mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
 
 export const settingsFieldsValidator = v.object({
@@ -68,6 +68,14 @@ const bankTransferDefaults = {
   bankBic: "CMCIFRPP",
 }
 
+const officialSocialLinks = {
+  facebookUrl: "https://fb.me/e/44RtCKAWc",
+  xUrl: "https://x.com/parishindusum?s=11",
+  instagramUrl: "https://www.instagram.com/parishindusummit?igsh=MThrMWtiY2Qydnk2Yg%3D%3D&utm_source=qr",
+  youtubeUrl: "https://youtube.com/@parishindusummit2026?si=C9PVQHju3ZWG62RP",
+  linkedinUrl: "https://www.linkedin.com/company/paris-hindu-summit/",
+}
+
 export const get = query({
   args: {},
   returns: v.union(v.null(), settingsValidator),
@@ -118,6 +126,23 @@ export const save = mutation({
       entityType: "siteSettings",
       entityId: "primary",
       summary: "Updated global site settings",
+    })
+    return null
+  },
+})
+
+export const setOfficialSocialLinks = internalMutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const existing = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "primary"))
+      .unique()
+    if (!existing) throw new Error("Primary site settings have not been created.")
+    await ctx.db.patch(existing._id, {
+      ...officialSocialLinks,
+      updatedAt: Date.now(),
     })
     return null
   },
