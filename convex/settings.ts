@@ -37,6 +37,13 @@ export const settingsFieldsValidator = v.object({
   donationEyebrow: v.string(),
   donationTitle: v.string(),
   donationBody: v.string(),
+  bankTransferEyebrow: v.optional(v.string()),
+  bankTransferTitle: v.optional(v.string()),
+  bankTransferBody: v.optional(v.string()),
+  bankName: v.optional(v.string()),
+  bankAccountName: v.optional(v.string()),
+  bankIban: v.optional(v.string()),
+  bankBic: v.optional(v.string()),
   footerTitle: v.string(),
   footerBody: v.string(),
   registrationOpen: v.boolean(),
@@ -50,6 +57,16 @@ export const settingsValidator = v.object({
   logoUrl: v.union(v.string(), v.null()),
   faviconUrl: v.union(v.string(), v.null()),
 })
+
+const bankTransferDefaults = {
+  bankTransferEyebrow: "Direct bank transfer",
+  bankTransferTitle: "Give directly, securely.",
+  bankTransferBody: "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account.",
+  bankName: "Credit Industriel et Commercial (CIC Bank)",
+  bankAccountName: "Bureau of Human Rights and Justice",
+  bankIban: "FR76 3006 6104 5100 0207 8600 151",
+  bankBic: "CMCIFRPP",
+}
 
 export const get = query({
   args: {},
@@ -67,6 +84,13 @@ export const get = query({
     void updatedAt
     return {
       ...settings,
+      bankTransferEyebrow: settings.bankTransferEyebrow ?? bankTransferDefaults.bankTransferEyebrow,
+      bankTransferTitle: settings.bankTransferTitle ?? bankTransferDefaults.bankTransferTitle,
+      bankTransferBody: settings.bankTransferBody ?? bankTransferDefaults.bankTransferBody,
+      bankName: settings.bankName ?? bankTransferDefaults.bankName,
+      bankAccountName: settings.bankAccountName ?? bankTransferDefaults.bankAccountName,
+      bankIban: settings.bankIban ?? bankTransferDefaults.bankIban,
+      bankBic: settings.bankBic ?? bankTransferDefaults.bankBic,
       logoUrl: settings.logoStorageId
         ? await ctx.storage.getUrl(settings.logoStorageId)
         : null,

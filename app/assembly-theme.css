@@ -2224,6 +2224,25 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
   gap: 20px 60px;
   margin-bottom: 58px;
 }
+
+.bank-transfer-panel {
+  display: grid;
+  grid-template-columns: minmax(0, .88fr) minmax(480px, 1.12fr);
+  gap: clamp(48px, 7vw, 110px);
+  margin-bottom: clamp(84px, 10vw, 148px);
+  padding: clamp(32px, 5vw, 64px);
+  border: 1px solid var(--assembly-rule);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--assembly-red) 7%, transparent), transparent 46%);
+}
+.bank-transfer-intro { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 24px; align-items: start; }
+.bank-transfer-intro > svg { width: 36px; height: 36px; color: var(--assembly-red); stroke-width: 1.35; }
+.bank-transfer-intro h2 { margin: 14px 0 20px; font: 500 clamp(38px, 4.2vw, 64px)/.96 var(--font-display-stack); letter-spacing: -.045em; }
+.bank-transfer-intro div > p:last-child { max-width: 610px; margin: 0; color: var(--assembly-muted); font-size: 15px; line-height: 1.75; }
+.bank-transfer-details { margin: 0; border-top: 1px solid var(--assembly-rule); }
+.bank-transfer-details > div { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 22px; padding: 20px 0; border-bottom: 1px solid var(--assembly-rule); }
+.bank-transfer-details dt { color: var(--assembly-red); font: 750 9px var(--font-mono-stack); letter-spacing: .13em; text-transform: uppercase; }
+.bank-transfer-details dd { min-width: 0; margin: 0; overflow-wrap: anywhere; color: var(--assembly-ink); font-size: 16px; line-height: 1.5; }
+.bank-transfer-details > div:nth-child(n+3) dd { font: 650 14px/1.5 var(--font-mono-stack); letter-spacing: .035em; }
 .donation-heading h2,
 .support-intro h2 {
   margin: 0;
@@ -2509,12 +2528,16 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
 }
 @media (max-width: 1050px) {
   .donation-tier-grid { grid-template-columns: repeat(2, 1fr); }
+  .bank-transfer-panel { grid-template-columns: 1fr; }
   .donation-tier-grid > div:nth-child(2) { border-right: 0; }
   .donation-tier-grid > div:nth-child(-n + 2) { border-bottom: 1px solid var(--assembly-rule); }
   .support-desk { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .donation-heading,.support-intro { grid-template-columns: 1fr; }
+  .bank-transfer-panel { gap: 44px; padding: 28px 22px; }
+  .bank-transfer-intro { grid-template-columns: 1fr; gap: 18px; }
+  .bank-transfer-details > div { grid-template-columns: 1fr; gap: 8px; }
   .donation-heading > p:last-child,.support-intro > p:last-child { grid-column: 1; }
   .donation-tier-grid,.engage-grid { grid-template-columns: 1fr; }
   .donation-tier-grid > div { border-right: 0; border-bottom: 1px solid var(--assembly-rule); }

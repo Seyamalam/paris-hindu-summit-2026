@@ -166,6 +166,7 @@ export function SiteHeader() {
               { href: "/", label: "Home" },
               { href:"/about", label:"Overview" },
               { href:"/programme", label:"Programme" },
+              { href:"/programme/honor-the-victims", label:"Oct 5 - Honor the Victims" },
               ...aboutLinks.slice(1).map(([href,label]) => ({ href,label })),
               { href:"/speakers",label:"Speakers" },
               { href:"/regional",label:"Regional" },
