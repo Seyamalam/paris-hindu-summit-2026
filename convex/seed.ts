@@ -143,11 +143,13 @@ const settings = {
   pressEmail: "eng.suvra@gmail.com",
   phone: "",
   whatsapp: "",
-  facebookUrl: "",
-  xUrl: "",
-  instagramUrl: "",
-  youtubeUrl: "",
-  linkedinUrl: "",
+  facebookUrl: "https://fb.me/e/44RtCKAWc",
+  xUrl: "https://x.com/parishindusum?s=11",
+  instagramUrl:
+    "https://www.instagram.com/parishindusummit?igsh=MThrMWtiY2Qydnk2Yg%3D%3D&utm_source=qr",
+  youtubeUrl:
+    "https://youtube.com/@parishindusummit2026?si=C9PVQHju3ZWG62RP",
+  linkedinUrl: "https://www.linkedin.com/company/paris-hindu-summit/",
   heroEyebrow: "Global forum · Paris · October 2026",
   heroTitleLine1: "We assemble",
   heroTitleLine2: "for equality.",
