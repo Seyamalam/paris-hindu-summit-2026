@@ -1,7 +1,6 @@
 "use client"
 
 import { useQuery } from "convex/react"
-import { ArrowRightIcon } from "lucide-react"
 
 import { api } from "@/convex/_generated/api"
 import { ContentListSkeleton } from "@/components/site/content-list-skeleton"
@@ -17,16 +16,16 @@ export function ProgrammeTabs() {
         {days.map((day) => <TabsTrigger key={day._id} value={day.slug}><span>{day.tabLabel}</span>{day.navigationLabel} · {day.summary}</TabsTrigger>)}
       </TabsList>
       {days.map((day) => <TabsContent key={day._id} value={day.slug}>
-        <p className="programme-day-date">{day.dateLabel}</p>
+        <header className="programme-day-heading"><p className="programme-day-date">{day.dateLabel}</p><h2>{day.summary}</h2><span>{day.sessions.length} programme {day.sessions.length === 1 ? "moment" : "moments"}</span></header>
         <div className="schedule-list">
-          {day.sessions.map((item, index) => (
+          {day.sessions.map((item) => {
+            const details = item.description.split("\n").map((line) => line.trim()).filter(Boolean)
+            return (
             <article key={item._id}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
               <time>{item.startTime}<small>{item.endTime}</small></time>
-              <div><p className="kicker">{item.tag} · {item.location}</p><h3>{item.title}</h3><p>{item.description}</p><small>{item.speakers}</small></div>
-              <ArrowRightIcon aria-hidden="true" />
+              <div className="schedule-session"><p className="kicker">{[item.tag,item.location].filter(Boolean).join(" · ")}</p><h3>{item.title}</h3>{details.length > 1 ? <ul>{details.map((detail) => <li key={detail}>{detail}</li>)}</ul> : <p>{details[0]}</p>}{item.speakers && <small>{item.speakers}</small>}</div>
             </article>
-          ))}
+          )})}
         </div>
       </TabsContent>)}
     </Tabs>

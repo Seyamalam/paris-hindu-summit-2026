@@ -110,6 +110,7 @@ export function SiteHeader() {
   const navGroups = [
     ["About", aboutLinks],
     ["Programme", programmeLinks],
+    [settings?.forumPackagesMenuLabel || "Forum Packages", [["/forum-packages/accommodation", "Accommodation Package"], ["/forum-packages/partnership-sponsorship", "Partnership & Sponsorship"]]],
     ["Media & Publication", media?.map((section) => [`/media#${section.slug}`, section.name]) ?? [["/media", "Media & Publication"]]],
     ["Attend and Support", engage?.map((item) => [item.linkUrl || "/engage", item.title]) ?? [["/engage", "Ways to attend and support"]]],
   ] as const
@@ -167,6 +168,8 @@ export function SiteHeader() {
               { href:"/about", label:"Overview" },
               { href:"/programme", label:"Programme" },
               { href:"/programme/honor-the-victims", label:"Oct 5 - Honor the Victims" },
+              { href:"/forum-packages/accommodation", label:"Accommodation Package" },
+              { href:"/forum-packages/partnership-sponsorship", label:"Partnership & Sponsorship" },
               ...aboutLinks.slice(1).map(([href,label]) => ({ href,label })),
               { href:"/speakers",label:"Speakers" },
               { href:"/regional",label:"Regional" },

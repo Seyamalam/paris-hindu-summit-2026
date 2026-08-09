@@ -1,6 +1,8 @@
 import { v } from "convex/values"
 
 import { internalMutation } from "./_generated/server"
+import { forumPackageItems } from "./forumPackageData"
+import { programmeDays, programmeSessions } from "./programmeData"
 
 const regionalCountries = [
   {
@@ -171,6 +173,20 @@ const settings = {
   bankAccountName: "Bureau of Human Rights and Justice",
   bankIban: "FR76 3006 6104 5100 0207 8600 151",
   bankBic: "CMCIFRPP",
+  registrationFeeLabel: "US$250",
+  registrationFeeTitle: "Registration processing fee",
+  registrationFeeBody:
+    "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation.",
+  registrationFeeEmail: "info@parishindusummit.org",
+  forumPackagesMenuLabel: "Forum Packages",
+  accommodationPackageLabel: "Four nights in Paris",
+  accommodationPackageTitle: "Stay close to the Forum.",
+  accommodationPackageIntro:
+    "Compare five accommodation levels for the Paris Hindu Summit. Every package includes four hotel nights and the local tourist tax.",
+  sponsorshipPackageLabel: "Partnership & Sponsorship",
+  sponsorshipPackageTitle: "Put your institution behind meaningful action.",
+  sponsorshipPackageIntro:
+    "Choose a level that matches your organisation's goals—from visible Forum partnership to a focused programme, hospitality, scholarship or archive contribution.",
   footerTitle: "One room. Many institutions. A shared commitment.",
   footerBody:
     "Human rights, dignity, evidence, and equal citizenship—carried from Paris into sustained international action.",
@@ -645,9 +661,9 @@ const cmsEntries = [
   {
     category: "pageCopy" as const,
     slug: "programme",
-    title: "From testimony to the Paris Declaration.",
-    eyebrow: "3–4 October 2026",
-    summary: "Two days structured to understand the record, engage institutions, build practical commitments, and conclude with a shared declaration and sacred pledge.",
+    title: "Four days. One shared road forward.",
+    eyebrow: "2–5 October 2026",
+    summary: "From internal preparation and public testimony to institutional action, the Paris Declaration, and an interfaith pilgrimage of remembrance.",
     body: "",
     linkUrl: "/programme",
     order: 3,
@@ -1386,17 +1402,19 @@ const seminarEntries = [
     order: 100 + index,
     featured: false,
   })),
-] as const
-
-const programmeDays = [
-  { slug: "day-one", tabLabel: "Day 01", navigationLabel: "3 October", dateLabel: "Saturday · 3 October 2026", summary: "Evidence enters the public record.", order: 1 },
-  { slug: "day-two", tabLabel: "Day 02", navigationLabel: "4 October", dateLabel: "Sunday · 4 October 2026", summary: "Evidence becomes commitment.", order: 2 },
-] as const
-const programmeSessions = [
-  { daySlug: "day-one", slug: "opening-film-keynote", startTime: "09:30", endTime: "11:00", title: "Opening film and keynote", description: "Historical context, documented evidence, and the purpose of the Paris forum.", tag: "Opening", speakers: "Opening contributors", location: "Main assembly hall", order: 1 },
-  { daySlug: "day-one", slug: "testimony-protection", startTime: "14:30", endTime: "16:00", title: "Testimony and legal protection", description: "Lived experience meets legal research and practical safeguards.", tag: "Working session", speakers: "Survivors, researchers, legal experts", location: "Main assembly hall", order: 2 },
-  { daySlug: "day-two", slug: "policy-roundtable", startTime: "12:00", endTime: "13:30", title: "International policy roundtable", description: "Human-rights standards, property rights, justice, and cooperation.", tag: "Roundtable", speakers: "Policy and institutional delegates", location: "Main assembly hall", order: 1 },
-  { daySlug: "day-two", slug: "paris-declaration", startTime: "16:00", endTime: "17:30", title: "Paris Declaration and Agni Sakshi", description: "Adoption of the shared declaration followed by the witnessed closing pledge.", tag: "Closing", speakers: "Summit delegates", location: "Main assembly hall", order: 2 },
+  ...forumPackageItems.map((item) => ({
+    category:"forumPackage" as const,
+    slug:item.slug,
+    title:item.title,
+    eyebrow:item.parentSlug === "accommodation" ? "Accommodation" : "Partnership & Sponsorship",
+    summary:item.summary,
+    body:item.body,
+    secondaryText:item.secondaryText,
+    dateLabel:item.price,
+    parentSlug:item.parentSlug,
+    order:item.order,
+    featured:false,
+  })),
 ] as const
 const chartSeries = [
   { slug: "population-share", title: "A shrinking share of the nation.", eyebrow: "Demographic crisis", description: "Historic census markers show a long decline in the Hindu share of the population.", sourceLabel: "Summit concept note and cited census records", sourceUrl: "", unit: "%", order: 1 },

@@ -44,6 +44,17 @@ export const settingsFieldsValidator = v.object({
   bankAccountName: v.optional(v.string()),
   bankIban: v.optional(v.string()),
   bankBic: v.optional(v.string()),
+  registrationFeeLabel: v.optional(v.string()),
+  registrationFeeTitle: v.optional(v.string()),
+  registrationFeeBody: v.optional(v.string()),
+  registrationFeeEmail: v.optional(v.string()),
+  forumPackagesMenuLabel: v.optional(v.string()),
+  accommodationPackageLabel: v.optional(v.string()),
+  accommodationPackageTitle: v.optional(v.string()),
+  accommodationPackageIntro: v.optional(v.string()),
+  sponsorshipPackageLabel: v.optional(v.string()),
+  sponsorshipPackageTitle: v.optional(v.string()),
+  sponsorshipPackageIntro: v.optional(v.string()),
   footerTitle: v.string(),
   footerBody: v.string(),
   registrationOpen: v.boolean(),
@@ -76,6 +87,23 @@ const officialSocialLinks = {
   linkedinUrl: "https://www.linkedin.com/company/paris-hindu-summit/",
 }
 
+const registrationFeeDefaults = {
+  registrationFeeLabel: "US$250",
+  registrationFeeTitle: "Registration processing fee",
+  registrationFeeBody: "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation.",
+  registrationFeeEmail: "info@parishindusummit.org",
+}
+
+const forumPackageDefaults = {
+  forumPackagesMenuLabel: "Forum Packages",
+  accommodationPackageLabel: "Four nights in Paris",
+  accommodationPackageTitle: "Stay close to the Forum.",
+  accommodationPackageIntro: "Compare five accommodation levels for the Paris Hindu Summit. Every package includes four hotel nights and the local tourist tax.",
+  sponsorshipPackageLabel: "Partnership & Sponsorship",
+  sponsorshipPackageTitle: "Put your institution behind meaningful action.",
+  sponsorshipPackageIntro: "Choose a level that matches your organisation's goals—from visible Forum partnership to a focused programme, hospitality, scholarship or archive contribution.",
+}
+
 export const get = query({
   args: {},
   returns: v.union(v.null(), settingsValidator),
@@ -99,6 +127,17 @@ export const get = query({
       bankAccountName: settings.bankAccountName ?? bankTransferDefaults.bankAccountName,
       bankIban: settings.bankIban ?? bankTransferDefaults.bankIban,
       bankBic: settings.bankBic ?? bankTransferDefaults.bankBic,
+      registrationFeeLabel: settings.registrationFeeLabel ?? registrationFeeDefaults.registrationFeeLabel,
+      registrationFeeTitle: settings.registrationFeeTitle ?? registrationFeeDefaults.registrationFeeTitle,
+      registrationFeeBody: settings.registrationFeeBody ?? registrationFeeDefaults.registrationFeeBody,
+      registrationFeeEmail: settings.registrationFeeEmail ?? registrationFeeDefaults.registrationFeeEmail,
+      forumPackagesMenuLabel: settings.forumPackagesMenuLabel ?? forumPackageDefaults.forumPackagesMenuLabel,
+      accommodationPackageLabel: settings.accommodationPackageLabel ?? forumPackageDefaults.accommodationPackageLabel,
+      accommodationPackageTitle: settings.accommodationPackageTitle ?? forumPackageDefaults.accommodationPackageTitle,
+      accommodationPackageIntro: settings.accommodationPackageIntro ?? forumPackageDefaults.accommodationPackageIntro,
+      sponsorshipPackageLabel: settings.sponsorshipPackageLabel ?? forumPackageDefaults.sponsorshipPackageLabel,
+      sponsorshipPackageTitle: settings.sponsorshipPackageTitle ?? forumPackageDefaults.sponsorshipPackageTitle,
+      sponsorshipPackageIntro: settings.sponsorshipPackageIntro ?? forumPackageDefaults.sponsorshipPackageIntro,
       logoUrl: settings.logoStorageId
         ? await ctx.storage.getUrl(settings.logoStorageId)
         : null,
@@ -142,6 +181,24 @@ export const setOfficialSocialLinks = internalMutation({
     if (!existing) throw new Error("Primary site settings have not been created.")
     await ctx.db.patch(existing._id, {
       ...officialSocialLinks,
+      updatedAt: Date.now(),
+    })
+    return null
+  },
+})
+
+export const setCurrentForumConfiguration = internalMutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const existing = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "primary"))
+      .unique()
+    if (!existing) throw new Error("Primary site settings have not been created.")
+    await ctx.db.patch(existing._id, {
+      ...registrationFeeDefaults,
+      ...forumPackageDefaults,
       updatedAt: Date.now(),
     })
     return null

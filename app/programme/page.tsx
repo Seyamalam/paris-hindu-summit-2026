@@ -6,9 +6,9 @@ export default function ProgrammePage() {
     <>
       <ManagedPageHero
         slug="programme"
-        eyebrow="3–4 October 2026"
-        title="From testimony to the Paris Declaration."
-        intro="Two days structured to understand the record, engage institutions, build practical commitments, and conclude with a shared declaration and sacred pledge."
+        eyebrow="2–5 October 2026"
+        title="Four days. One shared road forward."
+        intro="From internal preparation and public testimony to institutional action, the Paris Declaration, and an interfaith pilgrimage of remembrance."
       />
       <section className="section-shell programme-page">
         <ProgrammeTabs />

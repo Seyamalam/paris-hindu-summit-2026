@@ -17,6 +17,7 @@ export const categoryValidator = v.union(
   v.literal("team"),
   v.literal("advisory"),
   v.literal("programme"),
+  v.literal("forumPackage"),
   v.literal("media"),
   v.literal("faq"),
   v.literal("legal"),

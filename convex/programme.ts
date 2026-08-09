@@ -1,7 +1,8 @@
 import { v } from "convex/values"
 
-import { mutation, query } from "./_generated/server"
+import { internalMutation, mutation, query } from "./_generated/server"
 import { getAdmin, writeAudit } from "./lib/admin"
+import { programmeDays, programmeSessions } from "./programmeData"
 
 const status = v.union(v.literal("draft"), v.literal("published"))
 const dayFields = {
@@ -126,4 +127,36 @@ export const removeSession = mutation({
   args: { id: v.id("programmeSessions") },
   returns: v.null(),
   handler: async (ctx, args) => { const actor = await getAdmin(ctx); const row = await ctx.db.get(args.id); if (row) await ctx.db.delete(args.id); await writeAudit(ctx, actor, { action: "delete", entityType: "programmeSession", entityId: args.id, summary: `Deleted ${row?.title ?? "session"}` }); return null },
+})
+
+export const replaceWithCurrentFlow = internalMutation({
+  args: {},
+  returns: v.object({ days: v.number(), sessions: v.number() }),
+  handler: async (ctx) => {
+    const [existingDays, existingSessions] = await Promise.all([
+      ctx.db.query("programmeDays").collect(),
+      ctx.db.query("programmeSessions").collect(),
+    ])
+    await Promise.all([
+      ...existingSessions.map((item) => ctx.db.delete(item._id)),
+      ...existingDays.map((item) => ctx.db.delete(item._id)),
+    ])
+    const updatedAt = Date.now()
+    for (const day of programmeDays) await ctx.db.insert("programmeDays", { ...day, status:"published", updatedAt })
+    for (const session of programmeSessions) await ctx.db.insert("programmeSessions", { ...session, status:"published", updatedAt })
+    const programmeHero = await ctx.db
+      .query("cmsEntries")
+      .withIndex("by_category_and_order", (q) => q.eq("category", "pageCopy"))
+      .filter((q) => q.eq(q.field("slug"), "programme"))
+      .unique()
+    if (programmeHero) {
+      await ctx.db.patch(programmeHero._id, {
+        eyebrow: "2–5 October 2026",
+        title: "Four days. One shared road forward.",
+        summary: "From internal preparation and public testimony to institutional action, the Paris Declaration, and an interfaith pilgrimage of remembrance.",
+        updatedAt,
+      })
+    }
+    return { days:programmeDays.length, sessions:programmeSessions.length }
+  },
 })
