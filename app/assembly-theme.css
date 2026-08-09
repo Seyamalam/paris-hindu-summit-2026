@@ -1799,19 +1799,30 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
 .package-note svg { width: 17px; }
 
 /* Registration processing fee */
-.registration-fee { display: grid; grid-template-columns: minmax(180px,.45fr) minmax(300px,.85fr) minmax(390px,1.1fr); gap: clamp(34px, 6vw, 92px); align-items: start; border-top: 1px solid var(--assembly-rule); border-bottom: 1px solid var(--assembly-rule); background: color-mix(in srgb, var(--assembly-gold) 8%, transparent); }
-.registration-fee-mark span { display: block; color: var(--assembly-red); font: 850 clamp(54px, 6vw, 88px)/.9 var(--font-body-stack); letter-spacing: -.065em; }
-.registration-fee-mark small { display: block; margin-top: 14px; font: 750 9px var(--font-mono-stack); letter-spacing: .14em; text-transform: uppercase; }
-.registration-fee-copy h2 { margin: 14px 0 20px; font: 650 clamp(36px, 4vw, 58px)/.98 var(--font-display-stack); letter-spacing: -.04em; }
-.registration-fee-copy > p:last-of-type { color: var(--assembly-muted); line-height: 1.7; }
-.registration-fee-copy a { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; color: var(--assembly-red); font-weight: 750; overflow-wrap: anywhere; }
-.registration-fee-copy svg { width: 17px; flex: 0 0 auto; }
-.registration-bank-details { margin: 0; border-top: 1px solid var(--assembly-rule); }
-.registration-bank-details div { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--assembly-rule); }
+.registration-fee { display: grid; grid-template-columns: minmax(360px,.82fr) minmax(520px,1.18fr); gap: 0; padding-block: 0; border: 1px solid var(--assembly-rule); background: color-mix(in srgb, var(--assembly-gold) 8%, var(--assembly-paper)); }
+.registration-fee-summary { min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: clamp(44px,6vw,86px); }
+.registration-fee-mark { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 20px; margin-top: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--assembly-rule); }
+.registration-fee-mark span { color: var(--assembly-red); font: 850 clamp(64px,7vw,108px)/.82 var(--font-body-stack); letter-spacing: -.075em; }
+.registration-fee-mark small { font: 750 9px var(--font-mono-stack); letter-spacing: .14em; text-transform: uppercase; }
+.registration-fee-summary h2 { max-width: 580px; margin: 30px 0 18px; font: 650 clamp(40px,4.7vw,70px)/.92 var(--font-display-stack); letter-spacing: -.05em; }
+.registration-fee-summary > p:last-child { max-width: 600px; margin: 0; color: var(--assembly-muted); font-size: 15px; line-height: 1.7; }
+.registration-payment-card { min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: clamp(34px,4vw,60px); background: var(--assembly-surface); border-left: 1px solid var(--assembly-rule); }
+.registration-payment-card > header { display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 18px; align-items: center; margin-bottom: 28px; }
+.registration-payment-card > header > span { width: 48px; height: 48px; display: grid; place-items: center; color: var(--assembly-red); border: 1px solid var(--assembly-rule); font: 800 10px var(--font-mono-stack); }
+.registration-payment-card h3 { margin: 5px 0 0; font: 650 clamp(27px,2.8vw,40px)/1 var(--font-display-stack); letter-spacing: -.035em; }
+.registration-bank-details { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border-top: 1px solid var(--assembly-rule); border-left: 1px solid var(--assembly-rule); }
+.registration-bank-details div { min-width: 0; min-height: 112px; display: flex; flex-direction: column; gap: 14px; padding: 20px; border-right: 1px solid var(--assembly-rule); border-bottom: 1px solid var(--assembly-rule); }
 .registration-bank-details dt { display: flex; gap: 7px; color: var(--assembly-red); font: 750 9px var(--font-mono-stack); letter-spacing: .1em; text-transform: uppercase; }
 .registration-bank-details dt svg { width: 14px; height: 14px; }
 .registration-bank-details dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font-size: 14px; line-height: 1.45; }
 .registration-bank-details div:nth-child(n+3) dd { font-family: var(--font-mono-stack); font-weight: 700; }
+.registration-slip-action { display: grid; grid-template-columns: 28px 20px minmax(0,1fr); gap: 14px; align-items: center; margin-top: 22px; padding: 20px; color: #fff; background: var(--assembly-blue); }
+.registration-slip-action > span:first-child { color: #e4c884; font: 800 9px var(--font-mono-stack); }
+.registration-slip-action > svg { width: 19px; color: #e4c884; }
+.registration-slip-action > span:last-child { min-width: 0; display: grid; gap: 3px; }
+.registration-slip-action small { color: #cfd9ed; font: 700 8px var(--font-mono-stack); letter-spacing: .1em; text-transform: uppercase; }
+.registration-slip-action strong { font-size: 16px; }
+.registration-slip-action em { color: #e4c884; overflow-wrap: anywhere; font-size: 12px; font-style: normal; }
 
 /* Expanded four-day programme */
 .programme-tab-list { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
@@ -1832,8 +1843,8 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
 
 @media (max-width: 1050px) {
   .package-card-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .registration-fee { grid-template-columns: .55fr 1.45fr; }
-  .registration-bank-details { grid-column:1 / -1; }
+  .registration-fee { grid-template-columns:1fr; }
+  .registration-payment-card { border-top:1px solid var(--assembly-rule); border-left:0; }
 }
 
 @media (max-width: 720px) {
@@ -1845,9 +1856,11 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
   .package-card-grid { grid-template-columns:1fr; }
   .package-card { min-height:0; }
   .package-note { align-items:flex-start; flex-direction:column; }
-  .registration-fee { grid-template-columns:1fr; gap:42px; }
-  .registration-bank-details { grid-column:auto; }
-  .registration-bank-details div { grid-template-columns:1fr; gap:8px; }
+  .registration-fee-summary,.registration-payment-card { padding:34px 20px; }
+  .registration-fee-mark { align-items:flex-start; flex-direction:column; }
+  .registration-fee-summary h2 { font-size:clamp(40px,12vw,56px); }
+  .registration-bank-details { grid-template-columns:1fr; }
+  .registration-bank-details div { min-height:0; }
   .programme-tab-list { grid-template-columns:1fr 1fr; }
   .programme-tab-list [data-slot="tabs-trigger"] { min-height:105px; }
   .programme-day-heading { grid-template-columns:1fr; }
