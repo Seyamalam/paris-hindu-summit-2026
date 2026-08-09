@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react"
 
 import { api } from "@/convex/_generated/api"
 import type { Id } from "@/convex/_generated/dataModel"
+import { BankAccountCards } from "@/components/site/bank-account-cards"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -58,15 +59,10 @@ export function DonationExperience() {
           <div>
             <p className="kicker">{settings?.bankTransferEyebrow ?? "Direct bank transfer"}</p>
             <h2>{settings?.bankTransferTitle ?? "Give directly, securely."}</h2>
-            <p>{settings?.bankTransferBody ?? "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account."}</p>
+            <p>{settings?.bankTransferBody ?? "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can be sent directly to either summit bank account."}</p>
           </div>
         </div>
-        <dl className="bank-transfer-details">
-          <div><dt>Bank name</dt><dd>{settings?.bankName ?? "Credit Industriel et Commercial (CIC Bank)"}</dd></div>
-          <div><dt>Account name</dt><dd>{settings?.bankAccountName ?? "Bureau of Human Rights and Justice"}</dd></div>
-          <div><dt>IBAN</dt><dd>{settings?.bankIban ?? "FR76 3006 6104 5100 0207 8600 151"}</dd></div>
-          <div><dt>BIC</dt><dd>{settings?.bankBic ?? "CMCIFRPP"}</dd></div>
-        </dl>
+        <BankAccountCards settings={settings} />
       </Reveal>
       <Reveal className="donation-heading">
         <p className="kicker">{settings?.donationEyebrow ?? "Choose a contribution"}</p>
