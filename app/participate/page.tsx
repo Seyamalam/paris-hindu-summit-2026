@@ -39,22 +39,31 @@ export default function ParticipatePage() {
         <RegisterForm enabled={registrationOpen} />
       </section>
       <section className="registration-fee section-shell" aria-labelledby="registration-fee-title">
-        <div className="registration-fee-mark">
-          <span>{settings?.registrationFeeLabel ?? "US$250"}</span>
-          <small>Processing fee</small>
-        </div>
-        <div className="registration-fee-copy">
+        <div className="registration-fee-summary">
           <p className="kicker">Complete your registration</p>
+          <div className="registration-fee-mark">
+            <span>{settings?.registrationFeeLabel ?? "US$250"}</span>
+            <small>Required processing fee</small>
+          </div>
           <h2 id="registration-fee-title">{settings?.registrationFeeTitle ?? "Registration processing fee"}</h2>
           <p>{settings?.registrationFeeBody ?? "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation."}</p>
-          <a href={`mailto:${settings?.registrationFeeEmail ?? "info@parishindusummit.org"}`}><MailIcon aria-hidden="true" /> Send payment slip to {settings?.registrationFeeEmail ?? "info@parishindusummit.org"}</a>
         </div>
-        <dl className="registration-bank-details">
-          <div><dt><LandmarkIcon aria-hidden="true" /> Bank</dt><dd>{settings?.bankName ?? "Credit Industriel et Commercial (CIC Bank)"}</dd></div>
-          <div><dt>Account name</dt><dd>{settings?.bankAccountName ?? "Bureau of Human Rights and Justice"}</dd></div>
-          <div><dt>IBAN</dt><dd>{settings?.bankIban ?? "FR76 3006 6104 5100 0207 8600 151"}</dd></div>
-          <div><dt>BIC</dt><dd>{settings?.bankBic ?? "CMCIFRPP"}</dd></div>
-        </dl>
+        <div className="registration-payment-card">
+          <header>
+            <span>01</span>
+            <div><p className="kicker">Bank transfer</p><h3>Use the summit account</h3></div>
+          </header>
+          <dl className="registration-bank-details">
+            <div><dt><LandmarkIcon aria-hidden="true" /> Bank</dt><dd>{settings?.bankName ?? "Credit Industriel et Commercial (CIC Bank)"}</dd></div>
+            <div><dt>Account name</dt><dd>{settings?.bankAccountName ?? "Bureau of Human Rights and Justice"}</dd></div>
+            <div><dt>IBAN</dt><dd>{settings?.bankIban ?? "FR76 3006 6104 5100 0207 8600 151"}</dd></div>
+            <div><dt>BIC</dt><dd>{settings?.bankBic ?? "CMCIFRPP"}</dd></div>
+          </dl>
+          <a className="registration-slip-action" href={`mailto:${settings?.registrationFeeEmail ?? "info@parishindusummit.org"}`}>
+            <span>02</span><MailIcon aria-hidden="true" />
+            <span><small>After the transfer</small><strong>Send your payment slip</strong><em>{settings?.registrationFeeEmail ?? "info@parishindusummit.org"}</em></span>
+          </a>
+        </div>
       </section>
       <section className="contact-section section-shell" id="contact">
         <div>
