@@ -3,13 +3,14 @@
 import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
+import { BankAccountCards } from "@/components/site/bank-account-cards"
 import { ManagedText } from "@/components/site/managed-editorial"
 import { ManagedPageHero } from "@/components/site/managed-page-hero"
 import { RegisterForm } from "@/components/site/register-form"
 import { SupportForm } from "@/components/site/support-form"
 import { event } from "@/lib/content"
 import { formatEventDateRange } from "@/lib/event-format"
-import { LandmarkIcon, MailIcon } from "lucide-react"
+import { MailIcon } from "lucide-react"
 
 export default function ParticipatePage() {
   const settings = useQuery(api.settings.get)
@@ -46,19 +47,14 @@ export default function ParticipatePage() {
             <small>Required processing fee</small>
           </div>
           <h2 id="registration-fee-title">{settings?.registrationFeeTitle ?? "Registration processing fee"}</h2>
-          <p>{settings?.registrationFeeBody ?? "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation."}</p>
+          <p>{settings?.registrationFeeBody ?? "Deposit the registration processing fee into either summit bank account. After sending the payment, email the payment slip for confirmation."}</p>
         </div>
         <div className="registration-payment-card">
           <header>
             <span>01</span>
-            <div><p className="kicker">Bank transfer</p><h3>Use the summit account</h3></div>
+            <div><p className="kicker">Bank transfer</p><h3>Choose a summit account</h3></div>
           </header>
-          <dl className="registration-bank-details">
-            <div><dt><LandmarkIcon aria-hidden="true" /> Bank</dt><dd>{settings?.bankName ?? "Credit Industriel et Commercial (CIC Bank)"}</dd></div>
-            <div><dt>Account name</dt><dd>{settings?.bankAccountName ?? "Bureau of Human Rights and Justice"}</dd></div>
-            <div><dt>IBAN</dt><dd>{settings?.bankIban ?? "FR76 3006 6104 5100 0207 8600 151"}</dd></div>
-            <div><dt>BIC</dt><dd>{settings?.bankBic ?? "CMCIFRPP"}</dd></div>
-          </dl>
+          <BankAccountCards settings={settings} />
           <a className="registration-slip-action" href={`mailto:${settings?.registrationFeeEmail ?? "info@parishindusummit.org"}`}>
             <span>02</span><MailIcon aria-hidden="true" />
             <span><small>After the transfer</small><strong>Send your payment slip</strong><em>{settings?.registrationFeeEmail ?? "info@parishindusummit.org"}</em></span>

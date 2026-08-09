@@ -40,10 +40,17 @@ export const settingsFieldsValidator = v.object({
   bankTransferEyebrow: v.optional(v.string()),
   bankTransferTitle: v.optional(v.string()),
   bankTransferBody: v.optional(v.string()),
+  bankAccountLabel: v.optional(v.string()),
   bankName: v.optional(v.string()),
   bankAccountName: v.optional(v.string()),
   bankIban: v.optional(v.string()),
   bankBic: v.optional(v.string()),
+  usBankAccountLabel: v.optional(v.string()),
+  usBankName: v.optional(v.string()),
+  usBankAccountName: v.optional(v.string()),
+  usBankRoutingNumber: v.optional(v.string()),
+  usBankAccountNumber: v.optional(v.string()),
+  usBankSwift: v.optional(v.string()),
   registrationFeeLabel: v.optional(v.string()),
   registrationFeeTitle: v.optional(v.string()),
   registrationFeeBody: v.optional(v.string()),
@@ -72,11 +79,21 @@ export const settingsValidator = v.object({
 const bankTransferDefaults = {
   bankTransferEyebrow: "Direct bank transfer",
   bankTransferTitle: "Give directly, securely.",
-  bankTransferBody: "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account.",
+  bankTransferBody: "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can be sent directly to either summit bank account.",
+  bankAccountLabel: "France account",
   bankName: "Credit Industriel et Commercial (CIC Bank)",
   bankAccountName: "Bureau of Human Rights and Justice",
   bankIban: "FR76 3006 6104 5100 0207 8600 151",
   bankBic: "CMCIFRPP",
+}
+
+const usBankDefaults = {
+  usBankAccountLabel: "United States account",
+  usBankName: "Fifth Third Bank",
+  usBankAccountName: "Forcefield",
+  usBankRoutingNumber: "071923909",
+  usBankAccountNumber: "10233828",
+  usBankSwift: "FTBCUS3CXXX (FTBCUS3C for the 8-character base code)",
 }
 
 const officialSocialLinks = {
@@ -90,7 +107,7 @@ const officialSocialLinks = {
 const registrationFeeDefaults = {
   registrationFeeLabel: "US$250",
   registrationFeeTitle: "Registration processing fee",
-  registrationFeeBody: "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation.",
+  registrationFeeBody: "Deposit the registration processing fee into either summit bank account. After sending the payment, email the payment slip for confirmation.",
   registrationFeeEmail: "info@parishindusummit.org",
 }
 
@@ -123,10 +140,17 @@ export const get = query({
       bankTransferEyebrow: settings.bankTransferEyebrow ?? bankTransferDefaults.bankTransferEyebrow,
       bankTransferTitle: settings.bankTransferTitle ?? bankTransferDefaults.bankTransferTitle,
       bankTransferBody: settings.bankTransferBody ?? bankTransferDefaults.bankTransferBody,
+      bankAccountLabel: settings.bankAccountLabel ?? bankTransferDefaults.bankAccountLabel,
       bankName: settings.bankName ?? bankTransferDefaults.bankName,
       bankAccountName: settings.bankAccountName ?? bankTransferDefaults.bankAccountName,
       bankIban: settings.bankIban ?? bankTransferDefaults.bankIban,
       bankBic: settings.bankBic ?? bankTransferDefaults.bankBic,
+      usBankAccountLabel: settings.usBankAccountLabel ?? usBankDefaults.usBankAccountLabel,
+      usBankName: settings.usBankName ?? usBankDefaults.usBankName,
+      usBankAccountName: settings.usBankAccountName ?? usBankDefaults.usBankAccountName,
+      usBankRoutingNumber: settings.usBankRoutingNumber ?? usBankDefaults.usBankRoutingNumber,
+      usBankAccountNumber: settings.usBankAccountNumber ?? usBankDefaults.usBankAccountNumber,
+      usBankSwift: settings.usBankSwift ?? usBankDefaults.usBankSwift,
       registrationFeeLabel: settings.registrationFeeLabel ?? registrationFeeDefaults.registrationFeeLabel,
       registrationFeeTitle: settings.registrationFeeTitle ?? registrationFeeDefaults.registrationFeeTitle,
       registrationFeeBody: settings.registrationFeeBody ?? registrationFeeDefaults.registrationFeeBody,
@@ -199,6 +223,28 @@ export const setCurrentForumConfiguration = internalMutation({
     await ctx.db.patch(existing._id, {
       ...registrationFeeDefaults,
       ...forumPackageDefaults,
+      updatedAt: Date.now(),
+    })
+    return null
+  },
+})
+
+export const setCurrentBankAccounts = internalMutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const existing = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "primary"))
+      .unique()
+    if (!existing) throw new Error("Primary site settings have not been created.")
+    const oldBankTransferBody = "Your generosity helps bring our community together in Paris for inspiration, dialogue, and justice. Donations can also be sent directly to the following bank account."
+    const oldRegistrationFeeBody = "Deposit the registration processing fee into the summit bank account. After sending the payment, email the payment slip for confirmation."
+    await ctx.db.patch(existing._id, {
+      bankAccountLabel: existing.bankAccountLabel ?? bankTransferDefaults.bankAccountLabel,
+      ...usBankDefaults,
+      ...(existing.bankTransferBody === oldBankTransferBody ? { bankTransferBody: bankTransferDefaults.bankTransferBody } : {}),
+      ...(existing.registrationFeeBody === oldRegistrationFeeBody ? { registrationFeeBody: registrationFeeDefaults.registrationFeeBody } : {}),
       updatedAt: Date.now(),
     })
     return null
