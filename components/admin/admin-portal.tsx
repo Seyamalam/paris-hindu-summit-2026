@@ -61,6 +61,7 @@ const websitePages = [
   ["home", "Home", "/", HomeIcon],
   ["about", "About", "/about", FileTextIcon],
   ["programme", "Programme", "/programme", CalendarRangeIcon],
+  ["forumPackages", "Forum Packages", "/forum-packages/accommodation", BlocksIcon],
   ["speakers", "Speakers", "/speakers", Users2Icon],
   ["organizingTeam", "Organising Committee", "/committee", UserCogIcon],
   ["advisoryBoard", "Advisory Board", "/advisory-board", UserCogIcon],
@@ -108,6 +109,7 @@ const categories = [
   "team",
   "advisory",
   "programme",
+  "forumPackage",
   "media",
   "faq",
   "legal",
@@ -433,6 +435,7 @@ function StudioInspector({ page, publishSignal, onSaved }: { page:StudioPage; pu
   if (page === "settings") return <SettingsPanel compact publishSignal={publishSignal} onSaved={onSaved} />
   if (page === "about") return <AboutEditor />
   if (page === "programme") return <ProgrammeAdmin />
+  if (page === "forumPackages") return <ForumPackagesAdmin />
   if (page === "speakers") return <PeopleEditor mode="speaker" />
   if (page === "organizingTeam") return <PeopleEditor mode="team" />
   if (page === "advisoryBoard") return <PeopleEditor mode="advisory" />
@@ -1019,6 +1022,8 @@ function SettingsPanel({ compact = false, focus, publishSignal = 0, onSaved }: {
     ["Why this summit", ["whyTitle", "whyBody"]],
     ["Donation invitation", ["donationEyebrow", "donationTitle", "donationBody"]],
     ["Donation bank transfer", ["bankTransferEyebrow", "bankTransferTitle", "bankTransferBody", "bankName", "bankAccountName", "bankIban", "bankBic"]],
+    ["Registration processing fee", ["registrationFeeLabel", "registrationFeeTitle", "registrationFeeBody", "registrationFeeEmail"]],
+    ["Forum packages", ["forumPackagesMenuLabel", "accommodationPackageLabel", "accommodationPackageTitle", "accommodationPackageIntro", "sponsorshipPackageLabel", "sponsorshipPackageTitle", "sponsorshipPackageIntro"]],
     ["Footer", ["footerTitle", "footerBody"]],
     ["Announcement", ["announcement"]],
   ] as const
@@ -1941,7 +1946,7 @@ function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, on
           ? <label className="admin-field" key={key}><span>{humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
               {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{value}</option>)}
             </select></label>
-          : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
+          : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description","body","secondaryText"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
         {assetPicker && (
           <div className="admin-asset-picker">
             <label className="admin-field">
@@ -2348,6 +2353,35 @@ function ProgrammeAdmin() {
         onRemove={removeSession}
       />
     ))}
+  </section>
+}
+
+function ForumPackagesAdmin() {
+  const entries = useQuery(api.cms.listForAdmin, { category:"forumPackage" })
+  const save = useMutation(api.cms.save)
+  const remove = useMutation(api.cms.remove)
+  const rowsFor = (parentSlug:"accommodation" | "sponsorship") => entries
+    ?.filter((entry) => entry.parentSlug === parentSlug)
+    .map((entry) => ({
+      _id:entry._id, parentSlug, slug:entry.slug, title:entry.title,
+      dateLabel:entry.dateLabel, summary:entry.summary, body:entry.body,
+      secondaryText:entry.secondaryText, order:entry.order, status:entry.status,
+      name:entry.title,
+    }))
+  const savePackage = (parentSlug:"accommodation" | "sponsorship") => async (args:any) => save({
+    ...(args.id ? { id:args.id } : {}),
+    category:"forumPackage", parentSlug, slug:args.slug, title:args.title,
+    eyebrow:parentSlug === "accommodation" ? "Accommodation" : "Partnership & Sponsorship",
+    summary:args.summary, body:args.body, secondaryText:args.secondaryText,
+    country:"", role:"", email:"", phone:"", linkLabel:"", linkUrl:"",
+    dateLabel:args.dateLabel, timeLabel:"", order:args.order,
+    status:args.status, featured:false,
+  })
+  const fields = ["slug","title","dateLabel","summary","body","secondaryText","order","status"]
+  return <section className="admin-panel">
+    <PanelTitle eyebrow="Package catalogue" title="Accommodation and partnership pricing." copy="Every published package appears immediately on the public Forum Packages pages. Use one line per included or excluded feature." />
+    <RecordCards title="Accommodation packages" copy="Edit hotel level, total price, inclusions, exclusions and display order." rows={rowsFor("accommodation")} fields={fields} blank={{ parentSlug:"accommodation",slug:"",title:"",dateLabel:"",summary:"",body:"",secondaryText:"",order:50,status:"draft" }} onSave={savePackage("accommodation")} onRemove={remove} />
+    <RecordCards title="Partnership & sponsorship packages" copy="Edit contribution levels, availability, benefits and display order." rows={rowsFor("sponsorship")} fields={fields} blank={{ parentSlug:"sponsorship",slug:"",title:"",dateLabel:"",summary:"",body:"",secondaryText:"",order:50,status:"draft" }} onSave={savePackage("sponsorship")} onRemove={remove} />
   </section>
 }
 

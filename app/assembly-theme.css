@@ -1773,6 +1773,89 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
   }
 }
 
+/* Forum package catalogue */
+.forum-packages-hero { padding-top: clamp(92px, 11vw, 160px); padding-bottom: 58px; border-bottom: 1px solid var(--assembly-rule); }
+.forum-packages-hero h1 { max-width: 980px; margin: 18px 0 24px; font: 800 clamp(58px, 8.5vw, 126px)/.84 var(--font-body-stack); letter-spacing: -.075em; text-transform: uppercase; }
+.forum-packages-hero > p:last-of-type { max-width: 760px; color: var(--assembly-muted); font-size: clamp(17px, 1.7vw, 23px); line-height: 1.55; }
+.package-switcher { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 50px; }
+.package-switcher a { min-height: 48px; display: inline-flex; align-items: center; padding: 0 22px; border: 1px solid var(--assembly-rule); font: 750 10px var(--font-mono-stack); letter-spacing: .09em; text-transform: uppercase; }
+.package-switcher a[data-active="true"] { color: #fff; background: var(--assembly-blue); border-color: var(--assembly-blue); }
+.package-catalogue { padding-top: 68px; }
+.package-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--assembly-rule); border-left: 1px solid var(--assembly-rule); }
+.package-card { min-width: 0; min-height: 510px; display: flex; flex-direction: column; padding: clamp(26px, 3vw, 42px); border-right: 1px solid var(--assembly-rule); border-bottom: 1px solid var(--assembly-rule); }
+.package-card header { display: flex; justify-content: space-between; gap: 24px; min-height: 64px; }
+.package-card header span { color: var(--assembly-red); font: 750 10px var(--font-mono-stack); }
+.package-card header p { max-width: 210px; margin: 0; color: var(--assembly-muted); font-size: 12px; line-height: 1.5; text-align: right; }
+.package-card h2 { margin: 38px 0 18px; font: 700 clamp(31px, 3vw, 48px)/.96 var(--font-display-stack); letter-spacing: -.035em; }
+.package-card > strong { color: var(--assembly-red); font: 800 clamp(26px, 3vw, 42px)/1 var(--font-body-stack); letter-spacing: -.035em; }
+.package-features { display: grid; gap: 11px; margin-top: 38px; padding-top: 24px; border-top: 1px solid var(--assembly-rule); }
+.package-features p { display: grid; grid-template-columns: 16px minmax(0,1fr); gap: 10px; margin: 0; color: var(--assembly-ink); font-size: 13px; line-height: 1.45; }
+.package-features svg { width: 15px; height: 15px; color: var(--assembly-red); }
+.package-features p[data-excluded] { color: var(--assembly-muted); }
+.package-features p[data-excluded] svg { opacity: .55; }
+.package-note { display: flex; justify-content: space-between; gap: 34px; align-items: center; margin-top: 48px; padding: 30px 0; border-top: 1px solid var(--assembly-rule); }
+.package-note p { max-width: 760px; margin: 0; color: var(--assembly-muted); line-height: 1.6; }
+.package-note a { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 10px; color: var(--assembly-red); font: 750 10px var(--font-mono-stack); letter-spacing: .1em; text-transform: uppercase; }
+.package-note svg { width: 17px; }
+
+/* Registration processing fee */
+.registration-fee { display: grid; grid-template-columns: minmax(180px,.45fr) minmax(300px,.85fr) minmax(390px,1.1fr); gap: clamp(34px, 6vw, 92px); align-items: start; border-top: 1px solid var(--assembly-rule); border-bottom: 1px solid var(--assembly-rule); background: color-mix(in srgb, var(--assembly-gold) 8%, transparent); }
+.registration-fee-mark span { display: block; color: var(--assembly-red); font: 850 clamp(54px, 6vw, 88px)/.9 var(--font-body-stack); letter-spacing: -.065em; }
+.registration-fee-mark small { display: block; margin-top: 14px; font: 750 9px var(--font-mono-stack); letter-spacing: .14em; text-transform: uppercase; }
+.registration-fee-copy h2 { margin: 14px 0 20px; font: 650 clamp(36px, 4vw, 58px)/.98 var(--font-display-stack); letter-spacing: -.04em; }
+.registration-fee-copy > p:last-of-type { color: var(--assembly-muted); line-height: 1.7; }
+.registration-fee-copy a { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; color: var(--assembly-red); font-weight: 750; overflow-wrap: anywhere; }
+.registration-fee-copy svg { width: 17px; flex: 0 0 auto; }
+.registration-bank-details { margin: 0; border-top: 1px solid var(--assembly-rule); }
+.registration-bank-details div { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--assembly-rule); }
+.registration-bank-details dt { display: flex; gap: 7px; color: var(--assembly-red); font: 750 9px var(--font-mono-stack); letter-spacing: .1em; text-transform: uppercase; }
+.registration-bank-details dt svg { width: 14px; height: 14px; }
+.registration-bank-details dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font-size: 14px; line-height: 1.45; }
+.registration-bank-details div:nth-child(n+3) dd { font-family: var(--font-mono-stack); font-weight: 700; }
+
+/* Expanded four-day programme */
+.programme-tab-list { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
+.programme-tab-list [data-slot="tabs-trigger"] { min-height: 112px; padding: 18px 20px; font-size: clamp(17px,1.7vw,24px); }
+.programme-day-heading { display: grid; grid-template-columns: 1fr auto; gap: 8px 30px; align-items: end; padding: 28px 0 34px; }
+.programme-day-heading .programme-day-date { grid-column: 1 / -1; margin: 0; }
+.programme-day-heading h2 { margin: 0; font: 650 clamp(32px,4vw,56px)/.98 var(--font-display-stack); letter-spacing: -.04em; }
+.programme-day-heading > span { color: var(--assembly-muted); font: 700 9px var(--font-mono-stack); letter-spacing: .1em; text-transform: uppercase; }
+.schedule-list article { min-height: 0; grid-template-columns: 130px minmax(0,1fr); align-items: start; gap: clamp(24px,5vw,78px); padding: 34px 0; }
+.schedule-list time { padding-top: 7px; font-size: 12px; }
+.schedule-list time small { display: block; margin-top: 7px; color: var(--assembly-muted); }
+.schedule-session h3 { margin: 8px 0 12px; }
+.schedule-session > p:not(.kicker) { max-width: 820px; font-size: 14px; line-height: 1.6; }
+.schedule-session ul { max-width: 850px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px 28px; margin: 18px 0; padding: 0; list-style: none; }
+.schedule-session li { position: relative; padding-left: 16px; color: var(--assembly-muted); font-size: 13px; line-height: 1.5; }
+.schedule-session li::before { content:""; position:absolute; top:.65em; left:0; width:5px; height:5px; background:var(--assembly-red); }
+.schedule-session > small { display:block; margin-top:16px; color:var(--assembly-red); font-size:11px; }
+
+@media (max-width: 1050px) {
+  .package-card-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .registration-fee { grid-template-columns: .55fr 1.45fr; }
+  .registration-bank-details { grid-column:1 / -1; }
+}
+
+@media (max-width: 720px) {
+  .forum-packages-hero { padding-top: 115px; }
+  body:has(.announcement-strip) .forum-packages-hero { padding-top: 145px; }
+  .forum-packages-hero h1 { font-size: clamp(44px,13.5vw,66px); }
+  .package-switcher { display:grid; grid-template-columns:1fr; }
+  .package-switcher a { justify-content:center; text-align:center; }
+  .package-card-grid { grid-template-columns:1fr; }
+  .package-card { min-height:0; }
+  .package-note { align-items:flex-start; flex-direction:column; }
+  .registration-fee { grid-template-columns:1fr; gap:42px; }
+  .registration-bank-details { grid-column:auto; }
+  .registration-bank-details div { grid-template-columns:1fr; gap:8px; }
+  .programme-tab-list { grid-template-columns:1fr 1fr; }
+  .programme-tab-list [data-slot="tabs-trigger"] { min-height:105px; }
+  .programme-day-heading { grid-template-columns:1fr; }
+  .programme-day-heading .programme-day-date { grid-column:auto; }
+  .schedule-list article { grid-template-columns:1fr; gap:18px; }
+  .schedule-session ul { grid-template-columns:1fr; }
+}
+
 /* Participation, forms, and mock payment */
 .registration-form,
 .contact-section form {
@@ -1909,6 +1992,20 @@ body:has(.photo-lightbox) [data-slot="dialog-overlay"] {
   color: #fff;
   background: var(--assembly-red);
   border-color: var(--assembly-red);
+}
+
+@media (max-width: 1320px) {
+  .site-header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .desktop-nav,
+  .header-secondary-action,
+  .header-action {
+    display: none;
+  }
+  .mobile-menu {
+    display: inline-flex;
+  }
 }
 
 @media (max-width: 1180px) {
