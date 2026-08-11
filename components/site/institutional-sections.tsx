@@ -9,51 +9,79 @@ import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 export function PartnerWall() {
   const liveOrganizations = useQuery(api.content.listOrganizations)
-  const organizations = (liveOrganizations ?? []).filter(
-    (organization) =>
-      !organization.name.toLowerCase().includes("bureau of human rights and justice")
-  )
-  const organizer = useEditorialRecord("main-organizer", {
-    eyebrow:"Main organizer",
+  const organizerCopy = useEditorialRecord("main-organizer", {
+    eyebrow:"Organizing organization",
     title:"Bureau of Human Rights and Justice",
-    summary:"BHRJ leads the Paris Hindu Summit 2026. The organization supports people in vulnerable regions through humanitarian relief, sustainable agriculture, and partnerships built around dignity and long-term resilience.",
+    summary:"The France-based Bureau of Human Rights and Justice leads the Paris Hindu Summit 2026. Its work advances human rights, humanitarian relief, sustainable agriculture, and long-term resilience in vulnerable communities.",
     linkLabel:"Visit BHRJ",
     linkUrl:"https://www.bhrj.org/",
   })
-  const heading = useEditorialRecord("partners-heading", {
-    eyebrow:"Supporting partners & sponsors",
-    title:"Institutions strengthening the summit.",
-    summary:"Under BHRJ's leadership, supporting organisations contribute policy reach, research, community networks, access, and practical support.",
+  const managerCopy = useEditorialRecord("managing-organizer", {
+    eyebrow:"Managing organization",
+    title:"Interfaith Forcefield",
+    summary:"The US-registered Interfaith Forcefield manages conference coordination and delivery, bringing an interfaith human-rights perspective to the summit's programme and operations.",
+    linkLabel:"Visit official website",
+    linkUrl:"",
   })
-  const organizerUrl = organizer.linkUrl || "https://www.bhrj.org/"
+  const heading = useEditorialRecord("supporting-organizations-heading", {
+    eyebrow:"Supporting organizations",
+    title:"Regional organizations strengthening the summit.",
+    summary:"Participating organizations from Bangladesh, India, Nepal, and Pakistan support the summit through community networks, evidence, advocacy, access, and practical delivery.",
+  })
+  const organizations = liveOrganizations ?? []
+  const organizingOrganization = organizations.find(
+    (organization) => resolveOrganizationRole(organization) === "organizing"
+  )
+  const managingOrganization = organizations.find(
+    (organization) => resolveOrganizationRole(organization) === "managing"
+  )
+  const supportingOrganizations = organizations.filter(
+    (organization) => resolveOrganizationRole(organization) === "supporting"
+  )
+  const organizer = {
+    name: organizingOrganization?.name || organizerCopy.title,
+    description: organizingOrganization?.description || organizerCopy.summary,
+    websiteUrl:
+      organizingOrganization?.websiteUrl || organizerCopy.linkUrl || "https://www.bhrj.org/",
+    logoUrl: organizingOrganization?.logoUrl ?? null,
+  }
+  const manager = {
+    name:
+      managingOrganization?.name.toLowerCase() === "forcefield human rights"
+        ? managerCopy.title
+        : managingOrganization?.name || managerCopy.title,
+    description: managingOrganization?.description || managerCopy.summary,
+    websiteUrl: managingOrganization?.websiteUrl || managerCopy.linkUrl,
+    logoUrl: managingOrganization?.logoUrl ?? null,
+  }
 
   return (
     <section className="partner-wall section-shell" id="partners">
-      <article className="main-organizer-card">
-        <div className="main-organizer-copy">
-          <p className="kicker">{organizer.eyebrow}</p>
-          <span>Lead institution</span>
-          <h2>{organizer.title}</h2>
-          <p>{organizer.summary}</p>
-          <a href={organizerUrl} target="_blank" rel="noreferrer">
-            {organizer.linkLabel || "Visit BHRJ"}
-            <ArrowUpRightIcon aria-hidden="true" />
-          </a>
-        </div>
-        <div className="main-organizer-mark" aria-hidden="true">
-          <span>BHRJ</span>
-          <small>Paris Hindu Summit 2026</small>
-        </div>
-      </article>
+      <div className="organization-leadership" aria-label="Summit leadership organizations">
+        <OrganizationFeature
+          number="01"
+          label={organizerCopy.eyebrow}
+          organization={organizer}
+          linkLabel={organizerCopy.linkLabel || "Visit BHRJ"}
+          emphasis="primary"
+        />
+        <OrganizationFeature
+          number="02"
+          label={managerCopy.eyebrow}
+          organization={manager}
+          linkLabel={managerCopy.linkLabel || "Visit official website"}
+          emphasis="secondary"
+        />
+      </div>
       <div className="section-heading">
-        <p className="kicker">Supporting partners & sponsors</p>
+        <p className="kicker"><span>03</span> {heading.eyebrow}</p>
         <div>
           <h2>{heading.title}</h2>
           <p>{heading.summary}</p>
         </div>
       </div>
       <div className="partner-grid">
-        {organizations.map((organization) => (
+        {supportingOrganizations.map((organization) => (
           <article
             key={organization._id}
             className={`partner-card partner-${organization.tier}`}
@@ -77,10 +105,84 @@ export function PartnerWall() {
               <b>{organization.name}</b>
             </div>
             <p>{organization.description}</p>
+            {organization.websiteUrl && (
+              <a href={organization.websiteUrl} target="_blank" rel="noreferrer">
+                Visit organization <ArrowUpRightIcon aria-hidden="true" />
+              </a>
+            )}
           </article>
         ))}
       </div>
     </section>
+  )
+}
+
+function resolveOrganizationRole(organization: {
+  name: string
+  organizationRole?: "organizing" | "managing" | "supporting"
+}) {
+  if (organization.organizationRole) return organization.organizationRole
+  const normalized = organization.name.toLowerCase()
+  if (normalized.includes("bureau of human rights and justice")) return "organizing"
+  if (normalized.includes("forcefield")) return "managing"
+  return "supporting"
+}
+
+type FeaturedOrganization = {
+  name: string
+  description: string
+  websiteUrl: string
+  logoUrl: string | null
+}
+
+function OrganizationFeature({
+  number,
+  label,
+  organization,
+  linkLabel,
+  emphasis,
+}: {
+  number: string
+  label: string
+  organization: FeaturedOrganization
+  linkLabel: string
+  emphasis: "primary" | "secondary"
+}) {
+  return (
+    <article className="organization-feature" data-emphasis={emphasis}>
+      <div className="organization-feature-heading">
+        <span>{number}</span>
+        <p className="kicker">{label}</p>
+      </div>
+      <div className="organization-feature-logo">
+        {organization.logoUrl ? (
+          <Image
+            src={organization.logoUrl}
+            alt={`${organization.name} logo`}
+            width={260}
+            height={160}
+            sizes="(max-width: 720px) 180px, 260px"
+          />
+        ) : (
+          <b aria-hidden="true">
+            {organization.name
+              .split(/\s+/)
+              .map((word) => word[0])
+              .join("")
+              .slice(0, 4)}
+          </b>
+        )}
+      </div>
+      <div className="organization-feature-copy">
+        <h2>{organization.name}</h2>
+        <p>{organization.description}</p>
+        {organization.websiteUrl && (
+          <a href={organization.websiteUrl} target="_blank" rel="noreferrer">
+            {linkLabel} <ArrowUpRightIcon aria-hidden="true" />
+          </a>
+        )}
+      </div>
+    </article>
   )
 }
 

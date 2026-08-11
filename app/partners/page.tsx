@@ -4,17 +4,17 @@ import { PartnerWall } from "@/components/site/institutional-sections"
 import { ManagedPageHero } from "@/components/site/managed-page-hero"
 
 export const metadata: Metadata = {
-  title: "Organizer and Partners",
-  description:"BHRJ leads the Paris Hindu Summit 2026 with support from its partners and sponsors.",
+  title: "Organizations",
+  description:"BHRJ organizes the Paris Hindu Summit 2026, Interfaith Forcefield manages it, and regional organizations support it.",
 }
 
 export default function PartnersPage() {
   return <>
     <ManagedPageHero
-      slug="partners"
-      eyebrow="Organizer and supporting network"
-      title="Led by BHRJ. Strengthened by partners."
-      intro="The Bureau of Human Rights and Justice is the summit's main organizer. Partners and sponsors support its programme, reach, research, and practical delivery."
+      slug="organizations"
+      eyebrow="Organization structure"
+      title="Clear leadership. Shared regional purpose."
+      intro="BHRJ organizes the summit, Interfaith Forcefield manages its delivery, and organizations across South Asia strengthen the work."
     />
     <PartnerWall />
   </>
