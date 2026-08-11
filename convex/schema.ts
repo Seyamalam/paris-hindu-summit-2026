@@ -234,6 +234,13 @@ export default defineSchema({
   organizations: defineTable({
     slug: v.string(),
     name: v.string(),
+    organizationRole: v.optional(
+      v.union(
+        v.literal("organizing"),
+        v.literal("managing"),
+        v.literal("supporting")
+      )
+    ),
     kind: v.union(v.literal("partner"), v.literal("sponsor")),
     tier: v.union(
       v.literal("strategic"),

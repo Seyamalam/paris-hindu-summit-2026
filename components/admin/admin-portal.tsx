@@ -70,7 +70,7 @@ const websitePages = [
   ["strategy", "5-Year Strategic Plan", "/strategy", BarChart3Icon],
   ["partnership", "Partnership Framework", "/partnership-framework", HandshakeIcon],
   ["regional", "Regional", "/regional", Globe2Icon],
-  ["partners", "Partners", "/partners", HandshakeIcon],
+  ["partners", "Organizations", "/partners", HandshakeIcon],
   ["media", "Media & Publication", "/media", BookOpenIcon],
   ["engage", "Attend and Support", "/engage", SparklesIcon],
   ["faq", "FAQ", "/faq", InboxIcon],
@@ -1916,7 +1916,7 @@ function PartnersPanel() {
     })
     return result.storageId
   }
-  return <RecordCards title="Partner constellation" copy="A grouped institutional wall replaces the slider. Partners and sponsors can be ordered, classified, branded and published independently." rows={rows} fields={["slug","name","kind","tier","description","websiteUrl","order","status"]} blank={{ slug:"",name:"",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }} assetPicker={{ field:"logoStorageId", label:"Partner or sponsor logo", assets, onUpload:uploadLogo }} onSave={save} onRemove={remove} />
+  return <RecordCards title="Summit organizations" copy="Manage the organizing, managing, and supporting organizations in one place. Add each official name, logo, website, and a short brief about its activities." rows={rows} fields={["slug","name","organizationRole","kind","tier","description","websiteUrl","order","status"]} blank={{ slug:"",name:"",organizationRole:"supporting",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }} fieldLabels={{ organizationRole:"Organization role", description:"Short brief / activities", websiteUrl:"Official website" }} assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }} onSave={save} onRemove={remove} />
 }
 
 type RecordAssetPicker = {
@@ -1926,7 +1926,7 @@ type RecordAssetPicker = {
   onUpload: (file: File) => Promise<Id<"_storage">>
 }
 
-function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, onRemove }: { title:string; copy:string; rows: any[] | undefined; fields:string[]; blank:Record<string,any>; assetPicker?:RecordAssetPicker; onSave:(args:any)=>Promise<any>; onRemove:(args:any)=>Promise<any> }) {
+function RecordCards({ title, copy, rows, fields, blank, fieldLabels, assetPicker, onSave, onRemove }: { title:string; copy:string; rows: any[] | undefined; fields:string[]; blank:Record<string,any>; fieldLabels?:Record<string,string>; assetPicker?:RecordAssetPicker; onSave:(args:any)=>Promise<any>; onRemove:(args:any)=>Promise<any> }) {
   const [draft, setDraft] = useState<Record<string,any>>(blank)
   const [selected, setSelected] = useState<string>("new")
   const [assetBusy, setAssetBusy] = useState(false)
@@ -1944,11 +1944,11 @@ function RecordCards({ title, copy, rows, fields, blank, assetPicker, onSave, on
         onChange={setSelected}
       />
       <div className="admin-form-grid">
-        {fields.map((key) => key === "status" || key === "kind" || key === "tier"
-          ? <label className="admin-field" key={key}><span>{humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
-              {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{value}</option>)}
+        {fields.map((key) => key === "status" || key === "kind" || key === "tier" || key === "organizationRole"
+          ? <label className="admin-field" key={key}><span>{fieldLabels?.[key] ?? humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
+              {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : key === "organizationRole" ? ["organizing","managing","supporting"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{humanize(value)}</option>)}
             </select></label>
-          : <Field key={key} label={humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description","body","secondaryText"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
+          : <Field key={key} label={fieldLabels?.[key] ?? humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description","body","secondaryText"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
         {assetPicker && (
           <div className="admin-asset-picker">
             <label className="admin-field">
