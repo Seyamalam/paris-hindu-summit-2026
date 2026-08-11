@@ -39,12 +39,19 @@ const organization = v.object({
   order: v.number(),
 })
 
-function inferOrganizationRole(name: string) {
+function inferOrganizationRole(name: string, slug = "") {
   const normalized = name.toLowerCase()
-  if (normalized.includes("bureau of human rights and justice")) {
+  const normalizedSlug = slug.toLowerCase()
+  if (
+    normalized.includes("bureau of human rights and justice") ||
+    normalizedSlug.includes("bureau-human-rights-justice")
+  ) {
     return "organizing" as const
   }
-  if (normalized.includes("forcefield")) return "managing" as const
+  if (
+    normalized.includes("forcefield") ||
+    normalizedSlug.includes("interfaith-forcefield")
+  ) return "managing" as const
   return "supporting" as const
 }
 
@@ -92,7 +99,7 @@ export const listOrganizations = query({
         slug: item.slug,
         name: item.name,
         organizationRole:
-          item.organizationRole ?? inferOrganizationRole(item.name),
+          item.organizationRole ?? inferOrganizationRole(item.name, item.slug),
         kind: item.kind,
         tier: item.tier,
         description: item.description,
@@ -235,7 +242,7 @@ export const listOrganizationsForAdmin = query({
       slug: item.slug,
       name: item.name,
       organizationRole:
-        item.organizationRole ?? inferOrganizationRole(item.name),
+        item.organizationRole ?? inferOrganizationRole(item.name, item.slug),
       kind: item.kind,
       tier: item.tier,
       description: item.description,

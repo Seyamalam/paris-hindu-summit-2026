@@ -6,6 +6,7 @@ import { useQuery } from "convex/react"
 
 import { api } from "@/convex/_generated/api"
 import { useEditorialRecord } from "@/components/site/managed-editorial"
+import { resolveOrganizationRole } from "@/lib/organization-compat"
 
 export function PartnerWall() {
   const liveOrganizations = useQuery(api.content.listOrganizations)
@@ -115,17 +116,6 @@ export function PartnerWall() {
       </div>
     </section>
   )
-}
-
-function resolveOrganizationRole(organization: {
-  name: string
-  organizationRole?: "organizing" | "managing" | "supporting"
-}) {
-  if (organization.organizationRole) return organization.organizationRole
-  const normalized = organization.name.toLowerCase()
-  if (normalized.includes("bureau of human rights and justice")) return "organizing"
-  if (normalized.includes("forcefield")) return "managing"
-  return "supporting"
 }
 
 type FeaturedOrganization = {
