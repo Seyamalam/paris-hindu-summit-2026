@@ -9,17 +9,44 @@ import { useEditorialRecord } from "@/components/site/managed-editorial"
 
 export function PartnerWall() {
   const liveOrganizations = useQuery(api.content.listOrganizations)
-  const organizations = liveOrganizations ?? []
-  const heading = useEditorialRecord("partners-heading", {
-    eyebrow:"Partners & sponsors",
-    title:"Institutions standing in the record.",
-    summary:"Organisations contributing policy reach, research, community networks, access, and practical support remain visible together.",
+  const organizations = (liveOrganizations ?? []).filter(
+    (organization) =>
+      !organization.name.toLowerCase().includes("bureau of human rights and justice")
+  )
+  const organizer = useEditorialRecord("main-organizer", {
+    eyebrow:"Main organizer",
+    title:"Bureau of Human Rights and Justice",
+    summary:"BHRJ leads the Paris Hindu Summit 2026. The organization supports people in vulnerable regions through humanitarian relief, sustainable agriculture, and partnerships built around dignity and long-term resilience.",
+    linkLabel:"Visit BHRJ",
+    linkUrl:"https://www.bhrj.org/",
   })
+  const heading = useEditorialRecord("partners-heading", {
+    eyebrow:"Supporting partners & sponsors",
+    title:"Institutions strengthening the summit.",
+    summary:"Under BHRJ's leadership, supporting organisations contribute policy reach, research, community networks, access, and practical support.",
+  })
+  const organizerUrl = organizer.linkUrl || "https://www.bhrj.org/"
 
   return (
     <section className="partner-wall section-shell" id="partners">
+      <article className="main-organizer-card">
+        <div className="main-organizer-copy">
+          <p className="kicker">{organizer.eyebrow}</p>
+          <span>Lead institution</span>
+          <h2>{organizer.title}</h2>
+          <p>{organizer.summary}</p>
+          <a href={organizerUrl} target="_blank" rel="noreferrer">
+            {organizer.linkLabel || "Visit BHRJ"}
+            <ArrowUpRightIcon aria-hidden="true" />
+          </a>
+        </div>
+        <div className="main-organizer-mark" aria-hidden="true">
+          <span>BHRJ</span>
+          <small>Paris Hindu Summit 2026</small>
+        </div>
+      </article>
       <div className="section-heading">
-        <p className="kicker">{heading.eyebrow}</p>
+        <p className="kicker">Supporting partners & sponsors</p>
         <div>
           <h2>{heading.title}</h2>
           <p>{heading.summary}</p>
