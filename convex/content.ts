@@ -21,6 +21,11 @@ const organization = v.object({
   _id: v.id("organizations"),
   slug: v.string(),
   name: v.string(),
+  organizationRole: v.union(
+    v.literal("organizing"),
+    v.literal("managing"),
+    v.literal("supporting")
+  ),
   kind: v.union(v.literal("partner"), v.literal("sponsor")),
   tier: v.union(
     v.literal("strategic"),
@@ -33,6 +38,15 @@ const organization = v.object({
   logoUrl: v.union(v.string(), v.null()),
   order: v.number(),
 })
+
+function inferOrganizationRole(name: string) {
+  const normalized = name.toLowerCase()
+  if (normalized.includes("bureau of human rights and justice")) {
+    return "organizing" as const
+  }
+  if (normalized.includes("forcefield")) return "managing" as const
+  return "supporting" as const
+}
 
 export const listRegionalCountries = query({
   args: {},
@@ -77,6 +91,8 @@ export const listOrganizations = query({
         _id: item._id,
         slug: item.slug,
         name: item.name,
+        organizationRole:
+          item.organizationRole ?? inferOrganizationRole(item.name),
         kind: item.kind,
         tier: item.tier,
         description: item.description,
@@ -189,6 +205,11 @@ export const listOrganizationsForAdmin = query({
       _id: v.id("organizations"),
       slug: v.string(),
       name: v.string(),
+      organizationRole: v.union(
+        v.literal("organizing"),
+        v.literal("managing"),
+        v.literal("supporting")
+      ),
       kind: v.union(v.literal("partner"), v.literal("sponsor")),
       tier: v.union(
         v.literal("strategic"),
@@ -213,6 +234,8 @@ export const listOrganizationsForAdmin = query({
       _id: item._id,
       slug: item.slug,
       name: item.name,
+      organizationRole:
+        item.organizationRole ?? inferOrganizationRole(item.name),
       kind: item.kind,
       tier: item.tier,
       description: item.description,
@@ -229,6 +252,11 @@ export const saveOrganization = mutation({
     id: v.optional(v.id("organizations")),
     slug: v.string(),
     name: v.string(),
+    organizationRole: v.union(
+      v.literal("organizing"),
+      v.literal("managing"),
+      v.literal("supporting")
+    ),
     kind: v.union(v.literal("partner"), v.literal("sponsor")),
     tier: v.union(
       v.literal("strategic"),

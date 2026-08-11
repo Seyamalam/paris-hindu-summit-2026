@@ -57,8 +57,30 @@ const regionalCountries = [
 
 const organizations = [
   {
+    slug: "bureau-human-rights-justice",
+    name: "Bureau of Human Rights and Justice",
+    organizationRole: "organizing" as const,
+    kind: "partner" as const,
+    tier: "strategic" as const,
+    description:
+      "A France-based human rights organization leading the Paris Hindu Summit 2026 and advancing dignity, relief, and long-term resilience in vulnerable communities.",
+    websiteUrl: "https://www.bhrj.org/",
+    order: 1,
+  },
+  {
+    slug: "interfaith-forcefield",
+    name: "Interfaith Forcefield",
+    organizationRole: "managing" as const,
+    kind: "partner" as const,
+    tier: "strategic" as const,
+    description:
+      "A US-registered interfaith human rights organization managing conference coordination and delivery.",
+    order: 2,
+  },
+  {
     slug: "institutional-partners",
     name: "Institutional partners",
+    organizationRole: "supporting" as const,
     kind: "partner" as const,
     tier: "strategic" as const,
     description: "Host, policy, and international cooperation organisations.",
@@ -67,6 +89,7 @@ const organizations = [
   {
     slug: "research-network",
     name: "Research & evidence network",
+    organizationRole: "supporting" as const,
     kind: "partner" as const,
     tier: "knowledge" as const,
     description:
@@ -76,6 +99,7 @@ const organizations = [
   {
     slug: "diaspora-organisations",
     name: "Diaspora organisations",
+    organizationRole: "supporting" as const,
     kind: "partner" as const,
     tier: "community" as const,
     description:
@@ -85,6 +109,7 @@ const organizations = [
   {
     slug: "summit-supporters",
     name: "Summit supporters",
+    organizationRole: "supporting" as const,
     kind: "sponsor" as const,
     tier: "supporting" as const,
     description:
