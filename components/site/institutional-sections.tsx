@@ -24,9 +24,9 @@ export function PartnerWall() {
     linkUrl:"",
   })
   const heading = useEditorialRecord("supporting-organizations-heading", {
-    eyebrow:"Supporting organizations",
-    title:"Regional organizations strengthening the summit.",
-    summary:"Participating organizations from Bangladesh, India, Nepal, and Pakistan support the summit through community networks, evidence, advocacy, access, and practical delivery.",
+    eyebrow:"Regional network",
+    title:"Supporting Organisations",
+    summary:"Our partners from India, Bangladesh, Pakistan and Nepal help extend policy impact, strengthen research, deepen community connections, improve access, and provide practical support—all in one visible and valued network.",
   })
   const organizations = liveOrganizations ?? []
   const organizingOrganization = organizations.find(
