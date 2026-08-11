@@ -46,6 +46,7 @@ import { toast } from "@/components/motion/animated-toast-provider"
 import { api } from "@/convex/_generated/api"
 import type { Id } from "@/convex/_generated/dataModel"
 import { authClient } from "@/lib/auth-client"
+import { ensureLeadershipRecords, isLegacyOrganizationRoleError, omitOrganizationRole, resolveOrganizationRole } from "@/lib/organization-compat"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AdminFileUpload } from "@/components/admin/admin-file-upload"
@@ -1884,7 +1885,7 @@ function RegionalPanel() {
 function PartnersPanel() {
   const rows = useQuery(api.content.listOrganizationsForAdmin)
   const assets = useQuery(api.assets.list)
-  const save = useMutation(api.content.saveOrganization)
+  const saveMutation = useMutation(api.content.saveOrganization)
   const remove = useMutation(api.content.removeOrganization)
   const uploadUrl = useMutation(api.assets.generateUploadUrl)
   const register = useMutation(api.assets.register)
@@ -1916,14 +1917,23 @@ function PartnersPanel() {
     })
     return result.storageId
   }
-  const leadershipRows = rows
-    ?.filter((row) => resolveAdminOrganizationRole(row) !== "supporting")
-    .map((row) => ({
-      ...row,
-      organizationRole:resolveAdminOrganizationRole(row),
-    }))
+  async function saveOrganization(args:any) {
+    try {
+      return await saveMutation(args)
+    } catch (error) {
+      if (!isLegacyOrganizationRoleError(error)) throw error
+      const legacySaveMutation = saveMutation as unknown as (
+        legacyArgs:Record<string,unknown>
+      ) => Promise<Id<"organizations">>
+      return await legacySaveMutation(omitOrganizationRole(args))
+    }
+  }
+
+  const storedLeadershipRows = rows
+    ?.filter((row) => resolveOrganizationRole(row) !== "supporting")
+  const leadershipRows = ensureLeadershipRecords(storedLeadershipRows ?? [])
   const supportingRows = rows
-    ?.filter((row) => resolveAdminOrganizationRole(row) === "supporting")
+    ?.filter((row) => resolveOrganizationRole(row) === "supporting")
     .map((row) => ({ ...row, organizationRole:"supporting" as const }))
 
   return (
@@ -1936,7 +1946,7 @@ function PartnersPanel() {
         blank={{ slug:"",name:"",organizationRole:"organizing",kind:"partner",tier:"strategic",description:"",websiteUrl:"",logoStorageId:undefined,order:10,status:"draft" }}
         fieldLabels={{ organizationRole:"Responsibility", description:"Short brief / activities", websiteUrl:"Official website" }}
         assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }}
-        onSave={save}
+        onSave={saveOrganization}
         onRemove={remove}
       />
       <SupportingOrganizationsCopyEditor />
@@ -1948,19 +1958,11 @@ function PartnersPanel() {
         blank={{ slug:"",name:"",organizationRole:"supporting",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }}
         fieldLabels={{ description:"Short brief / activities", websiteUrl:"Official website" }}
         assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }}
-        onSave={save}
+        onSave={saveOrganization}
         onRemove={remove}
       />
     </div>
   )
-}
-
-function resolveAdminOrganizationRole(organization: { name:string; organizationRole?:"organizing" | "managing" | "supporting" }) {
-  if (organization.organizationRole) return organization.organizationRole
-  const normalized = organization.name.toLowerCase()
-  if (normalized.includes("bureau of human rights and justice")) return "organizing"
-  if (normalized.includes("forcefield")) return "managing"
-  return "supporting"
 }
 
 function SupportingOrganizationsCopyEditor() {
@@ -2097,10 +2099,10 @@ function RecordCards({ title, copy, rows, fields, blank, fieldLabels, assetPicke
       </div>
       <div className="admin-editor-actions">
         <Button onClick={async () => {
-          const { _id, ...value } = draft
+          const { _id, _starter, ...value } = draft
           if (!fields.includes("name")) delete value.name
           try {
-            await onSave({ ...(selected === "new" ? {} : { id:_id }), ...value })
+            await onSave({ ...(selected === "new" || _starter ? {} : { id:_id }), ...value })
             setSelected("new")
             toast.success(`${title} updated.`)
           } catch (error) {
