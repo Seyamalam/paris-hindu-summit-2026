@@ -570,6 +570,24 @@
   animation: admin-enter 0.35s ease both;
 }
 
+.organization-admin-stack {
+  display: grid;
+  gap: 1px;
+  background: #244a9233;
+}
+
+.organization-admin-stack > .admin-panel {
+  background: var(--admin-paper);
+}
+
+.studio-inspector .organization-admin-stack > .admin-panel {
+  background: transparent;
+}
+
+.organization-copy-editor .admin-field:last-child {
+  grid-column: 1 / -1;
+}
+
 .studio-inspector .admin-panel {
   padding: 24px 22px 52px;
 }

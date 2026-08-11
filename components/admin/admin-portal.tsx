@@ -1916,7 +1916,122 @@ function PartnersPanel() {
     })
     return result.storageId
   }
-  return <RecordCards title="Summit organizations" copy="Manage the organizing, managing, and supporting organizations in one place. Add each official name, logo, website, and a short brief about its activities." rows={rows} fields={["slug","name","organizationRole","kind","tier","description","websiteUrl","order","status"]} blank={{ slug:"",name:"",organizationRole:"supporting",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }} fieldLabels={{ organizationRole:"Organization role", description:"Short brief / activities", websiteUrl:"Official website" }} assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }} onSave={save} onRemove={remove} />
+  const leadershipRows = rows
+    ?.filter((row) => resolveAdminOrganizationRole(row) !== "supporting")
+    .map((row) => ({
+      ...row,
+      organizationRole:resolveAdminOrganizationRole(row),
+    }))
+  const supportingRows = rows
+    ?.filter((row) => resolveAdminOrganizationRole(row) === "supporting")
+    .map((row) => ({ ...row, organizationRole:"supporting" as const }))
+
+  return (
+    <div className="organization-admin-stack">
+      <RecordCards
+        title="Organizing & managing organizations"
+        copy="Edit the two organizations featured at the top of the public Organizations section. Their official logo, name, activity brief, and website appear directly on the page."
+        rows={leadershipRows}
+        fields={["slug","name","organizationRole","description","websiteUrl","order","status"]}
+        blank={{ slug:"",name:"",organizationRole:"organizing",kind:"partner",tier:"strategic",description:"",websiteUrl:"",logoStorageId:undefined,order:10,status:"draft" }}
+        fieldLabels={{ organizationRole:"Responsibility", description:"Short brief / activities", websiteUrl:"Official website" }}
+        assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }}
+        onSave={save}
+        onRemove={remove}
+      />
+      <SupportingOrganizationsCopyEditor />
+      <RecordCards
+        title="Supporting organizations"
+        copy="Manage the partner and sponsor cards displayed under the supporting-organizations introduction."
+        rows={supportingRows}
+        fields={["slug","name","kind","tier","description","websiteUrl","order","status"]}
+        blank={{ slug:"",name:"",organizationRole:"supporting",kind:"partner",tier:"community",description:"",websiteUrl:"",logoStorageId:undefined,order:50,status:"draft" }}
+        fieldLabels={{ description:"Short brief / activities", websiteUrl:"Official website" }}
+        assetPicker={{ field:"logoStorageId", label:"Official organization logo", assets, onUpload:uploadLogo }}
+        onSave={save}
+        onRemove={remove}
+      />
+    </div>
+  )
+}
+
+function resolveAdminOrganizationRole(organization: { name:string; organizationRole?:"organizing" | "managing" | "supporting" }) {
+  if (organization.organizationRole) return organization.organizationRole
+  const normalized = organization.name.toLowerCase()
+  if (normalized.includes("bureau of human rights and justice")) return "organizing"
+  if (normalized.includes("forcefield")) return "managing"
+  return "supporting"
+}
+
+function SupportingOrganizationsCopyEditor() {
+  const entries = useQuery(api.cms.listForAdmin, { category:"sectionCopy" })
+  const save = useMutation(api.cms.save)
+  const existing = entries?.find(
+    (entry) => entry.slug === "supporting-organizations-heading"
+  )
+  const [eyebrow, setEyebrow] = useState("Regional network")
+  const [title, setTitle] = useState("Supporting Organisations")
+  const [summary, setSummary] = useState(
+    "Our partners from India, Bangladesh, Pakistan and Nepal help extend policy impact, strengthen research, deepen community connections, improve access, and provide practical support—all in one visible and valued network."
+  )
+
+  useEffect(() => {
+    if (!existing) return
+    setEyebrow(existing.eyebrow)
+    setTitle(existing.title)
+    setSummary(existing.summary)
+  }, [existing])
+
+  return (
+    <section className="admin-panel organization-copy-editor">
+      <PanelTitle
+        eyebrow="Public section introduction"
+        title="Supporting-section text"
+        copy="This heading and paragraph appear immediately above the supporting organization cards."
+      />
+      <div className="admin-form-grid">
+        <Field label="Small section label" value={eyebrow} onValueChange={setEyebrow} />
+        <Field label="Section heading" value={title} onValueChange={setTitle} />
+        <Field label="Introduction" multiline value={summary} onValueChange={setSummary} />
+      </div>
+      <div className="admin-editor-actions">
+        <Button onClick={async () => {
+          if (!title.trim() || !summary.trim()) {
+            toast.error("Enter both the supporting-section heading and introduction.")
+            return
+          }
+          try {
+            await save({
+              ...(existing ? { id:existing._id } : {}),
+              category:"sectionCopy",
+              slug:"supporting-organizations-heading",
+              title:title.trim(),
+              eyebrow:eyebrow.trim(),
+              summary:summary.trim(),
+              body:existing?.body ?? "",
+              secondaryText:existing?.secondaryText ?? "",
+              country:existing?.country ?? "",
+              role:existing?.role ?? "",
+              email:existing?.email ?? "",
+              phone:existing?.phone ?? "",
+              linkLabel:existing?.linkLabel ?? "",
+              linkUrl:existing?.linkUrl ?? "",
+              dateLabel:existing?.dateLabel ?? "",
+              timeLabel:existing?.timeLabel ?? "",
+              parentSlug:"partners",
+              imageStorageId:existing?.imageStorageId,
+              order:existing?.order ?? 31,
+              status:"published",
+              featured:false,
+            })
+            toast.success("Supporting-section text published.")
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "The supporting-section text could not be saved.")
+          }
+        }}><SaveIcon /> Save section text</Button>
+      </div>
+    </section>
+  )
 }
 
 type RecordAssetPicker = {
