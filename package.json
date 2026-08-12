@@ -10,6 +10,7 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
+    "test:admin-contracts": "bun scripts/admin-record-regression.mjs && bun scripts/admin-select-regression.mjs",
     "convex:dev": "node scripts/convex-key.mjs development dev",
     "convex:dev:once": "node scripts/convex-key.mjs development dev --once",
     "convex:codegen": "node scripts/convex-key.mjs development codegen",

@@ -96,6 +96,7 @@ const operationPanels = [
 type StudioPage = (typeof websitePages)[number][0]
 type OperationPanel = (typeof operationPanels)[number][0]
 type DevicePreview = "desktop" | "tablet" | "mobile"
+type SubmissionStatus = "new" | "in_progress" | "resolved" | "archived"
 
 const categories = [
   "overview",
@@ -1848,7 +1849,7 @@ function ContentPanel({ compact = false, initialCategory = "engage" }: { compact
       <div className="admin-content-layout">
         <aside className="admin-records">
           <select value={category} onChange={(event) => { setCategory(event.target.value as typeof category); setSelected("new") }}>
-            {categories.map((item) => <option key={item}>{item}</option>)}
+            {categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
           <button data-active={selected === "new"} onClick={() => setSelected("new")}><SparklesIcon /> New {category}</button>
           {entries?.map((entry) => <button data-active={selected === entry._id} key={entry._id} onClick={() => setSelected(entry._id)}><span>{entry.title}</span><small>{entry.status}</small></button>)}
@@ -1918,7 +1919,7 @@ function PartnersPanel() {
     })
     return result.storageId
   }
-  async function saveOrganization(args:any) {
+  async function saveOrganization(args:Parameters<typeof saveMutation>[0]) {
     try {
       return await saveMutation(args)
     } catch (error) {
@@ -2133,7 +2134,7 @@ function InboxPanel() {
           <header><Badge>{row.type}</Badge><span>{new Date(row.createdAt).toLocaleDateString()}</span></header>
           <h3>{row.firstName} {row.lastName}</h3><a href={`mailto:${row.email}`}>{row.email}</a>
           <p>{row.subject || row.message || "No message supplied."}</p>
-          <div><select defaultValue={row.status} onChange={(event) => update({ id:row._id, status:event.target.value as any, adminNote:row.adminNote })}><option value="new">New</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option><option value="archived">Archived</option></select></div>
+          <div><select defaultValue={row.status} onChange={(event) => update({ id:row._id, status:event.target.value as SubmissionStatus, adminNote:row.adminNote })}><option value="new">New</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option><option value="archived">Archived</option></select></div>
         </article>)}
       </div>
     </section>
