@@ -47,6 +47,7 @@ import { api } from "@/convex/_generated/api"
 import type { Id } from "@/convex/_generated/dataModel"
 import { authClient } from "@/lib/auth-client"
 import { ensureLeadershipRecords, isLegacyOrganizationRoleError, omitOrganizationRole, resolveOrganizationRole } from "@/lib/organization-compat"
+import { prepareAdminRecordSave } from "@/lib/admin-record"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AdminFileUpload } from "@/components/admin/admin-file-upload"
@@ -2063,7 +2064,7 @@ function RecordCards({ title, copy, rows, fields, blank, fieldLabels, assetPicke
       <div className="admin-form-grid">
         {fields.map((key) => key === "status" || key === "kind" || key === "tier" || key === "organizationRole"
           ? <label className="admin-field" key={key}><span>{fieldLabels?.[key] ?? humanize(key)}</span><select value={draft[key]} onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}>
-              {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : key === "organizationRole" ? ["organizing","managing","supporting"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value}>{humanize(value)}</option>)}
+              {(key === "status" ? ["draft","published"] : key === "kind" ? ["partner","sponsor"] : key === "organizationRole" ? ["organizing","managing","supporting"] : ["strategic","knowledge","community","supporting"]).map((value) => <option key={value} value={value}>{humanize(value)}</option>)}
             </select></label>
           : <Field key={key} label={fieldLabels?.[key] ?? humanize(key)} type={["order","value"].includes(key) ? "number" : "text"} multiline={["summary","detail","description","body","secondaryText"].includes(key)} value={String(draft[key] ?? "")} onValueChange={(value) => setDraft({ ...draft, [key]: ["order","value"].includes(key) ? Number(value) : value })} />)}
         {assetPicker && (
@@ -2099,10 +2100,9 @@ function RecordCards({ title, copy, rows, fields, blank, fieldLabels, assetPicke
       </div>
       <div className="admin-editor-actions">
         <Button onClick={async () => {
-          const { _id, _starter, ...value } = draft
-          if (!fields.includes("name")) delete value.name
+          const value = prepareAdminRecordSave(draft, fields, selected)
           try {
-            await onSave({ ...(selected === "new" || _starter ? {} : { id:_id }), ...value })
+            await onSave(value)
             setSelected("new")
             toast.success(`${title} updated.`)
           } catch (error) {
